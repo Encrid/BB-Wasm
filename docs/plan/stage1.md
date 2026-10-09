@@ -140,8 +140,8 @@ On 2026-10-09, of `main` at `3bd03458f302`, pinned to Bridge at `bb22256a976a`:
                             325 once and six at once, on Linux and macOS on both processors
                             and on Windows on x86-64. Windows on arm64 is compiled, linked and
                             packaged, and not run. The token was made from the app in each job
-    what it cost            75 seconds on Linux, 4 minutes on macOS and 7 minutes on Windows, from start to
-                            end of each workflow
+    what it cost            75 seconds on Linux, 4 minutes on macOS and 7 minutes on Windows,
+                            from start to end of each workflow
     what is published       the prerelease `main-3bd03458f302`: twelve archives, two packages for
                             each of six targets. The backend's statement, read back from each,
                             names this commit and Bridge's, and says whether it was run
