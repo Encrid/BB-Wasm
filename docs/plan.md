@@ -24,7 +24,7 @@ style and the standard; and the documents cite nothing that is not there.*
 
 ## 1. Pinned and published
 
-Not begun. It waits on Bridge publishing its two packages for a commit.
+Begun, not built. Its record is `stage1.md`.
 
 The build is handed a folder of Bridge's packages. This stage has it state one commit of
 Bridge and the hashes of the two packages, fetch them from where Bridge publishes, and publish
