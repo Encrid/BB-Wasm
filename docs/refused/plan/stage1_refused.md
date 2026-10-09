@@ -58,3 +58,14 @@ Nothing was weighed: it followed from a ruling that stands.
 Of `stage1.md`, *How a workflow gets Binaryen*.
 
 Nothing was weighed: it followed from a ruling that stands.
+
+## How a run is started by hand
+
+Of `stage1.md`, *How a run is started by hand*.
+
+Refused: the workflows as Bridge's are, and the first run left to the next commit that touches
+code. Nothing would be published until then, and what a host is handed would wait on a change
+nobody needs. The condition that brings it back is none: the first run is had.
+
+Refused: a commit with nothing in it, pushed to `main` to start a run. It may be passed over as
+the branch was, and it is a commit that says nothing. No condition is seen that brings it back.

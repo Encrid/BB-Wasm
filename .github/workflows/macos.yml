@@ -7,8 +7,11 @@ name: macos
 # the cases run where they are written. A run for main publishes what this project hands, for
 # the commit it ran: docs/readme.md, "What it hands". A change to
 # documents alone, or to these workflows, starts nothing, and a newer push stops the run of the
-# one before it, since a minute here is counted and a macOS one as ten.
+# one before it, since a minute here is counted and a macOS one as ten. It can be started by
+# hand as well, which is how main had its first run, a branch made where another already was
+# being a push with no file in it: docs/plan/stage1.md, "How a run is started by hand".
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths-ignore: ['docs/**', '**.md', 'license', '.github/**']
@@ -84,7 +87,7 @@ jobs:
       # what this project hands, attached to the release of this commit. The first job to pass
       # makes the release, and a job that fails attaches nothing, so one may lack a target
       - name: Publish
-        if: github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
