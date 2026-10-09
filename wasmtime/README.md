@@ -42,4 +42,4 @@ arm64, by `msvc`, and its import library is what `aarch64-windows-gnu` links: `b
 Vendored on 2026-10-04; the Windows files again, and the macOS one, on 2026-10-05. Nothing here
 has been edited.
 48 is a long-term release; why that one, and
-what the wasm backend does with it, is `docs/seam/backend/impl/wasmtime.md`.
+what the wasm backend does with it, is `docs/wasmtime.md`.

@@ -5,7 +5,8 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 **
-** tests/adopt/backend.c -- a backend's library, opened: its entries found by name.
+** tests/adopt/backend.c -- a backend's library, opened: its entries found
+** by name.
 */
 
 #include <stdio.h>

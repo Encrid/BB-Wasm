@@ -29,7 +29,7 @@ constexpr int64_t HOST_MS = 1'000'000;
 **     what          the case that was asked for
 **     arg           what the case's row hands it, or "" if it takes nothing
 **     kept          what the program's fixtures keep beside the host
-**     backends      the two backends there are, of which cfg names some
+**     backends      the one backend there is, which cfg names
 **     phases        "update" and "present", of which cfg names some
 **     cfg           what the deck is created from: a case changes it
 **                   before it opens the host
@@ -64,7 +64,7 @@ typedef struct {
 ** host_init
 **
 ** Fills a host from the command line, with the configuration every case
-** starts from: both backends, both phases, one thread, and the budgets. Its
+** starts from: the backend, both phases, one thread, and the budgets. Its
 ** sink is its fixture's to set.
 */
 void host_init(host_t *h, int argc, char **argv);
@@ -142,28 +142,12 @@ typedef struct {
 } host_thread_t;
 
 /*
-** host_get_thread_id
-**
-** Answers which thread this is, as a native test module says it: the low
-** 32 bits of what the operating system calls it.
-*/
-uint32_t host_get_thread_id(void);
-
-/*
 ** host_thread_start, host_thread_join
 **
 ** Start a thread that calls `t->run` with `t->arg`, and wait for it to end.
 */
 void host_thread_start(host_thread_t *t);
 void host_thread_join(host_thread_t *t);
-
-/*
-** host_is_library_loaded
-**
-** Answers whether a library is in this process, asked of the operating
-** system and of nothing of ours.
-*/
-bool host_is_library_loaded(const char *path);
 
 /*
 ** host_read_module
@@ -174,20 +158,11 @@ bool host_is_library_loaded(const char *path);
 void *host_read_module(const char *file, size_t *len);
 
 /*
-** host_state_native
-**
-** States a native module as a deployment must: trusted, every limit said to
-** be none, and every other key said. It spawns nothing unless the case says
-** so.
-*/
-void host_state_native(bridge_artifact_t *a, const char *identity,
-    const char *path);
-
-/*
 ** host_state_wasm
 **
-** States a wasm module of tests/modules, with the limits that backend can
-** keep.
+** States a wasm module of tests/modules as a deployment must: every key
+** said, with the limits the backend keeps. It spawns nothing unless the
+** case says so.
 */
 void host_state_wasm(bridge_artifact_t *a, const char *identity,
     const char *file);

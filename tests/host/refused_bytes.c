@@ -5,7 +5,7 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 **
-** tests/host/refused_native.c -- what a backend cannot keep or cannot
+** tests/host/refused_bytes.c -- what a backend cannot keep or cannot
 ** find, refused at the load.
 **
 ** capabilities.md, *Nothing is downgraded*

@@ -131,53 +131,9 @@ why no module could have sized it.
 
 ## The ABI layouts
 
-A module reads Bridge's structures with plain loads, so both sides have to lay them out
-identically: the span, the private memory's header, the log record, the entity-index record,
-`column_base`'s indexing, an observer's list, and the pair a field holds for text.
-
-**No struct in it has padding a compiler places.** Where alignment leaves a gap, the gap is a
-member named `pad`, so that every offset is one the header states and asserts. It means nothing:
-whoever writes the struct writes zero, and nobody reads it. There are three, in a term, in an
-observer's record and in a log record.
-
-**An enum has the width of where it goes.** One that is a member of what an entry is handed is
-four bytes, as every such value that is not an id is: `kind`, `on_unload`, `storage`, `events`.
-One that is a member of a term is one byte, which holds every value these have: its access and
-its operator.
-
-**One header, `bridge_abi.h`, compiled by Bridge and by every module, on either backend.** Nothing
-re-derives anything, so there is nothing to disagree about - the same argument that made the schema
-a header rather than a format. idTech3 did this with `g_public.h`, and its enforcement was a comment
-in capitals: *"DO NOT MODIFY ANYTHING ABOVE THIS, THE SERVER EXPECTS THE FIELDS IN THAT ORDER!"*.
-Ours is the ABI version in `bridge:manifest`: a module built against another is refused by name.
-The number is 1 and stays 1 until there is a release; from then on a change to an ABI layout
-raises it - `host_api.md`, *A seam has a number*, which is the rule for all three seams.
-
-A module that is not C cannot include the header, and so far cannot be written from it either:
-the header is C23, and the one translator tried on it, the project's own compiler's, stops at its
-first `constexpr`. A module in another language needs two things in that language. What
-Bridge writes, which is this header's content and Bridge's to make readable. And
-how a module on this backend reaches it, which is this backend's SDK and this backend's to
-provide - `readme.md`, *Three layers, three seams*. Neither is built: `host_api.md`, *The seams
-for a language that is not C*.
-
-**The native backend's `bridge_api_t` is not in it.** A struct of C function pointers has nothing a
-wasm module could derive, since it gets imports rather than pointers. It lives in the native
-SDK, `bridge_native.h` and what that brings in, which only a native module and the native backend
-compile - `native.md`, *What the backend provides*.
-
-### It holds no content
-
-This is where we part from idTech3. Its `g_public.h` declares `entityState_t` - origin, angles,
-modelindex, solid - and asks the game to begin its own struct with that prefix, because idTech3 is a
-game engine and knows what an entity is. **Bridge orchestrates and knows nothing.** `bridge_abi.h`
-says how to find data and never what data there is: no component, no field, and no prefix a module
-must start its struct with.
-
-**Bridge declares no components at all**, not even about itself - see `no_builtins.md`, *No
-builtins*. The line it does draw is the log record's: Bridge owns the record's shape, the module
-owns the message. No field name of a component is in the header either, even though Bridge has
-them - `schema.md`, *There is no schema format*.
+A module reads Bridge's structures with plain loads, so both sides lay them out identically.
+They are one header, `bridge_abi.h`, which is Bridge's and is described with it - `abi.md`,
+*The ABI layouts*. This SDK includes it, and adds how a wasm module reaches what it states.
 
 ## Identity
 
@@ -196,5 +152,5 @@ Custom sections are core wasm, so nothing about this depends on the component mo
 module may do*. There is no such import, so it is the only refusal in the design that is a wall
 rather than a contract, and it is the whole of what the sandbox guarantee means in practice.
 
-The word is *cannot* here and *must not* in `native.md`, which is the difference the three
-guarantees name.
+The word is *cannot* here and *must not* on the native backend, which is the difference the
+three guarantees name.

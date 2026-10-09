@@ -5,10 +5,9 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 **
-** tests/host/observe.c -- observers: a native attach seen by a
-** wasm observer, and two observers of one change, in two modules, one of
-** them writing what the other reads. The barrier is a phase like any other
-** to the conflict graph.
+** tests/host/observe.c -- observers: two of one change, in two modules,
+** one of them writing what the other reads. The barrier is a phase like any
+** other to the conflict graph.
 */
 
 #include "cases.h"

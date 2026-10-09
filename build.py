@@ -375,8 +375,9 @@ def build(target, debug, out, bridge):
                                          '--remove-unused-module-elements', '-o', final]]))
     together(compiled)
 
+    write_packages(target, out, lib, bridge, runtime, False)
     return {'python': sys.executable, 'nocall': ROOT / 'tools/nocall.py',
-            'wasm-dis': disassemble, 'modules': modules, 'exe': exe}
+            'wasm-dis': disassemble, 'modules': modules, 'exe': exe, 'bridge': bridge}
 
 
 def sources(where, name, idle):
@@ -391,7 +392,18 @@ def sources(where, name, idle):
 
 
 def command_line(out, built, command, kept):
-    """What a case runs: a program of the build, or the tool that reads a compiled module."""
+    """What a case runs: a program of the build, the tool that reads a compiled module, or a
+    tool of ours over the tree."""
+    if command[0] == 'package':
+        return [str(built['python']), str(ROOT / 'tools/package.py'), str(out), str(built['bridge'])]
+    if command[0] == 'cla':
+        return [str(built['python']), str(ROOT / 'tools/cla.py'), '--decide'] + command[1:]
+    if command[0] in ('c23', 'style', 'cover', 'xref', 'licence'):
+        return [str(built['python']), str(ROOT / ('tools/%s.py' % command[0]))]
+    if command[0] == 'said':
+        return [str(built['python']), str(ROOT / 'tools/said.py'), str(kept)]
+    if command[0] == 'deps':
+        return [str(built['python']), str(ROOT / 'tools/deps.py'), str(out), '--check']
     if command[0] == 'nocall':
         return [str(built[k]) for k in ('python', 'nocall', 'wasm-dis')] + FEATURES + \
                [str(built['modules'] / command[1]), command[2]]
@@ -960,6 +972,10 @@ CASES = [
      'sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive', None),
     ('BRIDGE_ADD_SYSTEM-registered-and-run', ['host', 'BRIDGE_ADD_SYSTEM-registered-and-run'],
      'sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive', None),
+    ('backend_create-a-setting-refused', ['host', 'backend_create-a-setting-refused'],
+     "backend 'wasm' would not start: it knows no setting 'cache'.*bridge_create refused.*alive", None),
+    ('BRIDGE_OBSERVER-registered-and-told', ['host', 'BRIDGE_OBSERVER-registered-and-told'],
+     'b1 game:chain@0.1.0/got_a: hop A.*alive', 'hop A.*hop A'),
     ('BRIDGE_PUT_CHANGES-an-observer-that-attaches', ['host', 'BRIDGE_PUT_CHANGES-an-observer-that-attaches'],
      'b1 game:chain@0.1.0/got_a: hop A.*b2 game:chain@0.1.0/got_b: hop B.*b3 game:chain@0.1.0/got_c: hop C.*alive', 'hop A.*hop A'),
     ('BRIDGE_ATTACH-the-value-travels-with-it', ['host', 'BRIDGE_ATTACH-the-value-travels-with-it'],
@@ -1110,8 +1126,22 @@ CASES = [
      "system 'act' failed: attach: 'game:Flag' is a tag, and is handed a value.*alive", None),
     ('BRIDGE_FAIL-refused-before-it-exists-stops-nothing', ['host', 'BRIDGE_FAIL-refused-before-it-exists-stops-nothing'],
      "module 'test:ok@0\\.1\\.0' is refused: no backend named 'native'.*test:image@0\\.1\\.0: loaded.*alive", 'has stopped'),
+    ('c23', ['c23'], None, None),
+    ('style', ['style'], None, None),
+    ('deps', ['deps'], None, None),
+    ('said', ['said'], None, None),
+    ('cover', ['cover'], None, None),
+    ('xref', ['xref'], None, None),
+    ('licence', ['licence'], None, None),
+    ('cla-the-holder-is-not-asked', ['cla', 'holder', 'holder', ''], '^nothing, passes: the holder', None),
+    ('cla-a-name-on-record-passes', ['cla', 'ann', 'holder', 'bob,ann'], '^nothing, passes: ann has signed', None),
+    ('cla-anybody-else-is-asked-and-fails', ['cla', 'ann', 'holder', 'bob'], '^ask, fails: ann has not signed', None),
+    ('cla-the-sentence-by-its-author-is-recorded', ['cla', 'ann', 'holder', '', 'ann', 'I have read cla.md and I sign it.'], '^record, passes: ann signs', None),
+    ('cla-the-sentence-by-another-is-not-taken', ['cla', 'ann', 'holder', '', 'bob', 'I have read cla.md and I sign it.'], '^ask, fails', None),
+    ('cla-other-words-are-not-taken', ['cla', 'ann', 'holder', '', 'ann', 'I sign, more or less.'], '^ask, fails', None),
+    ('package', ['package'], None, None),
 ]
-ALONE = ('BRIDGE_ROW-checked-and-unchecked-timed',)
+ALONE = ('BRIDGE_ROW-checked-and-unchecked-timed', 'c23', 'style', 'deps', 'said', 'cover', 'xref', 'licence', 'cla-the-holder-is-not-asked', 'cla-a-name-on-record-passes', 'cla-anybody-else-is-asked-and-fails', 'cla-the-sentence-by-its-author-is-recorded', 'cla-the-sentence-by-another-is-not-taken', 'cla-other-words-are-not-taken', 'package')
 
 
 if __name__ == '__main__':

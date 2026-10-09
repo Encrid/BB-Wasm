@@ -13,30 +13,6 @@
 
 #include "host.h"
 
-/*
-** host_is_library_loaded
-**
-** Answers whether a library is in this process, asked of the operating
-** system.
-*/
-bool host_is_library_loaded(const char *path)
-{
-    char full[MAX_PATH];
-    DWORD len = GetFullPathNameA(path, sizeof(full), full, nullptr);
-
-    return (len && len < sizeof(full) && GetModuleHandleA(full));
-}
-
-/*
-** host_get_thread_id
-**
-** Answers which thread this is, as a native test module says it.
-*/
-uint32_t host_get_thread_id(void)
-{
-    return ((uint32_t)GetCurrentThreadId());
-}
-
 static DWORD WINAPI run_thread(LPVOID arg)
 {
     host_thread_t *t = arg;

@@ -1,0 +1,819 @@
+Bridge 7bde6c3e071933096912a83bd498b6a828bd068b
+data.md	The data model
+data.md	Components
+data.md	Entities
+data.md	Access mode
+data.md	Structural change
+data.md	Observers
+lifetime.md	Lifetime
+lifetime.md	What unload leaves behind
+lifetime.md	When a component is moved
+lifetime.md	When a component layout changed
+query.md	The interface is a query
+query.md	What a query may not ask for
+reference.md	Reference following
+log.md	The log
+profile.md	The profile
+validation.md	What a bad write costs, and what finds it
+validation.md	Always on
+validation.md	The row test
+validation.md	The checksum pass, when asked
+budgets.md	Budgets
+budgets.md	Nothing is allocated in a phase
+budgets.md	What running out does
+budgets.md	Bridge defaults none of them
+memory.md	Memory
+memory.md	Where the regions live
+strings.md	Variable length
+strings.md	Which of the three a string belongs in
+strings.md	Changing one, and the cost of growing
+strings.md	It is given back when nothing points into it
+failure.md	When something fails
+failure.md	Out of memory
+failure.md	The budget
+limits.md	What bounds a run
+limits.md	What a bound costs
+schedule.md	The schedule
+schedule.md	Phases
+schedule.md	Bridge ships no phase names
+schedule.md	A module's phase names are mapped by the deployment
+schedule.md	A phase is a name and nothing else
+schedule.md	An observer runs at the barrier, one hop per barrier
+schedule.md	Order within a phase is never implicit
+schedule.md	What a phase shows you
+schedule.md	What a pass depends on
+threads.md	Threads
+storage.md	Storage
+storage.md	Made for what the deck promises
+storage.md	Storage layouts
+storage.md	A table
+storage.md	A sparse set
+storage.md	A toggle
+storage.md	Direct-indexed
+storage.md	A singleton
+storage.md	A tag
+storage.md	What a query walks
+storage.md	A barrier is worked an entity at a time
+storage.md	What a barrier writes for a module
+storage.md	Nothing in the shared block is read back
+storage.md	The column region
+storage.md	What bounds it
+storage.md	What is asked of it
+contributing.md	Contributing
+contributing.md	How a decision is made
+contributing.md	How a stage is run
+contributing.md	Where the other rules are
+contributing.md	What no script can do
+contributing.md	The scan
+design.md	Design
+design.md	Why
+design.md	What the design is
+build.md	The build
+build.md	One compiler
+build.md	One script
+build.md	Platforms
+build.md	The standard
+build.md	Where a function is
+build.md	The C library
+build.md	Dependencies
+build.md	What an author is not bound by
+costs.md	What we give up
+dependencies.md	Dependencies
+dependencies.md	What a build needs installed
+dependencies.md	What the built artifacts import
+dependencies.md	The C library
+dependencies.md	The operating system, through `utils/os`
+dependencies.md	What the compiler's startup code imports
+no_builtins.md	No builtins
+split.md	The split
+licence.md	The licence
+licence.md	What Bridge is under
+licence.md	What is built with it
+licence.md	Other terms
+licence.md	Whose it is
+licence.md	What is somebody else's
+abi.md	The ABI
+abi.md	The ABI layouts
+abi.md	It holds no content
+engine_callbacks.md	An engine callback answers from storage
+grants.md	Whose component it is
+grants.md	What a module may destroy
+module.md	The module model
+module.md	Identity
+module.md	The manifest
+module.md	The parser of a manifest
+module.md	What no module may do
+module.md	Three guarantees differ
+module.md	So what decides
+pinned.md	Threads
+schema.md	Schema
+schema.md	There is no schema format
+schema.md	Why a header and not a format
+schema.md	The type set
+schema.md	Fingerprints
+schema.md	What a module compiles against
+schema.md	Not WIT
+plan.md	Plan
+plan.md	0. Documents, and the spikes they need
+plan.md	1. Vendor and patch flecs
+plan.md	2. One module runs
+plan.md	3. Storage
+plan.md	4. The native backend
+plan.md	5. Scheduling
+plan.md	6. Failure and lifecycle
+plan.md	7. The build
+plan.md	8. macOS
+plan.md	9. C23, used fully
+plan.md	10. Storage of our own
+plan.md	11. Storage layouts
+plan.md	12. One style, every platform, few dependencies
+plan.md	13. Tests, by capability
+plan.md	14. The documents
+plan.md	15. Bridge
+plan.md	From here, a host's
+plan.md	20. The licence
+plan.md	21. What a host is handed
+plan.md	22. The backends leave the tree
+flecs.md	flecs
+flecs.md	Why the backend is swappable and this is not
+flecs.md	Why flecs rather than our own
+flecs.md	Where flecs' memory lives
+flecs.md	It can be confined
+flecs.md	How it is carried
+flecs.md	flecs will not tell you which
+stage1.md	Stage 1: vendor and patch flecs
+stage1.md	What it produced
+stage1.md	The interface
+stage1.md	The tests
+stage1.md	What the stage found
+stage1.md	Open questions
+stage1.md	What would make us stop
+stage10.md	Stage 10: storage of our own
+stage10.md	What changed
+stage10.md	What was settled
+stage10.md	Not a freestanding flecs
+stage10.md	What a replacement has to reproduce
+stage10.md	What goes with flecs
+stage10.md	What a host or a module will see change
+stage10.md	The gate
+stage10.md	What flecs does, pinned
+stage10.md	Found on the way: a sleep is a least time
+stage10.md	What flecs cost
+stage10.md	What it costs
+stage10.md	What the cases say
+stage10.md	What was not in the plan
+stage10.md	The repair
+stage11.md	Stage 11: storage layouts
+stage11.md	The order
+stage11.md	The baseline
+stage11.md	The gate
+stage11.md	The questions
+stage11.md	What was built
+stage11.md	Found on the way: a barrier that stopped being inlined
+stage11.md	The done-when, line by line
+stage11.md	Beside the best there is
+stage11.md	Where ours was slower, and what was done
+stage11.md	What their implementations have that ours could
+stage12.md	Stage 12: one style, every platform, few dependencies
+stage12.md	What it replaced
+stage12.md	The order
+stage12.md	What was decided before it began
+stage12.md	The tree against the style, before any of it
+stage12.md	The checker, as built
+stage12.md	The decisions
+stage12.md	One operating-system layer
+stage12.md	The three entries a module calls at load
+stage12.md	The three entries of the backend seam over four
+stage12.md	A line of the log
+stage12.md	attach, which runs in a phase
+stage12.md	Names
+stage12.md	How a file of many functions is cut
+stage12.md	The test programs
+stage12.md	Comments
+stage12.md	The refactor, as it goes
+stage12.md	Dependencies, as built
+stage12.md	The refactor, closed
+stage12.md	Platforms, as built
+stage12.md	The lines that were open, measured on a quiet machine
+stage12.md	The close
+stage13.md	Stage 13: tests, by capability
+stage13.md	The order
+stage13.md	What there was, before any of it
+stage13.md	The decisions
+stage13.md	What a capability is
+stage13.md	Where the list lives
+stage13.md	What a case is named, and the host programs
+stage13.md	Every refusal
+stage13.md	Under load
+stage13.md	The platforms no workflow runs
+stage13.md	What was built
+stage13.md	The list, and what holds it
+stage13.md	One host program
+stage13.md	Every message
+stage13.md	Under load
+stage13.md	What the stage found
+stage13.md	The close
+stage13.md	Decided after the cases
+stage13.md	Where a name's document is said
+stage13.md	A deployment with no backend
+stage14.md	Stage 14: the documents
+stage14.md	The order
+stage14.md	What there was, before any of it
+stage14.md	The decisions
+stage14.md	What "improved" covers
+stage14.md	What is said of what is not built
+stage14.md	A stage in a document of the design
+stage14.md	What is said twice
+stage14.md	The citation above an exposed name
+stage14.md	Messages and the documents
+stage14.md	How a finding is recorded
+stage14.md	Decided while the findings were worked
+stage14.md	A load refused before the module exists
+stage14.md	What was found
+stage14.md	What a script holds
+stage14.md	a: false against the tree
+stage14.md	c: said twice
+stage14.md	e: prior art that describes nothing
+stage14.md	f: not followable
+stage14.md	What the stage found
+stage14.md	The close
+stage15.md	Stage 15: Bridge
+stage15.md	The order
+stage15.md	What there was, before any of it
+stage15.md	The decisions
+stage15.md	Outside the tree
+stage15.md	What the design before this one is called
+stage15.md	The library, and the object a host creates
+stage15.md	The records
+stage15.md	What holds it
+stage15.md	The folders on this machine
+stage15.md	What was renamed
+stage15.md	Where it is still named
+stage15.md	Outside the tree, as it was done
+stage15.md	The close
+stage15.md	Since
+stage2.md	Stage 2: one module runs
+stage2.md	What it produced
+stage2.md	The tests
+stage2.md	What the stage found
+stage2.md	Open questions
+stage2.md	What would make us stop
+stage20.md	Stage 20: the licence
+stage20.md	What there was (measured on `801ed0b`)
+stage20.md	The order
+stage20.md	The decisions
+stage20.md	What must be open
+stage20.md	Who the holder is
+stage20.md	The contributor's agreement
+stage20.md	Which versions
+stage20.md	The line in every file
+stage20.md	What the files are called
+stage20.md	What else is under it
+stage20.md	Where other terms are asked for
+stage20.md	What was found on the way
+stage20.md	A module, and a backend, as a host
+stage20.md	The close
+stage20.md	After the close
+stage21.md	Stage 21: what a host is handed
+stage21.md	What was ruled before it began
+stage21.md	What there was (measured on `c317353`, 2026-10-08)
+stage21.md	The order
+stage21.md	The decisions
+stage21.md	What it is called
+stage21.md	What the library's package holds
+stage21.md	What a backend's package holds, and the SDK's
+stage21.md	The statement a package carries
+stage21.md	Where the packages are published
+stage21.md	Which targets are published
+stage21.md	What a run does when a platform fails
+stage21.md	The run under load
+stage21.md	What holds it
+stage21.md	What was built
+stage21.md	What was found on the way
+stage21.md	The first run for `main`
+stage21.md	The close
+stage22.md	Stage 22: the backends leave the tree
+stage22.md	What there was (measured on `ffda1a1`, 2026-10-09)
+stage22.md	The order
+stage22.md	The decisions
+stage22.md	Where a backend is written
+stage22.md	How the library is tested with no backend in its tree
+stage22.md	Whose they are, and who sees them
+stage22.md	What the two are called
+stage22.md	What a test module is written with
+stage22.md	How a case gets an outcome
+stage22.md	Which cases stay
+stage22.md	The layer over the operating system
+stage22.md	What whoever writes a backend is handed
+stage22.md	What the packages become
+stage22.md	What a document here says of a backend's
+stage22.md	What each repository is made from
+stage22.md	How a backend takes the library
+stage22.md	What a backend publishes, and when
+stage22.md	Whether what leaves keeps its history
+stage22.md	How a test module is carried
+stage22.md	The questions
+stage22.md	What was built here
+stage22.md	What was found on the way
+stage22.md	Where each case went
+stage22.md	What is shown so far, and what is not
+stage22.md	How each claim is shown
+stage3.md	Stage 3: storage
+stage3.md	What was settled first
+stage3.md	What it produced
+stage3.md	The tests
+stage3.md	What the stage found
+stage3.md	What it left
+stage3.md	Open questions
+stage3.md	What would make us stop
+stage4.md	Stage 4: the native backend
+stage4.md	What was settled first
+stage4.md	What it produced
+stage4.md	The tests
+stage4.md	What the stage found
+stage4.md	What it left
+stage4.md	Open questions
+stage5.md	Stage 5: scheduling
+stage5.md	What was settled first
+stage5.md	What it produced
+stage5.md	The tests
+stage5.md	What the stage found
+stage5.md	Closed after the stage
+stage5.md	Nothing left
+stage5.md	Open questions
+stage6.md	Stage 6: failure and lifecycle
+stage6.md	What was settled first
+stage6.md	What it produced
+stage6.md	The tests
+stage6.md	What the stage found
+stage6.md	Nothing is left behind it
+stage6.md	Open questions
+stage7.md	Stage 7: the build
+stage7.md	What was settled first
+stage7.md	What it built
+stage7.md	Tests
+stage7.md	What it found
+stage7.md	What is not done here, and where it is
+stage8.md	Stage 8: macOS
+stage8.md	What was settled first
+stage8.md	What it built
+stage8.md	What it found
+stage8.md	Tests
+stage9.md	Stage 9: C23, used fully
+stage9.md	What compiling it showed
+stage9.md	What was settled
+stage9.md	What it built
+stage9.md	What changed that a host can see
+stage9.md	What it found
+stage9.md	Tests
+readme.md	Bridge
+readme.md	Three layers, three seams
+readme.md	Words
+readme.md	Where to start
+data_refused.md	What was refused: The data model
+data_refused.md	Access mode
+data_refused.md	Observers
+lifetime_refused.md	What was refused: Lifetime
+lifetime_refused.md	What unload leaves behind
+lifetime_refused.md	When a component is moved
+lifetime_refused.md	When a component layout changed
+query_refused.md	What was refused: The interface is a query
+query_refused.md	The interface is a query
+query_refused.md	What a query may not ask for
+log_refused.md	What was refused: The log
+log_refused.md	The log
+profile_refused.md	What was refused: The profile
+profile_refused.md	The profile
+validation_refused.md	What was refused: What a bad write costs, and what finds it
+validation_refused.md	The row test
+budgets_refused.md	What was refused: Budgets
+budgets_refused.md	Budgets
+budgets_refused.md	Nothing is allocated in a phase
+budgets_refused.md	What running out does
+strings_refused.md	What was refused: Variable length
+strings_refused.md	It is given back when nothing points into it
+failure_refused.md	What was refused: When something fails
+failure_refused.md	When something fails
+failure_refused.md	The budget
+failure_refused.md	Out of memory
+limits_refused.md	What was refused: What bounds a run
+limits_refused.md	What a bound costs
+schedule_refused.md	What was refused: The schedule
+schedule_refused.md	A module's phase names are mapped by the deployment
+schedule_refused.md	Order within a phase is never implicit
+schedule_refused.md	What a pass depends on
+threads_refused.md	What was refused: Threads
+threads_refused.md	Threads
+storage_refused.md	What was refused: Storage
+storage_refused.md	Storage layouts
+storage_refused.md	A sparse set
+storage_refused.md	A toggle
+storage_refused.md	Direct-indexed
+storage_refused.md	A singleton
+storage_refused.md	A tag
+storage_refused.md	What a query walks
+storage_refused.md	A table
+storage_refused.md	A barrier is worked an entity at a time
+storage_refused.md	What is asked of it
+build_refused.md	What was refused: The build
+build_refused.md	One compiler
+build_refused.md	One script
+build_refused.md	Platforms
+build_refused.md	The standard
+build_refused.md	The C library
+abi_refused.md	What was refused: The ABI
+abi_refused.md	The ABI
+abi_refused.md	The ABI layouts
+grants_refused.md	What was refused: Whose component it is
+grants_refused.md	What a module may destroy
+module_refused.md	What was refused: The module model
+module_refused.md	The manifest
+pinned_refused.md	What was refused: Threads
+pinned_refused.md	Threads
+schema_refused.md	What was refused: Schema
+schema_refused.md	There is no schema format
+schema_refused.md	The type set
+stage11_refused.md	What was refused: Stage 11
+stage11_refused.md	The questions
+stage12_refused.md	What was refused: Stage 12
+stage12_refused.md	One operating-system layer
+stage12_refused.md	The three entries a module calls at load
+stage12_refused.md	The three entries of the backend seam over four
+stage12_refused.md	A line of the log
+stage12_refused.md	attach, which runs in a phase
+stage12_refused.md	Names
+stage12_refused.md	How a file of many functions is cut
+stage12_refused.md	The test programs
+stage12_refused.md	Comments
+stage12_refused.md	A callback whose signature is a library's
+stage12_refused.md	Where a module keeps what it was answered
+stage12_refused.md	The assembler of the wasm text
+stage12_refused.md	The C library's calls
+stage13_refused.md	What was refused: Stage 13
+stage13_refused.md	What a capability is
+stage13_refused.md	Where the list lives
+stage13_refused.md	What a case is named, and the host programs
+stage13_refused.md	Every refusal
+stage13_refused.md	Under load
+stage13_refused.md	Where a name's document is said
+stage13_refused.md	A deployment with no backend
+stage13_refused.md	What was built
+stage14_refused.md	What was refused: Stage 14
+stage14_refused.md	What "improved" covers
+stage14_refused.md	What is said of what is not built
+stage14_refused.md	A stage in a document of the design
+stage14_refused.md	What is said twice
+stage14_refused.md	The citation above an exposed name
+stage14_refused.md	Messages and the documents
+stage14_refused.md	How a finding is recorded
+stage14_refused.md	A load refused before the module exists
+stage14_refused.md	What was found
+stage14_refused.md	c: said twice
+stage14_refused.md	f: not followable
+stage15_refused.md	What was refused: Stage 15
+stage15_refused.md	Outside the tree
+stage15_refused.md	What the design before this one is called
+stage15_refused.md	The library, and the object a host creates
+stage15_refused.md	The records
+stage15_refused.md	What holds it
+stage20_refused.md	What was refused: Stage 20
+stage20_refused.md	What must be open
+stage20_refused.md	Who the holder is
+stage20_refused.md	The contributor's agreement
+stage20_refused.md	Which versions
+stage20_refused.md	The line in every file
+stage20_refused.md	What the files are called
+stage20_refused.md	What else is under it
+stage20_refused.md	Where other terms are asked for
+stage20_refused.md	When the workflows run
+stage20_refused.md	A module, and a backend, as a host
+stage20_refused.md	Who the holder is, ruled again
+stage21_refused.md	What was refused: Stage 21
+stage21_refused.md	What it is called
+stage21_refused.md	What the library's package holds
+stage21_refused.md	What a backend's package holds, and the SDK's
+stage21_refused.md	The statement a package carries
+stage21_refused.md	Where the packages are published
+stage21_refused.md	Which targets are published
+stage21_refused.md	What a run does when a platform fails
+stage21_refused.md	The run under load
+stage21_refused.md	What holds it
+stage22_refused.md	What was refused: Stage 22
+stage22_refused.md	Where a backend is written
+stage22_refused.md	How the library is tested with no backend in its tree
+stage22_refused.md	What the two are called
+stage22_refused.md	What a test module is written with
+stage22_refused.md	How a case gets an outcome
+stage22_refused.md	What whoever writes a backend is handed
+stage22_refused.md	What each repository is made from
+stage22_refused.md	How a backend takes the library
+stage22_refused.md	Whether what leaves keeps its history
+stage22_refused.md	How a test module is carried
+backend_refused.md	What was refused: The backend surface
+backend_refused.md	What a backend is asked for
+backend_refused.md	Memory is adopted, not created
+capabilities_refused.md	What was refused: Capabilities, so the swap is honest
+capabilities_refused.md	Capabilities, so the swap is honest
+signatures_refused.md	What was refused: Signatures
+signatures_refused.md	A call takes nothing and answers a status
+config_refused.md	What was refused: Config
+config_refused.md	No unaccountable values
+config_refused.md	A module's own settings are a component
+create_refused.md	What was refused: Create
+create_refused.md	Destroy
+host_api_refused.md	What was refused: Host API
+host_api_refused.md	A host links a built library
+host_api_refused.md	A seam has a number
+host_api_refused.md	Nothing a host hands over is parsed
+host_api_refused.md	The data
+lifecycle_refused.md	What was refused: The runtime lifecycle
+lifecycle_refused.md	The runtime lifecycle
+backend.md	The backend surface
+backend.md	What a backend is asked for
+backend.md	Memory is adopted, not created
+backend.md	The backend owns its clock
+backend.md	What the backend does not do
+capabilities.md	Capabilities, so the swap is honest
+capabilities.md	Nothing is downgraded
+signatures.md	Signatures
+signatures.md	Imports are declared, exports are checked
+signatures.md	A call takes nothing and answers a status
+config.md	Config
+config.md	No unaccountable values
+config.md	The keys
+config.md	A module's own settings are a component
+create.md	Create
+create.md	Destroy
+create.md	The sink
+host_api.md	Host API
+host_api.md	A host links a built library
+host_api.md	The seams for a language that is not C
+host_api.md	What a host is handed
+host_api.md	A seam has a number
+host_api.md	Nothing a host hands over is parsed
+host_api.md	The surface
+host_api.md	The data
+host_api.md	Nothing here is an ABI layout
+introspection.md	Introspection
+lifecycle.md	The runtime lifecycle
+loop.md	The loop
+loop.md	The host owns the loop, and the order within it
+loop.md	Bridge has no notion of being done
+style.md	Coding style
+style.md	O - Files organization
+style.md	O1 - Contents of the repository
+style.md	O2 - File extension
+style.md	O3 - File coherence
+style.md	O4 - Naming files and folders
+style.md	G - Global scope
+style.md	G1 - File header
+style.md	G2 - Separation of functions
+style.md	G3 - Indentation of pre-processor directives
+style.md	G4 - Global variables
+style.md	G5 - Static
+style.md	F - Functions
+style.md	F1 - Coherence of functions
+style.md	F2 - Naming functions
+style.md	F3 - Number of columns
+style.md	F4 - Number of lines
+style.md	F5 - Arguments
+style.md	F6 - Comments inside a function
+style.md	L - Layout inside a function scope
+style.md	L1 - Code line content
+style.md	L2 - Indentation
+style.md	L3 - Spaces
+style.md	L4 - Curly brackets
+style.md	L5 - Variable declaration
+style.md	L6 - Line jumps
+style.md	V - Variables and types
+style.md	V1 - Naming identifiers
+style.md	V2 - Structures
+style.md	V3 - Pointers
+style.md	C - Control structure
+style.md	C1 - Conditional branching
+style.md	C2 - Ternary
+style.md	C3 - Goto
+style.md	A - Advanced
+style.md	A1 - Constant pointers
+style.md	A2 - Typing
+style.md	H - Header files
+style.md	H1 - Content
+style.md	H2 - Include guard
+style.md	H3 - Macros
+style.md	What C23 adds
+style.md	Exceptions
+tests.md	The tests
+tests.md	The host seam
+tests.md	bridge_value_t
+tests.md	setting.key
+tests.md	setting.kind
+tests.md	setting.v
+tests.md	backend.name
+tests.md	backend.library
+tests.md	backend.settings
+tests.md	budget.entities
+tests.md	budget.tables
+tests.md	budget.types
+tests.md	budget.systems
+tests.md	budget.terms
+tests.md	budget.modules
+tests.md	budget.persistent
+tests.md	budget.columns
+tests.md	budget.sparse_sets
+tests.md	budget.direct_indexed
+tests.md	order.before
+tests.md	order.after
+tests.md	config.abi
+tests.md	config.backends
+tests.md	config.phases
+tests.md	config.order
+tests.md	config.threads
+tests.md	phase_name.from
+tests.md	phase_name.to
+tests.md	module_config.identity
+tests.md	module_config.abi
+tests.md	module_config.trusted
+tests.md	module_config.reloadable
+tests.md	module_config.hot_reload
+tests.md	module_config.pinned
+tests.md	module_config.on_error
+tests.md	module_config.max_system_failures
+tests.md	module_config.work_limit
+tests.md	module_config.memory_limit
+tests.md	module_config.init_timeout
+tests.md	module_config.reload_timeout
+tests.md	module_config.shutdown_timeout
+tests.md	module_config.log_level
+tests.md	module_config.scratch
+tests.md	module_config.log_ring
+tests.md	module_config.spans
+tests.md	module_config.spawns
+tests.md	module_config.persistent
+tests.md	module_config.changes
+tests.md	module_config.read
+tests.md	module_config.write
+tests.md	module_config.config
+tests.md	module_config.settings
+tests.md	module_config.phases
+tests.md	module_config.losses
+tests.md	artifact.backend
+tests.md	artifact.bytes
+tests.md	artifact.len
+tests.md	artifact.path
+tests.md	record.identity
+tests.md	record.system
+tests.md	record.text
+tests.md	record.len
+tests.md	record.when
+tests.md	record.arg
+tests.md	record.level
+tests.md	module_info.identity
+tests.md	module_info.state
+tests.md	BRIDGE_BOOL
+tests.md	BRIDGE_INT
+tests.md	BRIDGE_FLOAT
+tests.md	BRIDGE_STRING
+tests.md	BRIDGE_FAIL
+tests.md	BRIDGE_SKIP
+tests.md	BRIDGE_UNSET
+tests.md	BRIDGE_TRUE
+tests.md	BRIDGE_FALSE
+tests.md	BRIDGE_ERR
+tests.md	BRIDGE_WARN
+tests.md	BRIDGE_INFO
+tests.md	BRIDGE_DEBUG
+tests.md	BRIDGE_RUNNING
+tests.md	BRIDGE_STOPPED
+tests.md	BRIDGE_HOST_ABI
+tests.md	BRIDGE_NO_LIMIT
+tests.md	BRIDGE_NONE
+tests.md	BRIDGE_NO_CONFIG
+tests.md	BRIDGE_LEVEL_MOST
+tests.md	bridge_create
+tests.md	bridge_destroy
+tests.md	bridge_load
+tests.md	bridge_unload
+tests.md	bridge_reload
+tests.md	bridge_list_modules
+tests.md	bridge_run_phase
+tests.md	The module seam
+tests.md	bridge_term_t
+tests.md	bridge_trigger_t
+tests.md	bridge_declaration_t
+tests.md	bridge_system_statement_t
+tests.md	bridge_observer_statement_t
+tests.md	bridge_header_t
+tests.md	bridge_query_t
+tests.md	bridge_text_t
+tests.md	bridge_list_t
+tests.md	bridge_entity_t
+tests.md	bridge_log_record_t
+tests.md	BRIDGE_STRUCT
+tests.md	BRIDGE_ENUM
+tests.md	BRIDGE_BITMASK
+tests.md	BRIDGE_TAG
+tests.md	BRIDGE_STRIP
+tests.md	BRIDGE_SWEEP
+tests.md	BRIDGE_DELETE
+tests.md	BRIDGE_TABLE
+tests.md	BRIDGE_SPARSE_SET
+tests.md	BRIDGE_TOGGLE
+tests.md	BRIDGE_DIRECT_INDEXED
+tests.md	BRIDGE_SINGLETON
+tests.md	BRIDGE_READ
+tests.md	BRIDGE_WRITE
+tests.md	BRIDGE_AND
+tests.md	BRIDGE_NOT
+tests.md	BRIDGE_OPTIONAL
+tests.md	BRIDGE_ON_ENTER
+tests.md	BRIDGE_ON_ATTACH
+tests.md	BRIDGE_ON_LEAVE
+tests.md	BRIDGE_LOG_ERR
+tests.md	BRIDGE_LOG_WARN
+tests.md	BRIDGE_LOG_INFO
+tests.md	BRIDGE_LOG_DEBUG
+tests.md	BRIDGE_ABI
+tests.md	BRIDGE_NAMESPACE
+tests.md	BRIDGE_SHARED
+tests.md	BRIDGE_PRIVATE
+tests.md	BRIDGE_CARRIED
+tests.md	BRIDGE_ZEROED
+tests.md	BRIDGE_SPAN_BASE
+tests.md	BRIDGE_SPAN_SIZE
+tests.md	BRIDGE_SCHEMA_TEXT
+tests.md	BRIDGE_SCHEMA_STRUCT_TYPE
+tests.md	BRIDGE_SCHEMA_STRUCT_DESC
+tests.md	BRIDGE_SCHEMA_ENUM_TYPE
+tests.md	BRIDGE_SCHEMA_ENUM_DESC
+tests.md	BRIDGE_SCHEMA_BITMASK_TYPE
+tests.md	BRIDGE_SCHEMA_BITMASK_DESC
+tests.md	declare
+tests.md	add_system
+tests.md	observe
+tests.md	spawn
+tests.md	destroy
+tests.md	attach
+tests.md	detach
+tests.md	alloc
+tests.md	The backend seam
+tests.md	backend_err_t
+tests.md	backend_value_t
+tests.md	backend_setting_t
+tests.md	backend_sig_t
+tests.md	backend_import_t
+tests.md	backend_memory_import_t
+tests.md	backend_source_t
+tests.md	backend_entry_t
+tests.md	backend_get_abi
+tests.md	backend_create
+tests.md	backend_destroy
+tests.md	backend_get_capabilities
+tests.md	memory_get_shape
+tests.md	memory_adopt
+tests.md	memory_release
+tests.md	module_compile
+tests.md	module_list_imports
+tests.md	module_destroy
+tests.md	instance_create
+tests.md	instance_destroy
+tests.md	instance_set_work_limit
+tests.md	instance_set_timeout
+tests.md	instance_set_memory_limit
+tests.md	define_func
+tests.md	instance_get_func
+tests.md	call
+tests.md	BACKEND_UNTRUSTED
+tests.md	BACKEND_WORK_LIMIT
+tests.md	BACKEND_TIMEOUT
+tests.md	BACKEND_MEMORY_LIMIT
+tests.md	BACKEND_RELOAD
+tests.md	BACKEND_SIDE_BY_SIDE
+tests.md	BACKEND_UNLOAD
+tests.md	BACKEND_BOOL
+tests.md	BACKEND_INT
+tests.md	BACKEND_FLOAT
+tests.md	BACKEND_STRING
+tests.md	BACKEND_I32
+tests.md	BACKEND_I64
+tests.md	BACKEND_IMPORT_FUNC
+tests.md	BACKEND_IMPORT_MEMORY
+tests.md	BACKEND_IMPORT_OTHER
+tests.md	BACKEND_ABI
+tests.md	BACKEND_ENTRY_COUNT
+tests.md	What several of them do together
+tests.md	order
+tests.md	static
+tests.md	Inside the library
+tests.md	storage
+tests.md	allocation
+tests.md	schema
+tests.md	The tree
+tests.md	c23
+tests.md	style
+tests.md	deps
+tests.md	said
+tests.md	cover
+tests.md	xref
+tests.md	licence
+tests.md	package
+tests.md	cla

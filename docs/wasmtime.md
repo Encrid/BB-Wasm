@@ -8,7 +8,7 @@ wasmtime and would be different under another engine.
 
 ## The pin
 
-wasmtime **48.0.5**, its C API, vendored under `backends/wasm/wasmtime/`. 48 is a long-term release,
+wasmtime **48.0.5**, its C API, vendored under `wasmtime/`. 48 is a long-term release,
 supported for 24 months where an ordinary one gets two. This backend exists for its sandbox, so
 getting security fixes for that long is what decides the pin.
 

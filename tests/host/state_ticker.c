@@ -21,18 +21,6 @@ test_noted_t *test_get_noted(const host_t *h)
 }
 
 /*
-** test_state_native_minting
-**
-** States a native module that mints up to 32 ids between two barriers.
-*/
-void test_state_native_minting(bridge_artifact_t *a, const char *identity,
-    const char *path)
-{
-    host_state_native(a, identity, path);
-    a->cfg.spawns = 32;
-}
-
-/*
 ** test_state_wasm_minting
 **
 ** States a wasm module that mints up to 32 ids between two barriers.

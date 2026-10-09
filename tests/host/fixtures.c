@@ -14,12 +14,10 @@
 /*
 ** test_set_small
 **
-** The wasm backend, the one phase "update", and the sink that prints a
-** record's level.
+** The one phase "update", and the sink that prints a record's level.
 */
 void test_set_small(host_t *h)
 {
-    h->cfg.backend_count = 1;
     h->cfg.phase_count = 1;
     h->sink = test_print;
 }
@@ -27,20 +25,9 @@ void test_set_small(host_t *h)
 /*
 ** test_set_wasm
 **
-** The wasm backend and both phases.
+** Both phases, and the sink that prints a record.
 */
 void test_set_wasm(host_t *h)
-{
-    h->cfg.backend_count = 1;
-    h->sink = host_print_record;
-}
-
-/*
-** test_set_both
-**
-** Both backends and both phases.
-*/
-void test_set_both(host_t *h)
 {
     h->sink = host_print_record;
 }
@@ -48,7 +35,7 @@ void test_set_both(host_t *h)
 /*
 ** test_set_counting
 **
-** Both backends, both phases, and the sink that counts.
+** Both phases, and the sink that counts.
 */
 void test_set_counting(host_t *h)
 {
@@ -61,7 +48,7 @@ void test_set_counting(host_t *h)
 /*
 ** test_set_noting
 **
-** Both backends, both phases, and the sink that notes.
+** Both phases, and the sink that notes.
 */
 void test_set_noting(host_t *h)
 {

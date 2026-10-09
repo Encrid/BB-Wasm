@@ -24,21 +24,6 @@ void test_load_game_reader(host_t *h)
     host_load(h, &a);
 }
 
-/*
-** test_load_watcher
-**
-** Loads the watcher, an observer of another namespace, with its grant.
-*/
-void test_load_watcher(host_t *h)
-{
-    bridge_artifact_t a;
-
-    test_state_wasm(&a, "view:watcher@0.1.0", "watcher");
-    a.cfg.read = TEST_GAME;
-    a.cfg.read_count = 2;
-    host_load(h, &a);
-}
-
 static void work_elsewhere(void *arg)
 {
     test_elsewhere_t *e = arg;

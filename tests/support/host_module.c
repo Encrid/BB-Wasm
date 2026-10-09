@@ -70,14 +70,13 @@ void *host_read_module(const char *file, size_t *len)
 }
 
 /*
-** host_state_native
+** state_keys
 **
-** States a native module as a deployment must.
+** States every key of a module, with no limit.
 */
-void host_state_native(bridge_artifact_t *a, const char *identity,
-    const char *path)
+static void state_keys(bridge_artifact_t *a, const char *identity)
 {
-    *a = (bridge_artifact_t){ .backend = "wasm", .path = path };
+    *a = (bridge_artifact_t){ .backend = "wasm" };
     a->cfg = (bridge_module_config_t){ .identity = identity,
         .abi = BRIDGE_ABI, .trusted = BRIDGE_TRUE, .reloadable = BRIDGE_FALSE,
         .hot_reload = BRIDGE_FALSE, .pinned = BRIDGE_FALSE,
@@ -93,15 +92,14 @@ void host_state_native(bridge_artifact_t *a, const char *identity,
 /*
 ** host_state_wasm
 **
-** States a wasm module of tests/modules, with the limits that backend can
-** keep.
+** States a wasm module of tests/modules, with the limits the backend
+** keeps.
 */
 void host_state_wasm(bridge_artifact_t *a, const char *identity,
     const char *file)
 {
-    host_state_native(a, identity, nullptr);
+    state_keys(a, identity);
     a->bytes = host_read_module(file, &a->len);
-    a->backend = "wasm";
     a->cfg.trusted = BRIDGE_FALSE;
     a->cfg.work_limit = 10'000'000;
     a->cfg.memory_limit = 16 << 20;

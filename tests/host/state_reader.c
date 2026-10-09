@@ -5,8 +5,8 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 **
-** tests/host/native_run.c -- how this program states a module, and the
-** cases in which a native module runs.
+** tests/host/state_reader.c -- how this program states the reader of the
+** mover.
 */
 
 #include "cases.h"
@@ -15,18 +15,6 @@ static const char *const TEST_READER_GRANTS[] = {
     "game:Position",
     "game:Marked"
 };
-
-/*
-** test_state_native
-**
-** States a native module that mints up to 1,024 ids between two barriers.
-*/
-void test_state_native(bridge_artifact_t *a, const char *identity,
-    const char *path)
-{
-    host_state_native(a, identity, path);
-    a->cfg.spawns = 1024;
-}
 
 /*
 ** test_state_reader_limited

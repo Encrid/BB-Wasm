@@ -7,7 +7,7 @@
 **
 ** tests/host/reload.c -- the ticker reloaded: into a build that
 ** counts by ten, one with another component layout, one whose reload
-** fails, one that no longer declares what it did, the native one; with
+** fails, one that no longer declares what it did; with
 ** more ids than the old instance held ready; and where the deployment says
 ** it may not be.
 **

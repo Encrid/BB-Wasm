@@ -78,14 +78,6 @@ void test_state_reader(bridge_artifact_t *a);
 void test_load_reader(host_t *h);
 
 /*
-** test_state_native
-**
-** States a native module that mints up to 1,024 ids between two barriers.
-*/
-void test_state_native(bridge_artifact_t *a, const char *identity,
-    const char *path);
-
-/*
 ** test_state_reader_limited
 **
 ** States the reader of the mover, on the wasm backend, with the limits that
@@ -96,25 +88,12 @@ void test_state_reader_limited(bridge_artifact_t *a);
 /*
 ** What the sink of this program counts, of the records it does not print.
 **
-**     threads, began, ended
-**                   the thread a napping module said it ran on, and when
-**                   each nap began and ended, in milliseconds
-**     pins, pins_here
-**                   the calls a pinned module said it had, and how many of
-**                   them were on the thread that loaded it
 **     last_sum      of two decks with one sink, the last sum each said
 **     minted        the ids a run's modules were given, in the order the
 **                   records arrived, for each of three runs
 **     minting       which run is in progress, or -1
 */
 typedef struct {
-    uint32_t threads[64];
-    uint32_t began[64];
-    uint32_t ended[64];
-    uint32_t seen;
-    uint32_t ended_count;
-    uint32_t pins;
-    uint32_t pins_here;
     uint32_t last_sum[2];
     uint32_t minted[3][256];
     uint32_t minted_count[3];
@@ -166,13 +145,6 @@ void test_hear_counts(void *ud, const bridge_record_t *r);
 test_counts_t *test_get_counts(const host_t *h);
 
 /*
-** test_count_threads
-**
-** Answers how many distinct threads the napping modules said they ran on.
-*/
-uint32_t test_count_threads(const test_counts_t *c);
-
-/*
 ** test_state_wasm
 **
 ** States a wasm module of tests/modules, with what each mints between two
@@ -182,13 +154,11 @@ void test_state_wasm(bridge_artifact_t *a, const char *identity,
     const char *file);
 
 /*
-** test_load_wasm, test_load_native
+** test_load_wasm
 **
-** Load a module as it is stated, a native one minting `spawns` ids.
+** Loads a module as it is stated.
 */
 void test_load_wasm(host_t *h, const char *identity, const char *file);
-void test_load_native(host_t *h, const char *identity, const char *path,
-    int64_t spawns);
 
 /*
 ** test_state_game_reader
@@ -199,12 +169,11 @@ void test_load_native(host_t *h, const char *identity, const char *path,
 void test_state_game_reader(bridge_artifact_t *a);
 
 /*
-** test_load_game_reader, test_load_watcher
+** test_load_game_reader
 **
-** Load the reader, or the watcher, each with that grant.
+** Loads the reader, with that grant.
 */
 void test_load_game_reader(host_t *h);
-void test_load_watcher(host_t *h);
 
 /*
 ** test_start_elsewhere, test_join_elsewhere
@@ -233,23 +202,6 @@ typedef struct {
 } test_noted_t;
 
 /*
-** How a case of the reload family reloads the ticker.
-**
-**     file          the wasm build it is reloaded into, or nullptr for the
-**                   native one
-**     may           what the deployment's hot_reload says
-**     spawns        what the new instance states it mints
-**     then          a module loaded afterwards, or nullptr
-*/
-typedef struct {
-    const char *name;
-    const char *file;
-    enum bridge_flag may;
-    int64_t spawns;
-    const char *then;
-} test_reload_t;
-
-/*
 ** test_hear_noted
 **
 ** The sink of this program: keeps what the cases count, and prints a
@@ -265,14 +217,12 @@ void test_hear_noted(void *ud, const bridge_record_t *r);
 test_noted_t *test_get_noted(const host_t *h);
 
 /*
-** test_state_wasm_minting, test_state_native_minting
+** test_state_wasm_minting
 **
-** State a module that mints up to 32 ids between two barriers.
+** States a module that mints up to 32 ids between two barriers.
 */
 void test_state_wasm_minting(bridge_artifact_t *a, const char *identity,
     const char *file);
-void test_state_native_minting(bridge_artifact_t *a, const char *identity,
-    const char *path);
 
 /*
 ** test_state_ticker
@@ -351,17 +301,21 @@ typedef struct {
 } test_kept_t;
 
 /*
-** test_set_small, test_set_wasm, test_set_both, test_set_counting,
-** test_set_noting
+** test_hand_setting
 **
-** The fixtures: what a case's host is before the case changes it. The wasm
-** backend with the one phase "update" and the sink that prints a level;
-** the wasm backend with both phases; both backends with both phases; and
-** that again with the sink that counts, and with the sink that notes.
+** A setting, handed to a backend that has none: the deck is not created.
+*/
+void test_hand_setting(host_t *h);
+
+/*
+** test_set_small, test_set_wasm, test_set_counting, test_set_noting
+**
+** The fixtures: what a case's host is before the case changes it. The one
+** phase "update" and the sink that prints a level; both phases; and that
+** again with the sink that counts, and with the sink that notes.
 */
 void test_set_small(host_t *h);
 void test_set_wasm(host_t *h);
-void test_set_both(host_t *h);
 void test_set_counting(host_t *h);
 void test_set_noting(host_t *h);
 

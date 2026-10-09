@@ -36,25 +36,6 @@ static void keep_ids(test_counts_t *c, const bridge_record_t *r)
 }
 
 /*
-** keep_nap
-**
-** Keeps what a napping module said: the thread it was on and when it
-** began, or when it ended.
-*/
-static void keep_nap(test_counts_t *c, const bridge_record_t *r)
-{
-    if (is_text(r, "nap") && c->seen < 64) {
-        c->began[c->seen] = r->arg[1];
-        c->threads[c->seen] = r->arg[0];
-        c->seen++;
-    }
-    if (is_text(r, "end") && c->ended_count < 64) {
-        c->ended[c->ended_count] = r->arg[1];
-        c->ended_count++;
-    }
-}
-
-/*
 ** keep_counted
 **
 ** Keeps a record the cases count. Answers false if it is one to print.
@@ -71,13 +52,7 @@ static bool keep_counted(const test_listener_t *l, const bridge_record_t *r)
         keep_ids(c, r);
         return (true);
     }
-    if (is_text(r, "pin")) {
-        c->pins++;
-        c->pins_here += r->arg[0] == host_get_thread_id();
-        return (true);
-    }
-    keep_nap(c, r);
-    return (is_text(r, "nap") || is_text(r, "end"));
+    return (false);
 }
 
 /*
@@ -95,4 +70,16 @@ void test_hear_counts(void *ud, const bridge_record_t *r)
         return;
     printf("record[%d] b%u %s/%s: %.*s %u %u\n", r->level, r->when >> 16,
         identity, system, (int)r->len, r->text, r->arg[0], r->arg[1]);
+}
+
+/*
+** test_get_counts
+**
+** Answers what the host's sink counts.
+*/
+test_counts_t *test_get_counts(const host_t *h)
+{
+    const test_listener_t *l = h->ud;
+
+    return (l->counts);
 }
