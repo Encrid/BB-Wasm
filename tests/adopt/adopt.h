@@ -91,7 +91,6 @@ int adopt_check_host_function(adopt_t *t);
 int adopt_check_timed_calls(adopt_t *t);
 int adopt_check_functions(adopt_t *t, backend_instance_t *one);
 int adopt_check_refusals(adopt_t *t, backend_instance_t *one);
-int adopt_check_native_entry(void);
 
 /*
 ** adopt_say_refused

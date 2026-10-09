@@ -324,6 +324,11 @@ def build(target, debug, out, bridge):
               for c in sorted((ROOT / 'tests/host').glob('*.c')) +
               sorted((ROOT / 'tests/support').glob('host*.c')) +
               sorted((ROOT / 'tests/support' / row['os']).glob('host*.c'))]
+    # the program that calls the backend as the library does: the backend seam, the layer over
+    # the operating system, and a loader of its own
+    adopt_o = [compile_('adopt-' + c.stem, c, ours + [include, utils] + defines)
+               for c in sorted((ROOT / 'tests/adopt').glob('*.c'))] + \
+              [obj / ('os-%s.o' % name) for name in OS]
     together(compiles)
 
     links = []
@@ -343,6 +348,7 @@ def build(target, debug, out, bridge):
     step('putting the library beside the host', [beside], [bridge / 'bridge' / beside.name],
          [lambda: shutil.copyfile(bridge / 'bridge' / beside.name, beside)])
     link('host', host_o + [bridge / 'bridge' / beside.name], system + here)
+    link('adopt', adopt_o, system)
     together(links)
     shared = '-I%s' % (ROOT / 'tests/modules')
 
@@ -488,6 +494,8 @@ def main():
 # Every case: its name, what is run, what its output must match, what it must not. A case ends
 # in "alive": checked by what was said, and by the process still being there to say it.
 CASES = [
+    ('adopt', ['adopt'],
+     None, None),
     ('bridge_load-loaded', ['host', 'bridge_load-loaded'],
      'test:ok@0.1.0: loaded.*alive', None),
     ('BRIDGE_NO_LIMIT-stated-for-every-limit', ['host', 'BRIDGE_NO_LIMIT-stated-for-every-limit'],
@@ -876,6 +884,20 @@ CASES = [
      "module 'game:mover@0\\.1\\.0' is stopped: what its queries match no longer fits in its spans of 544 bytes.*alive", None),
     ('BRIDGE_ACC-the-accessors-merged-in', ['nocall', 'mover.wasm', 'move'],
      None, None),
+    ('backend_sig_t-an-i32-and-an-i64-answered', ['adopt'],
+     'a host function: called with an i32 and an i64, answered 16', None),
+    ('backend_entry_t-what-answers-an-import', ['adopt'],
+     'a host function: called with an i32 and an i64, answered 16', None),
+    ('backend_memory_import_t-one-block-in-two-stores', ['adopt'],
+     "two stores, two threads: both halves intact, and each sees the other's", None),
+    ('memory_release-after-the-last-instance', ['adopt'],
+     '20000 timed calls back to back: none interrupted', None),
+    ('instance_create-one-block-in-two-stores', ['adopt'],
+     "two stores, two threads: both halves intact, and each sees the other's", None),
+    ('define_func-called-by-a-module', ['adopt'],
+     'a host function: called with an i32 and an i64, answered 16', None),
+    ('call-a-trap-answered-and-the-store-runs-on', ['adopt'],
+     'stray load: trapped: out of bounds memory access.*after the trap: the store still runs', None),
     ('BRIDGE_ERR-nothing-above-an-error-written', ['host', 'BRIDGE_ERR-nothing-above-an-error-written'],
      'record.3.: an error\\s+alive', 'a warning'),
     ('BRIDGE_WARN-a-warning-and-what-is-worse', ['host', 'BRIDGE_WARN-a-warning-and-what-is-worse'],
@@ -1078,6 +1100,10 @@ CASES = [
      'sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive', None),
     ('BACKEND_IMPORT_MEMORY-the-two-memories-lent', ['host', 'BACKEND_IMPORT_MEMORY-the-two-memories-lent'],
      'sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive', None),
+    ('BACKEND_I32-an-argument-of-32-bits', ['adopt'],
+     'a host function: called with an i32 and an i64, answered 16', None),
+    ('BACKEND_I64-an-argument-of-64-bits', ['adopt'],
+     'a host function: called with an i32 and an i64, answered 16', None),
     ('config.backends-none-refused', ['host', 'config.backends-none-refused'],
      'the deployment configures no backend, and a module is run by one.*bridge_create refused.*alive', None),
     ('attach-tag-with-a-value-refused', ['host', 'attach-tag-with-a-value-refused'],

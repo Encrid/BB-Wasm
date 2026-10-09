@@ -71,19 +71,3 @@ void test_take_slot(host_t *h)
     host_close(h);
 }
 
-/*
-** test_state_native_timeout
-**
-** A timeout is a deadline, which the native backend lacks.
-*/
-void test_state_native_timeout(host_t *h)
-{
-    bridge_artifact_t a;
-
-    if (host_open(h))
-        return;
-    test_state_native_minting(&a, "game:ticker@0.1.0", "no-such-library");
-    a.cfg.shutdown_timeout = 100 * HOST_MS;
-    host_load(h, &a);
-    host_close(h);
-}
