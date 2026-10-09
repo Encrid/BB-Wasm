@@ -1,4 +1,4 @@
-Bridge 7bde6c3e071933096912a83bd498b6a828bd068b
+Bridge 574f18f468d0fe1824975f3b618e0e98c6f67d93
 data.md	The data model
 data.md	Components
 data.md	Entities
@@ -318,6 +318,7 @@ stage22.md	What was found on the way
 stage22.md	Where each case went
 stage22.md	What is shown so far, and what is not
 stage22.md	How each claim is shown
+stage22.md	The close
 stage3.md	Stage 3: storage
 stage3.md	What was settled first
 stage3.md	What it produced
