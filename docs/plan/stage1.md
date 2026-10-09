@@ -1,7 +1,7 @@
 # Stage 1: pinned and published
 
-Not built. `plan.md`, stage 1, is what it is for and when it is done. This document is the order
-it is done in, what there was before it began, and each decision as it is taken. What a decision
+Built: *The close*. `plan.md`, stage 1, is what it is for and when it is done. This document is
+the order it was done in, what there was before it began, and each decision as it was taken. What a decision
 refused is `stage1_refused.md`.
 
 It follows from two rulings of the stage of Bridge's plan in which this project left its tree:
@@ -163,3 +163,20 @@ On 2026-10-09, of `main` at `3bd03458f302`, pinned to Bridge at `bb22256a976a`:
     each platform           the runs for `main`, read back: each job's cases
     what is published       an archive fetched back from the release: its statement names
                             this project's commit and Bridge's
+
+## The close
+
+Put to Enkrid on 2026-10-09, who ruled it done.
+
+    a build with no folder named fetches the two          met: from a fresh clone, 325 of
+    packages of the commit this tree states               325 cases
+    and refuses one whose hash differs                    met: the case
+                                                          `pin-another-archive-refused`
+    the cases pass on each platform by a workflow         met: once and six at once, on the
+                                                          five platforms that are run
+    a run for `main` publishes the two packages of        met: the prerelease
+    each platform, each stating the commit of Bridge      `main-3bd03458f302`, twelve
+    it was built against                                  archives, each statement read back
+
+**What is not shown.** A run started by a push, this one having been started by hand, and a
+pull request's.

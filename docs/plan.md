@@ -8,8 +8,8 @@ observably true, and it is closed by the project's owner.
 
 ## 0. Out of Bridge
 
-Not closed. It is the part of a stage of Bridge's plan that is done here, and is closed with
-that one.
+Built. It is the part of a stage of Bridge's plan that was done here, and was closed with that
+one, by Enkrid, on 2026-10-09.
 
 The backend, its SDK, the engine it wraps and the cases that prove them were written in
 Bridge's tree. They are here as they were at Bridge's commit `ffda1a18ce70`, put where this
@@ -24,7 +24,7 @@ style and the standard; and the documents cite nothing that is not there.*
 
 ## 1. Pinned and published
 
-Begun, not built. Its record is `stage1.md`.
+Built: `stage1.md`.
 
 The build is handed a folder of Bridge's packages. This stage has it state one commit of
 Bridge and the hashes of the two packages, fetch them from where Bridge publishes, and publish
