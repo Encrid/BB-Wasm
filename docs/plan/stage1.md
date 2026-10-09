@@ -41,11 +41,11 @@ holds.** Enkrid ruled it on 2026-10-09, against what was recommended, which was 
 account that reads Bridge and nothing else.
 
 An app is installed on Bridge, with leave to read its contents and no other. A workflow here
-is handed the app's number and its key as two secrets of this repository, and has a token made
+is handed the app's identifier and its key as two secrets of this repository, and has a token made
 from them when a run begins: it reads Bridge, and it is good for about an hour. The build is
 handed that token and does not know where it came from.
 
-No file states the key, the number or a token. A workflow names the two secrets, and that is
+No file states the key, the identifier or a token. A workflow names the two secrets, and that is
 all of them that is written.
 
 What it costs: an app to make and to keep, two secrets where there was one, and a step in each
