@@ -1,21 +1,24 @@
 """BB-Wasm's build: one compiler, one script.
 
-    python build.py --bridge DIR                 build, for this machine
-    python build.py --bridge DIR test [-k NAME]  build, then run the cases (all, or those matching)
-    python build.py --bridge DIR test --copies 6 each case six times at once: under load
-    python build.py --bridge DIR --target T      one of TARGETS, below
-    python build.py --bridge DIR --debug         unoptimised, with debug information
-    python build.py --bridge DIR package         build, run every case, and make what is handed
+    python build.py                 build, for this machine
+    python build.py test [-k NAME]  build, then run the cases (all, or those matching)
+    python build.py test --copies 6 each case six times at once: under load
+    python build.py --target T      one of TARGETS, below
+    python build.py --debug         unoptimised, with debug information
+    python build.py package         build, run every case, and make what is handed
 
 Needs zig on the path. Binaryen is taken from BINARYEN_ROOT or the path, and on Windows fetched
-at its pin when it is in neither. DIR is a folder that holds the two packages of Bridge,
-`bridge` and `seams`, each with its statement: they are taken as they are stated, and a file
-that is not what its hash says is refused. Every path is taken from where this file is and
-from --out.
+at its pin when it is in neither. Bridge is taken as its two packages, `bridge` and `seams`:
+those of the commit bridge.txt states, fetched once with the token in BRIDGE_TOKEN and each
+archive held against the hash stated there; or, with --bridge DIR, those of a folder, where a
+change to Bridge is being tried. Either way each file is held against the hash its package
+states. Every path is taken from where this file is and from --out.
 """
 import argparse
 import concurrent.futures
 import hashlib
+import io
+import json
 import os
 import platform
 import re
@@ -204,8 +207,6 @@ def binaryen(build):
 def take(folder):
     """The two packages of Bridge, from a folder that holds them: each file held against the
     hash its package states, and the commit of Bridge both were made from, which is one."""
-    if not folder:
-        die('name the folder of Bridge\'s packages: --bridge DIR')
     commits = set()
     for name in ('bridge', 'seams'):
         stated = folder / name / 'package.txt'
@@ -222,6 +223,66 @@ def take(folder):
     if len(commits) != 1:
         die('the two packages of Bridge are of different commits: %s' % ', '.join(sorted(commits)))
     return commits.pop()
+
+
+# Where Bridge publishes: a release for each commit of its main, named for the commit, with an
+# archive for each package and target. bridge.txt states the commit this tree is built against
+# and the hash of each archive.
+RELEASES = 'https://api.github.com/repos/Encrid/Bridge/releases/tags/main-'
+
+
+def pinned():
+    """The commit bridge.txt states, and the hash it states for each archive, by its name."""
+    lines = (ROOT / 'bridge.txt').read_text(encoding='utf-8').splitlines()
+    return lines[0].partition(' ')[2], dict(reversed(line.split('  ', 1)) for line in lines[1:])
+
+
+class Unsigned(urllib.request.HTTPRedirectHandler):
+    """The token goes to the service and no further: an archive is served from another host,
+    which is sent there by an address that is signed, and refuses a request that has both."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        again = super().redirect_request(req, fp, code, msg, headers, newurl)
+        again.remove_header('Authorization')
+        return again
+
+
+def ask(url, accept):
+    """What the service answers, asked with the token of the environment."""
+    token = os.environ.get('BRIDGE_TOKEN') or die(
+        'Bridge is fetched with a token, and BRIDGE_TOKEN is not set: set it, or name a folder '
+        'of its packages with --bridge DIR')
+    request = urllib.request.Request(url, headers={'Accept': accept, 'Authorization': 'Bearer ' + token})
+    try:
+        with urllib.request.build_opener(Unsigned).open(request, timeout=TIMEOUT) as answer:
+            return answer.read()
+    except OSError as why:
+        die('%s was not fetched: %s' % (url, why))
+
+
+def unpack(data, archive, hashes, folder):
+    """An archive, held against the hash bridge.txt states for it, and only then opened."""
+    if hashlib.sha256(data).hexdigest() != hashes.get(archive):
+        die('%s is not the archive bridge.txt states: its hash differs' % archive)
+    with tarfile.open(fileobj=io.BytesIO(data)) as tar:
+        tar.extractall(folder, filter='data')
+
+
+def fetch(target, build):
+    """The folder of Bridge's two packages for a target, at the pinned commit: fetched once,
+    and kept under the commit's name."""
+    commit, hashes = pinned()
+    folder = build / 'bridge' / commit[:12] / target
+    if all((folder / name / 'package.txt').is_file() for name in ('bridge', 'seams')):
+        return folder
+    release = json.loads(ask(RELEASES + commit[:12], 'application/vnd.github+json'))
+    found = {asset['name']: asset['url'] for asset in release['assets']}
+    for name in ('bridge', 'seams'):
+        archive = '%s-%s.tar.gz' % (name, target)
+        if archive not in found:
+            die('the release of Bridge at %s holds no %s' % (commit[:12], archive))
+        unpack(ask(found[archive], 'application/octet-stream'), archive, hashes, folder)
+    return folder
 
 
 # What is handed. A package is a folder, and this is what each holds: a file of the tree, of
@@ -394,6 +455,8 @@ def sources(where, name, idle):
 def command_line(out, built, command, kept):
     """What a case runs: a program of the build, the tool that reads a compiled module, or a
     tool of ours over the tree."""
+    if command[0] == 'pin':
+        return [str(built['python']), str(ROOT / 'tools/pin.py'), '--refused']
     if command[0] == 'package':
         return [str(built['python']), str(ROOT / 'tools/package.py'), str(out), str(built['bridge'])]
     if command[0] == 'cla':
@@ -487,7 +550,7 @@ def main():
     target = args.target or mine or die('no target runs on %s %s: name one' % machine)
     if args.command == 'test' and target != mine:
         die('%s cannot be run here: build it, and test it where it runs' % target)
-    bridge = args.bridge.resolve() if args.bridge else None
+    bridge = args.bridge.resolve() if args.bridge else fetch(target, ROOT / 'build')
     out = (args.out or ROOT / 'build' / (target + ('-debug' if args.debug else ''))).resolve()
     built = build(target, args.debug, out, bridge)
     if args.command == 'package':
@@ -1140,8 +1203,11 @@ CASES = [
     ('cla-the-sentence-by-another-is-not-taken', ['cla', 'ann', 'holder', '', 'bob', 'I have read cla.md and I sign it.'], '^ask, fails', None),
     ('cla-other-words-are-not-taken', ['cla', 'ann', 'holder', '', 'ann', 'I sign, more or less.'], '^ask, fails', None),
     ('package', ['package'], None, None),
+    ('pin-another-archive-refused', ['pin'],
+     r'^build: bridge-\S+\.tar\.gz is not the archive bridge\.txt states: its hash differs', None),
 ]
-ALONE = ('BRIDGE_ROW-checked-and-unchecked-timed', 'c23', 'style', 'deps', 'said', 'cover', 'xref', 'licence', 'cla-the-holder-is-not-asked', 'cla-a-name-on-record-passes', 'cla-anybody-else-is-asked-and-fails', 'cla-the-sentence-by-its-author-is-recorded', 'cla-the-sentence-by-another-is-not-taken', 'cla-other-words-are-not-taken', 'package')
+ALONE = ('BRIDGE_ROW-checked-and-unchecked-timed', 'c23', 'style', 'deps', 'said', 'cover', 'xref', 'licence', 'cla-the-holder-is-not-asked', 'cla-a-name-on-record-passes', 'cla-anybody-else-is-asked-and-fails', 'cla-the-sentence-by-its-author-is-recorded', 'cla-the-sentence-by-another-is-not-taken', 'cla-other-words-are-not-taken', 'package',
+         'pin-another-archive-refused')
 
 
 if __name__ == '__main__':

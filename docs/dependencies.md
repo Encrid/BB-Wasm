@@ -20,6 +20,8 @@ A line is `tool`, the name `build.py` looks for, and why.
 The four of Binaryen come in one archive, so what is installed is zig and Binaryen.
 
 Python runs `build.py` and the scripts of `tools/`, with nothing outside its standard library.
+That is also what fetches Bridge's two packages, at the commit `bridge.txt` states - `readme.md`,
+*What it needs of Bridge*.
 
 ## What is in the tree
 

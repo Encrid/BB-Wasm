@@ -34,20 +34,84 @@ publishes its two packages, for each commit of its `main`, by the run that tests
 
 ## The decisions
 
-None is taken yet.
+### How the build is let into Bridge's release
+
+**In a workflow, by a GitHub App; where the code is written, by what that machine already
+holds.** Enkrid ruled it on 2026-10-09, against what was recommended, which was a token of his
+account that reads Bridge and nothing else.
+
+An app is installed on Bridge, with leave to read its contents and no other. A workflow here
+is handed the app's number and its key as two secrets of this repository, and has a token made
+from them when a run begins: it reads Bridge, and it is good for about an hour. The build is
+handed that token and does not know where it came from.
+
+No file states the key, the number or a token. A workflow names the two secrets, and that is
+all of them that is written.
+
+What it costs: an app to make and to keep, two secrets where there was one, and a step in each
+workflow that is somebody else's code, which makes the token. What it buys: nothing that reads
+Bridge outlives a run, and nothing is tied to one person's account.
+
+### What the pin states
+
+**The commit, and the hash of each archive Bridge published for it.** Enkrid ruled it on
+2026-10-09, as recommended. `bridge.txt`, at the root, is a line for the commit and twelve
+after it: the SHA-256 of an archive and its name, for the two packages of each of the six
+targets. It is the shape a package's own statement has.
+
+**An archive is held against its line before it is opened.** What it holds is then taken as a
+folder's is: each file against the hash the package states, and one commit for the two. So
+nothing is unpacked that the pin does not name.
+
+**A tool writes it**: `tools/pin.py`, handed a commit. It fetches what the release of that
+commit holds, and writes the commit and the hashes. It believes what the release serves on the
+day the pin moves, and no build believes it after.
+
+What it costs: Bridge's run puts an archive in the place of one of the same name, so a run
+repeated for one commit changes the bytes of each, by the times written in it, and the pin is
+written again though nothing in a package differs. The build ends naming the archive.
+
+### What fetches
+
+**The build itself, with Python's standard library.** Enkrid ruled it on 2026-10-09, as
+recommended. It asks the service for the release named for the pinned commit, and for each of
+the two archives of the target by its number, with the token in a header.
+
+**The token is read from one variable of the environment, `BRIDGE_TOKEN`**, on a machine and
+in a run alike. With no folder named, nothing fetched and the variable not set, the build ends
+saying both ways on: set it, or name `--bridge DIR`.
+
+**An archive fetched and held stays under `build/`**, in a folder named for the commit, and is
+not asked for again. So a token is needed once for a pin, and not for a build after it.
+
+Nothing is installed for it: what a build needs is what it needed.
+
+### What a workflow runs
+
+**What Bridge's runs.** It follows from the ruling that this project is made from Bridge's
+method and tools, and that it publishes by the run that tests it, and was not put.
+
+One workflow a system. Linux and macOS on both processors; Windows on x86-64, where the target
+for arm64 is compiled, linked and packaged from, its packages saying it was not run. Each job
+fetches zig, has the token made, builds, runs every case once, writes the packages of its
+target, runs each case six at once, and, for a push to `main`, attaches the archives to the
+release named for the commit. A run starts for what reaches `main` and for a pull request, and
+not for a change to documents alone.
+
+What it costs is what it cost there, and is read off the first run.
+
+### How a workflow gets Binaryen
+
+**As Bridge's workflows did while the backend was in its tree.** It follows from the same
+ruling, and was not put. On Linux and macOS the job fetches the archive of the version the
+build states, from where its authors publish, and names the folder in `BINARYEN_ROOT`. On
+Windows the build fetches it and holds it against its hash, as it does where the code is
+written.
 
 ## The questions
 
-    1  how the build is let into Bridge's release while Bridge is private: on a machine
-       where the code is written, and in a workflow. A workflow needs a credential that
-       reads another repository, and no file states one
-    2  what `bridge.txt` states: the commit, a hash for which files, and what writes it
-       when the pin moves
-    3  what fetches: Python's standard library with the credential handed in, or a tool
-       that `dependencies.md` would list
-    4  what a workflow runs, and what it costs: every case once, six at once, on which of
-       the six targets
-    5  how a workflow gets Binaryen on Linux and macOS, at the version the build states
+None stands. Five were listed when the stage was planned: three were put and ruled, and the
+rest followed from a ruling that stands, each said as such under its heading.
 
 ## How each claim is shown
 

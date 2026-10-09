@@ -17,13 +17,27 @@ and `wasmtime.md` what the engine behind it is asked to do.
 ## What it needs of Bridge
 
 **Two packages, at one commit**: `bridge`, the library and the one header a host includes, and
-`seams`, the three headers a backend and its SDK are written against. They are handed to the
-build as a folder, and each file is held against the hash its package states:
+`seams`, the three headers a backend and its SDK are written against. Nothing else of Bridge's
+tree is read.
+
+**The commit is pinned.** `bridge.txt`, at the root, states one commit of Bridge and the hash
+of each archive Bridge published for it. A build fetches the two of its target from that
+release, once, holds each against its hash before it is opened, and keeps them under `build/`:
+
+    python build.py test
+
+Bridge is not public, so the fetch is made with a token that reads it, handed in the variable
+`BRIDGE_TOKEN` and stated in no file. `python tools/pin.py COMMIT` moves the pin: it writes
+`bridge.txt` again from what the release of that commit holds.
+
+**Where a change to Bridge is being tried, a folder is named instead**, which holds the two
+packages as Bridge's build wrote them:
 
     python build.py --bridge DIR test
 
-Nothing else of Bridge's tree is read. What this project hands in its turn states the commit of
-Bridge it was built against, so that a host can refuse a backend built against another.
+Either way each file is held against the hash its package states. What this project hands in
+its turn states the commit of Bridge it was built against, so that a host can refuse a backend
+built against another.
 
 Bridge is another project. A document or a comment here cites one of Bridge's documents by its
 name and a heading, and `bridge_headings.txt` is every heading of them at the commit this
@@ -57,6 +71,7 @@ A host takes the first, with Bridge's library. Whoever writes a wasm module take
     tests/modules/       the modules the cases load
     tools/               what holds the code and these documents
     build.py             the build
+    bridge.txt           the commit of Bridge this is built against, and its hashes
 
 ## The documents
 

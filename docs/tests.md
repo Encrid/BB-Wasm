@@ -960,6 +960,10 @@ Each tool that holds the tree, as a case.
 
     package
 
+### pin
+
+    pin-another-archive-refused
+
 ### cla
 
     cla-the-holder-is-not-asked
