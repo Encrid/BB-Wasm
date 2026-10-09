@@ -126,6 +126,32 @@ commit, with no commit made for it.
 None stands. Five were listed when the stage was planned: three were put and ruled, and the
 rest followed from a ruling that stands, each said as such under its heading.
 
+## What is shown, and what is not
+
+On 2026-10-09, of `main` at `3bd03458f302`, pinned to Bridge at `bb22256a976a`:
+
+    the pin is taken        from a fresh clone, with no folder named: the two packages of the
+                            commit `bridge.txt` states are fetched, each archive held, and
+                            325 of 325 cases pass. With neither a token nor a folder, the
+                            build ends saying both ways on
+    another hash refused    the case `pin-another-archive-refused`
+    the folder still works  `--bridge DIR`, 325 of 325
+    each platform           the three runs for `main`, started by hand, read back: 325 of
+                            325 once and six at once, on Linux and macOS on both processors
+                            and on Windows on x86-64. Windows on arm64 is compiled, linked and
+                            packaged, and not run. The token was made from the app in each job
+    what it cost            75 seconds on Linux, 4 minutes on macOS and 7 minutes on Windows, from start to
+                            end of each workflow
+    what is published       the prerelease `main-3bd03458f302`: twelve archives, two packages for
+                            each of six targets. The backend's statement, read back from each,
+                            names this commit and Bridge's, and says whether it was run
+    with the other two      a host built from the three projects' published archives for
+                            Windows on x86-64, and from no build folder of any, loads a native
+                            module and a wasm one and runs them three passes
+
+    not shown               a run started by a push, there having been none with a file in
+                            it since the workflows were written; and a pull request's run
+
 ## How each claim is shown
 
     the pin is taken        a fresh clone and a build with no folder named: the two packages
