@@ -1,8 +1,8 @@
 # Stage 1: pinned and published
 
 Built: *The close*. `plan.md`, stage 1, is what it is for and when it is done. This document is
-the order it was done in, what there was before it began, and each decision as it was taken. What a decision
-refused is `stage1_refused.md`.
+the order it was done in, what there was before it began, and each decision as it was taken.
+What a decision refused is `stage1_refused.md`.
 
 It follows from two rulings of the stage of Bridge's plan in which this project left its tree:
 a backend takes the library by a pin, and from a folder where a change is being tried; and it
