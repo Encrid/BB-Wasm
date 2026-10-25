@@ -1,21 +1,10 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/host/elsewhere.c -- the modules several cases load, and a call
-** made from a thread that loaded nothing.
 */
-
 #include "cases.h"
 
-/*
-** test_load_game_reader
-**
-** Loads the reader, with its grant.
-*/
 void test_load_game_reader(host_t *h)
 {
     bridge_artifact_t a;
@@ -29,32 +18,22 @@ static void work_elsewhere(void *arg)
     test_elsewhere_t *e = arg;
 
     if (e->frames < 0)
-        e->result = bridge_destroy(e->b);
+        e->result = bridge_destroy(e->w);
     if (!e->frames)
-        e->result = bridge_run_phase(e->b, "update");
+        e->result = bridge_run_phase(e->w, "update");
     if (e->frames > 0)
-        host_run_frames_unsaid(e->b, e->frames);
+        host_run_frames_unsaid(e->w, e->frames);
 }
 
-/*
-** test_start_elsewhere
-**
-** Makes a call from another thread.
-*/
-void test_start_elsewhere(test_elsewhere_t *e, bridge_t *b, int frames)
+void test_start_elsewhere(test_elsewhere_t *e, bridge_world_t *w, int frames)
 {
-    e->b = b;
+    e->w = w;
     e->frames = frames;
     e->thread.run = work_elsewhere;
     e->thread.arg = e;
     host_thread_start(&e->thread);
 }
 
-/*
-** test_join_elsewhere
-**
-** Waits for a call made from another thread.
-*/
 void test_join_elsewhere(test_elsewhere_t *e)
 {
     host_thread_join(&e->thread);

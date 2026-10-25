@@ -1,5 +1,6 @@
-;; A module that imports a global nobody offers: an import that is neither a function nor a
-;; memory, and it cannot be instantiated.
+;; Copyright (C) 2026 Enkrid
+;;
+;; Under the GNU Affero General Public License, version 3 only: see license.
 (module
   (import "elsewhere" "number" (global i32))
   (func (export "init") (result i32) (i32.const 0))

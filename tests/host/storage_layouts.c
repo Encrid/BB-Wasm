@@ -1,23 +1,10 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/host/storage_layouts.c -- the storage layouts that are not a table,
-** as a wasm module reaches them, and a load that fails.
-**
-** storage.md, *Storage layouts*
 */
-
 #include "cases.h"
 
-/*
-** test_reach_direct
-**
-** A direct-indexed component, reached from a table's rows.
-*/
 void test_reach_direct(host_t *h)
 {
     bridge_artifact_t a;
@@ -32,11 +19,6 @@ void test_reach_direct(host_t *h)
     host_close(h);
 }
 
-/*
-** test_count_toggled
-**
-** A toggle: counted before any is turned off, and after.
-*/
 void test_count_toggled(host_t *h)
 {
     bridge_artifact_t a;
@@ -46,16 +28,11 @@ void test_count_toggled(host_t *h)
     test_state_module(&a, "game:shield@0.1.0", "shield");
     a.cfg.spawns = 16;
     host_load(h, &a);
-    (void)bridge_run_phase(h->b, "present");
+    (void)bridge_run_phase(h->w, "present");
     host_run_frames(h, 1);
     host_close(h);
 }
 
-/*
-** test_walk_sparse
-**
-** A sparse set, walked and reached.
-*/
 void test_walk_sparse(host_t *h)
 {
     bridge_artifact_t a;
@@ -70,11 +47,6 @@ void test_walk_sparse(host_t *h)
     host_close(h);
 }
 
-/*
-** test_state_bad_term
-**
-** A module whose system states a term a query may not ask for.
-*/
 void test_state_bad_term(host_t *h)
 {
     if (host_open(h))
@@ -83,13 +55,6 @@ void test_state_bad_term(host_t *h)
     host_close(h);
 }
 
-/*
-** test_undo_load
-**
-** A load that fails after declaring and spawning leaves nothing: the same
-** component name with another layout then loads, which a ghost of the first
-** would refuse.
-*/
 void test_undo_load(host_t *h)
 {
     if (host_open(h))

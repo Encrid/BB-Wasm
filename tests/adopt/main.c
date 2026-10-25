@@ -1,23 +1,12 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/adopt/main.c -- adopt: the checks, in order.
 */
-
 #include <stdio.h>
 
 #include "adopt.h"
 
-/*
-** main
-**
-** Opens the backend and makes each check. Nothing is buffered: a crash must
-** not swallow what was said.
-*/
 int main(void)
 {
     adopt_t t = {};
@@ -32,6 +21,8 @@ int main(void)
     if (adopt_check_stray(&t, one) || adopt_check_host_function(&t))
         return (1);
     if (adopt_check_timed_calls(&t) || adopt_check_refusals(&t, one))
+        return (1);
+    if (adopt_check_edges(&t, one))
         return (1);
     t.api.instance_destroy(one);
     t.api.module_destroy(t.module);

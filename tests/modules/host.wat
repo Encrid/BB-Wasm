@@ -1,4 +1,6 @@
-;; Calls a function the host defines: an i32 and an i64 in, an i32 out.
+;; Copyright (C) 2026 Enkrid
+;;
+;; Under the GNU Affero General Public License, version 3 only: see license.
 (module
   (import "bridge" "ping" (func $ping (param i32 i64) (result i32)))
   (func (export "init") (result i32)

@@ -1,30 +1,14 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_func.c -- functions in both directions: one a module
-** imports, defined, and one it exports, found.
-**
-** signatures.md, *Imports are declared, exports are checked*
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "wasm_inside.h"
 
-/*
-** define_func
-**
-** Defines a function a module may import. Every import has to exist before
-** the module's first function is found, which is where it is instantiated.
-**
-** signatures.md, *Imports are declared, exports are checked*
-*/
 BACKEND_EXPORT int define_func(backend_instance_t *i,
     const backend_entry_t *entry, backend_err_t *err)
 {
@@ -49,14 +33,6 @@ BACKEND_EXPORT int define_func(backend_instance_t *i,
     return (0);
 }
 
-/*
-** instantiate
-**
-** Instantiates a module at its first function: every import has to exist
-** by then.
-**
-** signatures.md, *Imports are declared, exports are checked*
-*/
 static int instantiate(backend_instance_t *i, backend_err_t *err)
 {
     wasm_trap_t *trap = nullptr;
@@ -72,12 +48,6 @@ static int instantiate(backend_instance_t *i, backend_err_t *err)
     return (0);
 }
 
-/*
-** is_shaped
-**
-** Answers whether a function is what `call` runs: () -> i32. Found out
-** here, at init, and not by the first frame.
-*/
 static bool is_shaped(backend_instance_t *i, const wasmtime_func_t *func)
 {
     wasm_functype_t *ty = wasmtime_func_type(i->ctx, func);
@@ -89,15 +59,6 @@ static bool is_shaped(backend_instance_t *i, const wasmtime_func_t *func)
     return (shaped);
 }
 
-/*
-** find_export
-**
-** Finds a function a module exports, and checks that it is one `call` runs.
-** 1 with why.
-**
-** signatures.md, *A call takes nothing and answers a status*
-** wasm.md, *Exports*
-*/
 static int find_export(backend_instance_t *i, const char *name,
     wasmtime_extern_t *item, backend_err_t *err)
 {
@@ -116,11 +77,6 @@ static int find_export(backend_instance_t *i, const char *name,
     return (1);
 }
 
-/*
-** instance_get_func
-**
-** Finds a function a module exports, once.
-*/
 BACKEND_EXPORT backend_func_t *instance_get_func(backend_instance_t *i,
     const char *name, backend_err_t *err)
 {

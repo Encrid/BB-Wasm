@@ -1,18 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_adopted.c -- a block Bridge owns, as a memory
-** of wasmtime's, and the engines, which are made with what answers wasmtime
-** for a memory.
-**
-** wasmtime.md, *Memory*
-** wasmtime.md, *One engine per demand*
 */
-
 #include "wasm_inside.h"
 
 static uint8_t *get_adopted(void *env, size_t *size, size_t *capacity)
@@ -33,14 +23,6 @@ static wasmtime_error_t *grow_adopted(void *env, size_t new_size)
     return (wasmtime_error_new("an adopted memory does not grow"));
 }
 
-/*
-** make_memory
-**
-** What wasmtime calls for every linear memory an instance defines: the
-** adopted block its backend states, or a memory of the module's own. `env`
-** is the backend. An adopted block has no finalizer: it is Bridge's
-** to free. The signature is wasmtime's.
-*/
 static wasmtime_error_t *make_memory(void *env,
     [[maybe_unused]] const wasm_memorytype_t *ty, size_t minimum,
     [[maybe_unused]] size_t maximum, size_t reserved, size_t guard,
@@ -63,15 +45,6 @@ static wasmtime_error_t *make_memory(void *env,
     return (nullptr);
 }
 
-/*
-** make_engine
-**
-** Makes the engine of a kind. wasmtime initialises a memory from a
-** copy-on-write image where the system has one, and asserts that such a
-** memory is one it mapped itself. Every memory here comes from the creator,
-** which is handed the backend, so there is no memory an image could be laid
-** on.
-*/
 static wasm_engine_t *make_engine(backend_t *b, enum wasm_engine kind)
 {
     wasm_config_t *config = wasm_config_new();
@@ -90,11 +63,6 @@ static wasm_engine_t *make_engine(backend_t *b, enum wasm_engine kind)
     return (wasm_engine_new_with_config(config));
 }
 
-/*
-** wasm_get_engine
-**
-** Answers the engine of a kind, made at its first use.
-*/
 wasm_engine_t *wasm_get_engine(backend_t *b, enum wasm_engine kind)
 {
     if (!b->engines[kind])

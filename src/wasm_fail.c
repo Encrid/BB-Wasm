@@ -1,13 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_fail.c -- why something failed, as wasmtime says it.
 */
-
 #include <stdio.h>
 #include <string.h>
 
@@ -15,25 +10,12 @@
 
 static const char WASM_MARKER[] = "wasm trap: ";
 
-/*
-** wasm_drop
-**
-** Deletes an error, if there is one.
-*/
 void wasm_drop(wasmtime_error_t *error)
 {
     if (error)
         wasmtime_error_delete(error);
 }
 
-/*
-** find_reason
-**
-** Answers where the reason is in a message of wasmtime's, and how long:
-** wasmtime leads with a backtrace and ends with the reason, and the reason
-** is what a record should say. It is the line after the last marker, and
-** no more than 200 bytes of it are said.
-*/
 static const char *find_reason(const wasm_byte_vec_t *msg, int *n)
 {
     constexpr size_t marker = sizeof(WASM_MARKER) - 1;
@@ -56,12 +38,6 @@ static const char *find_reason(const wasm_byte_vec_t *msg, int *n)
     return (text);
 }
 
-/*
-** wasm_fail
-**
-** Writes why something failed: `what`, and the reason wasmtime gives in an
-** error or a trap, which it deletes. Answers -1.
-*/
 int wasm_fail(backend_err_t *err, const char *what, wasmtime_error_t *error,
     wasm_trap_t *trap)
 {

@@ -1,0 +1,141 @@
+[check.retired]
+deck = "world"
+decks = "worlds"
+session = "world"
+sessions = "worlds"
+BridgeC = "Bridge"
+ASM700 = ""
+IdeaTek = ""
+plugin = "module"
+plugins = "modules"
+
+[[style.exception]]
+rule = "F5"
+path = "src/wasm_adopted.c:make_memory"
+why = "wasmtime fixes the signature of its linear-memory create callback."
+
+[[branches.exception]]
+path = "src/wasm_adopted.c"
+line = 17
+col = 26
+side = "function"
+why = "An adopted block reports a capacity equal to its size, so wasmtime never grows it and never calls grow_adopted."
+
+[[branches.exception]]
+path = "src/wasm_adopted.c"
+line = 21
+col = 9
+side = "true"
+why = "grow_adopted never runs, because an adopted block reports a capacity equal to its size."
+
+[[branches.exception]]
+path = "src/wasm_adopted.c"
+line = 21
+col = 9
+side = "false"
+why = "grow_adopted never runs, because an adopted block reports a capacity equal to its size."
+
+[[branches.exception]]
+path = "src/wasm_adopted.c"
+line = 33
+col = 9
+side = "true"
+why = "wasmtime asks the creator for the reservation it was configured with, which is WASM_RESERVATION, so it never asks for more."
+
+[[branches.exception]]
+path = "src/wasm_adopted.c"
+line = 33
+col = 40
+side = "true"
+why = "wasmtime asks the creator for the guard it was configured with, which is WASM_GUARD, so it never asks for more."
+
+[[branches.exception]]
+path = "src/wasm_adopted.c"
+line = 38
+col = 9
+side = "true"
+why = "The holder declares the adopted block's exact page count, so the import minimum always equals the block length."
+
+[[branches.exception]]
+path = "src/wasm_fail.c"
+line = 37
+col = 10
+side = "true"
+why = "No error or trap message in the tests is longer than 200 bytes, and snprintf into err->text bounds the result anyway."
+
+[[branches.exception]]
+path = "src/wasm_holder.c"
+line = 53
+col = 9
+side = "false"
+why = "build_holder assembles a valid memory-only module, which wasmtime always compiles."
+
+[[branches.exception]]
+path = "src/wasm_holder.c"
+line = 58
+col = 9
+side = "true"
+why = "The holder is valid and its only memory comes from the creator, so instantiating it never returns an error."
+
+[[branches.exception]]
+path = "src/wasm_holder.c"
+line = 58
+col = 18
+side = "true"
+why = "The holder has no start function, so instantiating it never traps."
+
+[[branches.exception]]
+path = "src/wasm_holder.c"
+line = 60
+col = 9
+side = "false"
+why = "build_holder always exports the memory under the name 'm'."
+
+[[branches.exception]]
+path = "src/wasm_instance.c"
+line = 45
+col = 9
+side = "true"
+why = "wasm_adopt_into of a valid holder never returns an error."
+
+[[branches.exception]]
+path = "src/wasm_instance.c"
+line = 45
+col = 18
+side = "true"
+why = "The holder has no start function, so adopting its memory never traps."
+
+[[branches.exception]]
+path = "src/wasm_instance.c"
+line = 61
+col = 35
+side = "false"
+why = "Giving an adopted memory never traps, so the loop never stops on a trap."
+
+[[branches.exception]]
+path = "src/wasm_instance.c"
+line = 65
+col = 19
+side = "false"
+why = "Giving an adopted memory never traps, so this never reports a trap."
+
+[[branches.exception]]
+path = "src/wasm_own.c"
+line = 23
+col = 9
+side = "true"
+why = "A wasm32 memory holds at most 65536 pages, which is WASM_RESERVATION, so a grow never exceeds the reserve."
+
+[[branches.exception]]
+path = "src/wasm_own.c"
+line = 23
+col = 34
+side = "true"
+why = "A commit within the reserved block fails only when the operating system runs out of memory, which the tests do not force."
+
+[[branches.exception]]
+path = "src/wasm_own.c"
+line = 45
+col = 9
+side = "true"
+why = "A 4 GiB reservation fails only when the operating system runs out of address space, which the tests do not force."

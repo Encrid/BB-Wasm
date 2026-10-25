@@ -1,29 +1,14 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/host/rows_bench.c -- the accessor's row test, against a build
-** without it, with the count that a work limit adds and without; and a
-** column region the mover's rows use up.
-**
-** validation.md, *Always on*
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
 #include "cases.h"
 
-/*
-** test_use_up_columns
-**
-** A column region of as many bytes as the case's argument says: storage
-** cannot hold what the mover spawns.
-*/
 void test_use_up_columns(host_t *h)
 {
     h->cfg.budget.columns = (uint64_t)atoi(*h->arg ? h->arg : "0");
@@ -34,12 +19,7 @@ void test_use_up_columns(host_t *h)
     host_close(h);
 }
 
-/*
-** run_passes
-**
-** Answers the nanoseconds fifty passes of "update" take.
-*/
-static double run_passes(bridge_t *b)
+static double run_passes(bridge_world_t *w)
 {
     struct timespec t0;
     struct timespec t1;
@@ -47,7 +27,7 @@ static double run_passes(bridge_t *b)
 
     timespec_get(&t0, TIME_UTC);
     while (pass < 50) {
-        (void)bridge_run_phase(b, "update");
+        (void)bridge_run_phase(w, "update");
         pass++;
     }
     timespec_get(&t1, TIME_UTC);
@@ -55,35 +35,23 @@ static double run_passes(bridge_t *b)
         + (double)(t1.tv_nsec - t0.tv_nsec));
 }
 
-/*
-** time_passes
-**
-** Answers the nanoseconds fifty passes of "update" take, the best of
-** twenty.
-*/
-static double time_passes(bridge_t *b)
+static double time_passes(bridge_world_t *w)
 {
     double best = 1e30;
     double ns;
     int round = 0;
 
     while (round < 20) {
-        ns = run_passes(b);
+        ns = run_passes(w);
         best = ns < best ? ns : best;
         round++;
     }
     return (best);
 }
 
-/*
-** bench_build
-**
-** Times one build of the rows module, under a work limit or under none, and
-** says the nanoseconds a row.
-*/
 static void bench_build(host_t *h, const char *build, bool metered)
 {
-    bridge_t *b = bridge_create(&h->cfg, h->sink, nullptr);
+    bridge_world_t *w = bridge_create(&h->cfg, h->sink, nullptr);
     bridge_artifact_t a;
 
     test_state_module(&a, "game:rows@0.1.0", build);
@@ -92,21 +60,15 @@ static void bench_build(host_t *h, const char *build, bool metered)
     a.cfg.reload_timeout = BRIDGE_NO_LIMIT;
     a.cfg.shutdown_timeout = BRIDGE_NO_LIMIT;
     a.cfg.spawns = 200'000;
-    if (!b || bridge_load(b, &a)) {
+    if (!w || bridge_load(w, &a)) {
         printf("bench: cannot load\n");
         exit(2);
     }
     printf("%-15s %-9s %.3f ns a row\n", build,
-        metered ? "limit" : "no limit", time_passes(b) / (50.0 * 200'000.0));
-    (void)bridge_destroy(b);
+        metered ? "limit" : "no limit", time_passes(w) / (50.0 * 200'000.0));
+    (void)bridge_destroy(w);
 }
 
-/*
-** test_bench
-**
-** Times the two builds of the rows module, each with a work limit and
-** without.
-*/
 void test_bench(host_t *h)
 {
     h->cfg.budget.entities = 262'144;

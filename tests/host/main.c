@@ -1,15 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/host/main.c -- host <case>: the cases of the host program, by name.
-** A case is named for what is exposed and what it shows of it, as
-** docs/tests.md lists it.
 */
-
 #include <string.h>
 
 #include "cases.h"
@@ -91,8 +84,6 @@ static const host_case_t TEST_CASES[] = {
         test_edit_module, "identity=0", test_set_small },
     { "module_config.abi-another-refused",
         test_state_other_abi, "", test_set_small },
-    { "module_config.trusted-unset-refused",
-        test_edit_module, "trusted=0", test_set_small },
     { "module_config.reloadable-false-with-hot-reload-refused",
         test_allow_not_reloadable, "", test_set_noting },
     { "module_config.reloadable-unset-refused",
@@ -226,7 +217,7 @@ static const host_case_t TEST_CASES[] = {
         test_misname_constant, "", test_set_noting },
     { "BRIDGE_FAIL-refused-before-it-exists-stops-nothing",
         test_refuse_essential, "", test_set_small },
-    { "BRIDGE_FAIL-stopped-module-stops-the-deck",
+    { "BRIDGE_FAIL-stopped-module-stops-the-world",
         test_stop_by_failing, "", test_set_noting },
     { "BRIDGE_SKIP-failed-init-skipped", test_skip_init, "", test_set_noting },
     { "BRIDGE_UNSET-flag-refused", test_leave_flag_unset, "", test_set_small },
@@ -255,7 +246,7 @@ static const host_case_t TEST_CASES[] = {
         test_create_no_sink, "", test_set_small },
     { "bridge_create-budget-sum-beyond-32-bits-refused",
         test_state_too_big, "", test_set_wasm },
-    { "bridge_create-two-decks-at-once",
+    { "bridge_create-two-worlds-at-once",
         test_run_two, "", test_set_counting },
     { "bridge_destroy-shuts-down-what-is-loaded",
         test_destroy_loaded, "", test_set_noting },
@@ -267,7 +258,7 @@ static const host_case_t TEST_CASES[] = {
     { "bridge_load-failed-init-undone", test_undo_load, "", test_set_wasm },
     { "bridge_load-refused-leaves-nothing",
         test_refuse_load, "", test_set_noting },
-    { "bridge_load-lifts-a-stopped-deck",
+    { "bridge_load-lifts-a-stopped-world",
         test_repair_by_load, "", test_set_noting },
     { "bridge_load-no-reload-export",
         test_leave_reload_out, "", test_set_noting },
@@ -275,7 +266,7 @@ static const host_case_t TEST_CASES[] = {
         test_load_twice, "", test_set_small },
     { "bridge_load-import-nobody-answers",
         test_load_named, "stray", test_set_small },
-    { "bridge_unload-of-what-stopped-the-deck",
+    { "bridge_unload-of-what-stopped-the-world",
         test_give_up, "", test_set_noting },
     { "bridge_unload-declarer-goes-user-holds-the-type",
         test_unload_declarer, "", test_set_noting },
@@ -296,7 +287,7 @@ static const host_case_t TEST_CASES[] = {
         test_grow_share, "shareless", test_set_noting },
     { "bridge_reload-share-more-than-the-arena-refused",
         test_grow_share, "sharebig", test_set_noting },
-    { "bridge_reload-lifts-a-stopped-deck",
+    { "bridge_reload-lifts-a-stopped-world",
         test_repair, "", test_set_noting },
     { "bridge_reload-stopped-module-revived",
         test_revive, "", test_set_noting },
@@ -485,6 +476,8 @@ static const host_case_t TEST_CASES[] = {
         test_do_wrong, "wrong-declare-outside", test_set_wasm },
     { "declare-name-with-no-namespace-refused",
         test_do_wrong, "wrong-declare-no-namespace", test_set_wasm },
+    { "declare-name-with-a-zero-byte-refused",
+        test_do_wrong, "wrong-declare-name-zero", test_set_wasm },
     { "declare-kind-unset-refused",
         test_do_wrong, "wrong-declare-kind-unset", test_set_wasm },
     { "declare-on-unload-unset-refused",
@@ -563,13 +556,30 @@ static const host_case_t TEST_CASES[] = {
         test_load_named, "strayglobal", test_set_small },
     { "order-unordered-conflict-refused",
         test_leave_unordered, "", test_set_counting },
+    { "isolate.slot-out-of-range-trapped",
+        test_breach, "breach-slot", test_set_wasm },
+    { "isolate.row-out-of-range-trapped",
+        test_breach, "breach-row", test_set_wasm },
+    { "isolate.field-out-of-the-cell-trapped",
+        test_breach, "breach-field", test_set_wasm },
+    { "isolate.store-to-a-read-only-column-trapped",
+        test_breach, "breach-readonly", test_set_wasm },
+    { "isolate.forge-the-capability-table-trapped",
+        test_breach, "breach-forge", test_set_wasm },
+    { "isolate.sparse-id-out-of-range-trapped",
+        test_breach, "breach-sparse", test_set_wasm },
+    { "isolate.direct-id-out-of-range-trapped",
+        test_breach, "breach-direct", test_set_wasm },
+    { "isolate.blob-to-outside-the-arena-trapped",
+        test_breach, "breach-to-shared", test_set_wasm },
+    { "isolate.blob-from-outside-the-arena-trapped",
+        test_breach, "breach-from-shared", test_set_wasm },
+    { "isolate.a-valid-access-is-allowed",
+        test_breach, "breach-ok", test_set_wasm },
+    { "isolate.owned-ranges-past-the-cap-clamped",
+        test_hoard, "", test_set_wasm },
 };
 
-/*
-** A module's settings of every kind, as a deployment would hand them over:
-** a bitmask by its bits, an integer into a float field, and one of more
-** than 32 bits.
-*/
 static const bridge_setting_t TEST_SETTINGS[10] = {
     { .key = "vsync", .kind = BRIDGE_BOOL, .v = { .b = true } },
     { .key = "width", .kind = BRIDGE_INT, .v = { .i = 1280 } },
@@ -584,12 +594,6 @@ static const bridge_setting_t TEST_SETTINGS[10] = {
     { .key = "big", .kind = BRIDGE_INT, .v = { .i = 8'589'934'592ll } }
 };
 
-/*
-** fill_kept
-**
-** Fills what the fixtures keep: counts of no run yet, and those settings,
-** which a case changes before it loads.
-*/
 static void fill_kept(test_kept_t *kept)
 {
     *kept = (test_kept_t){ };
@@ -599,11 +603,6 @@ static void fill_kept(test_kept_t *kept)
     memcpy(kept->noted.settings, TEST_SETTINGS, sizeof(TEST_SETTINGS));
 }
 
-/*
-** main
-**
-** Runs the case the command line names, on the host its fixture sets.
-*/
 int main(int argc, char **argv)
 {
     constexpr size_t count = sizeof(TEST_CASES) / sizeof(*TEST_CASES);

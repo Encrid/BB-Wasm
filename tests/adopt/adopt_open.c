@@ -1,25 +1,14 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/adopt/adopt_open.c -- the backend opened, a block adopted, and the
-** module compiled.
 */
-
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "adopt.h"
 
-/*
-** adopt_fail
-**
-** Says that a check failed. Answers 1.
-*/
 int adopt_fail(const char *format, ...)
 {
     va_list args;
@@ -32,11 +21,6 @@ int adopt_fail(const char *format, ...)
     return (1);
 }
 
-/*
-** adopt_read_file
-**
-** Answers the bytes of a file and how many.
-*/
 void *adopt_read_file(const char *path, size_t *len)
 {
     FILE *f = fopen(path, "rb");
@@ -54,11 +38,6 @@ void *adopt_read_file(const char *path, size_t *len)
     return (data);
 }
 
-/*
-** adopt_make_instance
-**
-** Answers a store of the module with the block as its memory.
-*/
 backend_instance_t *adopt_make_instance(adopt_t *t)
 {
     backend_err_t err = {};
@@ -71,11 +50,6 @@ backend_instance_t *adopt_make_instance(adopt_t *t)
     return (i);
 }
 
-/*
-** adopt_run
-**
-** Calls a function of an instance by name.
-*/
 int adopt_run(adopt_t *t, backend_instance_t *i, const char *name,
     int32_t *status)
 {
@@ -86,13 +60,6 @@ int adopt_run(adopt_t *t, backend_instance_t *i, const char *name,
     return (t->api.call(f, status, &t->err));
 }
 
-/*
-** adopt_open
-**
-** Opens the wasm backend, reserves a block of the shape it states, which is
-** Bridge's, has the backend adopt two pages of it, and compiles the
-** module.
-*/
 int adopt_open(adopt_t *t)
 {
     backend_err_t err = {};

@@ -1,16 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_engine.c -- the clock: one armed deadline at a time,
-** and no tick period.
-**
-** wasmtime.md, *Deadlines*
 */
-
 #include "wasm_inside.h"
 
 static void read_armed(backend_t *b, wasm_armed_t *armed)
@@ -23,12 +15,6 @@ static void read_armed(backend_t *b, wasm_armed_t *armed)
     os_mutex_unlock(b->lock);
 }
 
-/*
-** wait_until
-**
-** Waits until a time or until the backend's event is set, whichever comes
-** first. Answers true, without waiting, if the time has come.
-*/
 static bool wait_until(backend_t *b, uint64_t until)
 {
     uint64_t now = os_get_now();
@@ -39,16 +25,6 @@ static bool wait_until(backend_t *b, uint64_t until)
     return (false);
 }
 
-/*
-** wasm_watch
-**
-** The watchdog's thread. What is running is read afresh every time round,
-** under the lock, and the event only says "look again". So an event that
-** was set twice before it was waited for once loses nothing: two lifecycle
-** calls back to back, a reload and then a shutdown, are exactly that. A
-** call that is out of time traps at its next check, and its end is what
-** wakes this.
-*/
 void wasm_watch(void *arg)
 {
     backend_t *b = arg;

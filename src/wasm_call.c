@@ -1,22 +1,10 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_call.c -- a call into a module, under its limits.
-**
-** wasmtime.md, *Deadlines*
 */
-
 #include "wasm_inside.h"
 
-/*
-** instance_set_work_limit
-**
-** States how much work an instance's next calls may do, in units of fuel.
-*/
 BACKEND_EXPORT void instance_set_work_limit(backend_instance_t *i,
     uint64_t units)
 {
@@ -24,22 +12,11 @@ BACKEND_EXPORT void instance_set_work_limit(backend_instance_t *i,
         wasm_drop(wasmtime_context_set_fuel(i->ctx, units));
 }
 
-/*
-** instance_set_timeout
-**
-** States how long an instance's next call may take, in nanoseconds.
-*/
 BACKEND_EXPORT void instance_set_timeout(backend_instance_t *i, uint64_t nanos)
 {
     i->deadline = nanos;
 }
 
-/*
-** arm
-**
-** Gives the watchdog a call to time, of `nanos` nanoseconds, or states that
-** the next call has no deadline it reaches.
-*/
 static void arm(backend_instance_t *i, uint64_t nanos)
 {
     backend_t *b = i->b;
@@ -64,15 +41,6 @@ static void disarm(backend_t *b)
     os_event_set(b->wake);
 }
 
-/*
-** call
-**
-** Calls a function of a module, and answers the status it returned. A
-** module compiled without the check cannot be interrupted, and was not
-** asked to be.
-**
-** signatures.md, *A call takes nothing and answers a status*
-*/
 BACKEND_EXPORT int call(backend_func_t *f, int32_t *status, backend_err_t *err)
 {
     backend_instance_t *i = f->instance;

@@ -1,14 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/host/keys_deployment.c -- a key of the deployment stated as what
-** is refused: each a row, the key and the value it is given.
 */
-
 #include <string.h>
 
 #include "cases.h"
@@ -33,22 +27,11 @@ static const test_edit_t TEST_DEPLOYMENT_EDITS[] = {
         offsetof(bridge_config_t, budget.direct_indexed), 8, BEYOND }
 };
 
-/*
-** test_put_key
-**
-** Writes a value into a key of `size` bytes. Every system this is built
-** for keeps the low byte first, so the low bytes of the value are the key.
-*/
 void test_put_key(void *key, size_t size, int64_t value)
 {
     memcpy(key, &value, size);
 }
 
-/*
-** test_find_edit
-**
-** Answers the row of a name, among rows the caller knows hold it.
-*/
 const test_edit_t *test_find_edit(const test_edit_t *rows, const char *name)
 {
     while (strcmp(rows->name, name))
@@ -56,11 +39,6 @@ const test_edit_t *test_find_edit(const test_edit_t *rows, const char *name)
     return (rows);
 }
 
-/*
-** test_edit_deployment
-**
-** A deployment with one key stated as the case's row says: it is refused.
-*/
 void test_edit_deployment(host_t *h)
 {
     const test_edit_t *e = test_find_edit(TEST_DEPLOYMENT_EDITS, h->arg);
@@ -69,11 +47,6 @@ void test_edit_deployment(host_t *h)
     host_open_only(h);
 }
 
-/*
-** test_edit_phases
-**
-** A phase with no name, or named as the other is.
-*/
 void test_edit_phases(host_t *h)
 {
     h->phases[1] = strcmp(h->arg, "twice") ? nullptr : h->phases[0];

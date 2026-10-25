@@ -1,33 +1,20 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/support/host_module.c -- a module as a deployment would state it:
-** every key said, nothing left at zero.
-**
-** config.md, *No unaccountable values*
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "host.h"
 
-/*
-** host_run_frames_unsaid
-**
-** Runs "update" and "present" `count` times, and says nothing.
-*/
-void host_run_frames_unsaid(bridge_t *b, int count)
+void host_run_frames_unsaid(bridge_world_t *w, int count)
 {
     int i = 0;
 
     while (i < count) {
-        (void)bridge_run_phase(b, "update");
-        (void)bridge_run_phase(b, "present");
+        (void)bridge_run_phase(w, "update");
+        (void)bridge_run_phase(w, "present");
         i++;
     }
 }
@@ -48,11 +35,6 @@ static void *read_whole(FILE *f, size_t *len)
     return (data);
 }
 
-/*
-** host_read_module
-**
-** Answers the bytes of the wasm module of a name, and how many.
-*/
 void *host_read_module(const char *file, size_t *len)
 {
     char path[1024];
@@ -69,16 +51,11 @@ void *host_read_module(const char *file, size_t *len)
     exit(2);
 }
 
-/*
-** state_keys
-**
-** States every key of a module, with no limit.
-*/
 static void state_keys(bridge_artifact_t *a, const char *identity)
 {
     *a = (bridge_artifact_t){ .backend = "wasm" };
     a->cfg = (bridge_module_config_t){ .identity = identity,
-        .abi = BRIDGE_ABI, .trusted = BRIDGE_TRUE, .reloadable = BRIDGE_FALSE,
+        .abi = BRIDGE_ABI, .reloadable = BRIDGE_FALSE,
         .hot_reload = BRIDGE_FALSE, .pinned = BRIDGE_FALSE,
         .on_error = BRIDGE_SKIP, .max_system_failures = 3,
         .work_limit = BRIDGE_NO_LIMIT, .memory_limit = BRIDGE_NO_LIMIT,
@@ -89,18 +66,11 @@ static void state_keys(bridge_artifact_t *a, const char *identity)
         .loss_count = BRIDGE_NONE, .config = BRIDGE_NO_CONFIG };
 }
 
-/*
-** host_state_wasm
-**
-** States a wasm module of tests/modules, with the limits the backend
-** keeps.
-*/
 void host_state_wasm(bridge_artifact_t *a, const char *identity,
     const char *file)
 {
     state_keys(a, identity);
     a->bytes = host_read_module(file, &a->len);
-    a->cfg.trusted = BRIDGE_FALSE;
     a->cfg.work_limit = 10'000'000;
     a->cfg.memory_limit = 16 << 20;
     a->cfg.init_timeout = 2000 * HOST_MS;
