@@ -16,6 +16,7 @@ The cases of the options, of the report and of the files of a project run a shor
 | `untargeted` | The same artifact and variant, but the variant has no `target`. |
 | `module` | The modules `mod`, `two` and its variant `three`, over the defaults of `[module]`, and the program `pathcheck` that reads their `*_PATH` macros. |
 | `config` | The artifact `thing`, stated in a file of `.toolchain/config` and not in `project.toml`. |
+| `leaky` | The artifact `stamped`, whose section holds `{root}`: the folder of the project. |
 
 In `built`, `greet` gets its greeting from `defines`.
 `greeter` includes `.toolchain/tests/data/build/built/include/greet.h`, links `greet`, and has `greet` beside it in its folder.
@@ -63,5 +64,7 @@ The variant `plain` is unstamped.
 | a report with no fault | `shared.report` gets no fault, 12 and `commits`. It writes `no fault in 12 commits`, and the status is 0. | One fault. |
 | the files of a project, walked | `shared.repository` writes `False` for `{case}/w`. `shared.ours` gives `{case}/w/a.txt` and `{case}/w/src/build/e.txt`. It leaves out `tests`, the folder `build` at the root and `__pycache__`. | `{case}/w/src/b.txt` is also there. |
 | the files of a project, from git | The program makes `{case}/g` a repository of git, and `shared.repository` writes `True`. `shared.ours` gives `a.txt` and `.gitignore`, but not `tests` or a file that git ignores. | `{case}/g/src/b.txt` is also there. |
+| a package that holds a path of its machine is refused | `build --pack` on `leaky` stops: `stamped.txt` holds the folder of the project. | No `--pack`. |
+| the cache of zig is a path from the folder of the project | `build.prepared` on the template, which holds the cache, sets `ZIG_LOCAL_CACHE_DIR` to `build/zig-cache/local`. | `build.prepared` on `built`, which does not hold the cache: a whole path. |
 
 `.toolchain/docs/build.py.md` gives the limits of these cases.

@@ -34,6 +34,7 @@ The build of a module merges `acc.wasm`, the accessors of the SDK, into the modu
 
 A host names the backend in its deployment, with the name `wasm` and the path of its library as `library`.
 The library is `bridge_wasm.dll`, `bridge_wasm.so` or `bridge_wasm.dylib`. The runtime of wasmtime must be in the same folder.
+The backend names the runtime by its file name only, so the loader finds it there on each machine.
 The backend knows no setting.
 
 ## Messages

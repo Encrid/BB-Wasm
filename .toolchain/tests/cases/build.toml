@@ -173,3 +173,15 @@ run = ["{python}", "-c", "import subprocess, sys; from pathlib import Path; sys.
 files = { "{case}/g/a.txt" = "a", "{case}/g/.gitignore" = "skip.txt\n", "{case}/g/skip.txt" = "s", "{case}/g/tests/b.txt" = "b" }
 claims = { status = 0, line = ["True", "a.txt", ".gitignore"], lacks = ["b.txt", "skip.txt"] }
 false = { files = { "{case}/g/src/b.txt" = "b" } }
+
+[[case]]
+name = "a package that holds a path of its machine is refused"
+run = ["{python}", "{root}/.toolchain/tools/build.py", "--root", "{root}/.toolchain/tests/data/build/leaky", "--out", "{case}/out", "--pack"]
+claims = { status = 1, has = [", a path of the machine that built it"] }
+false = { run = ["{python}", "{root}/.toolchain/tools/build.py", "--root", "{root}/.toolchain/tests/data/build/leaky", "--out", "{case}/out"] }
+
+[[case]]
+name = "the cache of zig is a path from the folder of the project"
+run = ["{python}", "-c", "import argparse, os, sys; from pathlib import Path; sys.path.insert(0, sys.argv[1]); import build; build.prepared(argparse.Namespace(root=Path(sys.argv[2]), target=None, debug=False, out=None, set=[], part=None), True); print(Path(os.environ['ZIG_LOCAL_CACHE_DIR']).as_posix())", "{root}/.toolchain/tools", "{root}"]
+claims = { status = 0, line = ["build/zig-cache/local"] }
+false = { run = ["{python}", "-c", "import argparse, os, sys; from pathlib import Path; sys.path.insert(0, sys.argv[1]); import build; build.prepared(argparse.Namespace(root=Path(sys.argv[2]), target=None, debug=False, out=None, set=[], part=None), True); print(Path(os.environ['ZIG_LOCAL_CACHE_DIR']).as_posix())", "{root}/.toolchain/tools", "{root}/.toolchain/tests/data/build/built"] }
