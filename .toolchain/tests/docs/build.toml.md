@@ -17,6 +17,7 @@ The cases of the options, of the report and of the files of a project run a shor
 | `module` | The modules `mod`, `two` and its variant `three`, over the defaults of `[module]`, and the program `pathcheck` that reads their `*_PATH` macros. |
 | `config` | The artifact `thing`, stated in a file of `.toolchain/config` and not in `project.toml`. |
 | `leaky` | The artifact `stamped`, whose section holds `{root}`: the folder of the project. |
+| `archived` | The archive `one`. |
 
 In `built`, `greet` gets its greeting from `defines`.
 `greeter` includes `.toolchain/tests/data/build/built/include/greet.h`, links `greet`, and has `greet` beside it in its folder.
@@ -37,6 +38,9 @@ The kind `stamped` copies `.toolchain/tests/data/build/built/src/note.txt` to a 
 Then it checks that the output contains `{said}`. The default of `said` is `written`, a word of `note.txt`.
 The section holds the items of `manifest` with commas between them: `first,second`.
 The variant `plain` is unstamped.
+
+The case of an archive of a release copies `archived` into `{case}/proj`, and runs `build.main` from a short Python program.
+The program puts `[build] cache` in that folder, as in a project. A project in `.toolchain/tests/data/build` does not hold the cache.
 
 | Case | Claim | False variant |
 | --- | --- | --- |
@@ -66,5 +70,6 @@ The variant `plain` is unstamped.
 | the files of a project, from git | The program makes `{case}/g` a repository of git, and `shared.repository` writes `True`. `shared.ours` gives `a.txt` and `.gitignore`, but not `tests` or a file that git ignores. | `{case}/g/src/b.txt` is also there. |
 | a package that holds a path of its machine is refused | `build --pack` on `leaky` stops: `stamped.txt` holds the folder of the project. | No `--pack`. |
 | the cache of zig is a path from the folder of the project | `build.prepared` on the template, which holds the cache, sets `ZIG_LOCAL_CACHE_DIR` to `build/zig-cache/local`. | `build.prepared` on `built`, which does not hold the cache: a whole path. |
+| an archive of a release holds no path of its machine | `build --pack` on the copy of `archived` writes its zip, thus `one.a` holds no folder of the machine. On Windows, `one.a` holds one without `-fstrip`. | `--debug`: the debug information of `one.a` holds the folder of the project, thus `pack` stops. |
 
 `.toolchain/docs/build.py.md` gives the limits of these cases.
