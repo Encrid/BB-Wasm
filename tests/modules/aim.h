@@ -1,13 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/modules/aim.h -- the component of aim.c: where an entity aims.
 */
-
 #ifndef TEST_AIM_H
     #define TEST_AIM_H
 

@@ -1,20 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/modules/nested.c -- a component whose fields are other
-** declared types: a struct, an enum and a bitmask. Each is declared first,
-** in the namespace the component is in.
-**
-** Built a second way, LEAVE_OUT_VEC2: without declaring the struct one of
-** its fields is.
-**
-** schema.md, *The type set*
 */
-
 #include "bridge_wasm.h"
 #include "nested.h"
 #include "wasm_idle.h"
@@ -22,32 +10,20 @@
 static uint32_t body;
 static uint32_t reading;
 
-/*
-** read
-**
-** Says four fields of the first row: the y of the struct, the enum, the
-** bitmask and the mass.
-*/
 BRIDGE_EXPORT(read) int read(void)
 {
-    uint32_t span = bridge_get_span(reading, 0, 1);
-    uint32_t at = BRIDGE_ROW(body_t, bridge_get_base(span, 0), 0,
-        bridge_count_rows(span));
+    uint32_t span = bridge_get_span(reading, 0);
+    uint32_t table = bridge_span_table(span);
 
-    BRIDGE_LOG(BRIDGE_LOG_INFO, "body", (uint32_t)BRIDGE_GET(body_t, at.y, at),
-        (uint32_t)BRIDGE_GET(body_t, team, at));
+    BRIDGE_LOG(BRIDGE_LOG_INFO, "body",
+        (uint32_t)BRIDGE_GET(body_t, at.y, body, table, 0),
+        (uint32_t)BRIDGE_GET(body_t, team, body, table, 0));
     BRIDGE_LOG(BRIDGE_LOG_INFO, "more",
-        (uint32_t)BRIDGE_GET(body_t, flags, at),
-        (uint32_t)BRIDGE_GET(body_t, mass, at));
+        (uint32_t)BRIDGE_GET(body_t, flags, body, table, 0),
+        (uint32_t)BRIDGE_GET(body_t, mass, body, table, 0));
     return (0);
 }
 
-/*
-** init
-**
-** Declares the three types the fields are of, then the component and the
-** system, and spawns one entity.
-*/
 BRIDGE_EXPORT(init) int init(void)
 {
     bridge_term_t terms[1] = {{ 0, BRIDGE_READ, BRIDGE_AND, 0 }};
@@ -63,7 +39,7 @@ BRIDGE_EXPORT(init) int init(void)
         BRIDGE_TABLE);
     body = BRIDGE_COMPONENT("game:Body", body_t, BRIDGE_DELETE, BRIDGE_TABLE);
     terms[0].slot = body;
-    reading = BRIDGE_ADD_SYSTEM("read", "update", terms, 1, nullptr, 0);
+    reading = BRIDGE_ADD_SYSTEM("read", "update", terms, 1, nullptr, 0, nullptr, 0);
     BRIDGE_ATTACH(bridge_spawn(), body, b);
     return (0);
 }

@@ -1,25 +1,13 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/adopt/adopt_stores.c -- the block as a memory: a module writes and
-** the host reads, two stores on two threads write disjoint halves, and a
-** load past the block traps.
 */
-
 #include <stdio.h>
 #include <string.h>
 
 #include "adopt.h"
 
-/*
-** adopt_check_write
-**
-** A module writes, the host reads the same bytes.
-*/
 int adopt_check_write(adopt_t *t, backend_instance_t *one)
 {
     int32_t status = -1;
@@ -32,12 +20,6 @@ int adopt_check_write(adopt_t *t, backend_instance_t *one)
     return (0);
 }
 
-/*
-** fill
-**
-** A thread's work: a store of this thread's own, and one function of the
-** module called in it, over and over.
-*/
 static void fill(void *arg)
 {
     adopt_job_t *j = arg;
@@ -55,12 +37,6 @@ static void fill(void *arg)
     j->t->api.instance_destroy(i);
 }
 
-/*
-** count_wrong
-**
-** Answers how many bytes of the block are not what the two threads wrote:
-** 0xAA in the first page, 0xBB in the second.
-*/
 static int count_wrong(const adopt_t *t)
 {
     int bad = 0;
@@ -73,12 +49,6 @@ static int count_wrong(const adopt_t *t)
     return (bad);
 }
 
-/*
-** adopt_check_two_stores
-**
-** Two stores on two threads, the same block, disjoint halves; and a third
-** store reads what the second one wrote.
-*/
 int adopt_check_two_stores(adopt_t *t, backend_instance_t *one)
 {
     adopt_job_t low = { t, "fill_low", 200, 0 };
@@ -103,11 +73,6 @@ int adopt_check_two_stores(adopt_t *t, backend_instance_t *one)
     return (0);
 }
 
-/*
-** adopt_check_stray
-**
-** Past the block: a trap, and everything still works afterwards.
-*/
 int adopt_check_stray(adopt_t *t, backend_instance_t *one)
 {
     int32_t status = -1;

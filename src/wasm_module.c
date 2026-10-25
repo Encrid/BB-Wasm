@@ -1,23 +1,12 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_module.c -- a module compiled: a wasm module is its
-** bytes.
 */
-
 #include <stdlib.h>
 
 #include "wasm_inside.h"
 
-/*
-** compile
-**
-** Compiles a module from its bytes on an engine. nullptr with why.
-*/
 static wasmtime_module_t *compile(wasm_engine_t *engine,
     const backend_source_t *source, backend_err_t *err)
 {
@@ -36,11 +25,6 @@ static wasmtime_module_t *compile(wasm_engine_t *engine,
     return (module);
 }
 
-/*
-** module_compile
-**
-** Compiles a module from its bytes, on the engine its demands ask for.
-*/
 BACKEND_EXPORT backend_module_t *module_compile(backend_t *b,
     const backend_source_t *source, backend_err_t *err)
 {
@@ -74,12 +58,6 @@ static enum backend_import_kind get_kind(const wasm_importtype_t *it)
     return (BACKEND_IMPORT_OTHER);
 }
 
-/*
-** module_list_imports
-**
-** Writes up to `max` of what a module imports, and answers how many it
-** imports.
-*/
 BACKEND_EXPORT uint32_t module_list_imports(backend_module_t *m,
     backend_import_t *out, uint32_t max)
 {
@@ -103,11 +81,6 @@ BACKEND_EXPORT uint32_t module_list_imports(backend_module_t *m,
     return (n);
 }
 
-/*
-** module_destroy
-**
-** Frees a compiled module.
-*/
 BACKEND_EXPORT void module_destroy(backend_module_t *m)
 {
     wasm_importtype_vec_delete(&m->imports);

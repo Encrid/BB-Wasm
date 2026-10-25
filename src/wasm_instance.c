@@ -1,23 +1,13 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_instance.c -- an instance made and freed.
 */
-
 #include <stdlib.h>
 #include <string.h>
 
 #include "wasm_inside.h"
 
-/*
-** instance_destroy
-**
-** Frees an instance, with the functions found in it.
-*/
 BACKEND_EXPORT void instance_destroy(backend_instance_t *i)
 {
     backend_func_t *f = i->funcs;
@@ -32,14 +22,6 @@ BACKEND_EXPORT void instance_destroy(backend_instance_t *i)
     free(i);
 }
 
-/*
-** open_store
-**
-** Gives an instance its store and its linker. A metered store with no fuel
-** traps at its first instruction, and an interruptible one with no deadline
-** at the first increment: a holder runs nothing, but it is instantiated in
-** this store.
-*/
 static void open_store(backend_instance_t *i, backend_module_t *m)
 {
     i->b = m->b;
@@ -54,14 +36,6 @@ static void open_store(backend_instance_t *i, backend_module_t *m)
         wasmtime_context_set_epoch_deadline(i->ctx, WASM_FAR);
 }
 
-/*
-** give_memory
-**
-** Gives an instance one of the memories its module imports: the adopted block,
-** defined under the name the import has.
-**
-** backend.md, *Memory is adopted, not created*
-*/
 static wasmtime_error_t *give_memory(backend_instance_t *i,
     const backend_memory_import_t *mi, wasm_trap_t **trap)
 {
@@ -74,11 +48,6 @@ static wasmtime_error_t *give_memory(backend_instance_t *i,
         mi->field, strlen(mi->field), &item));
 }
 
-/*
-** instance_create
-**
-** Makes an instance of a module, with the memories it imports.
-*/
 BACKEND_EXPORT backend_instance_t *instance_create(backend_module_t *m,
     const backend_memory_import_t *memories, uint32_t count,
     backend_err_t *err)
@@ -100,11 +69,6 @@ BACKEND_EXPORT backend_instance_t *instance_create(backend_module_t *m,
     return (nullptr);
 }
 
-/*
-** instance_set_memory_limit
-**
-** Limits how many bytes an instance's own memories may come to.
-*/
 BACKEND_EXPORT void instance_set_memory_limit(backend_instance_t *i,
     uint64_t bytes)
 {

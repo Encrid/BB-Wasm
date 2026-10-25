@@ -1,15 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/adopt/adopt_refused.c -- what the wasm backend refuses of whoever
-** calls it: a block that is no whole number of pages, and a function
-** defined too late or twice.
 */
-
 #include <stdio.h>
 
 #include "adopt.h"
@@ -23,12 +16,6 @@ static int answer([[maybe_unused]] void *ud,
     return (0);
 }
 
-/*
-** adopt_say_refused
-**
-** Says why a call was refused. Answers 1, having said so, if it was
-** accepted.
-*/
 int adopt_say_refused(const char *what, bool refused,
     const backend_err_t *err)
 {
@@ -47,12 +34,6 @@ static int refuse_block(adopt_t *t)
     return (adopt_say_refused("a block of 1000 bytes", !m, &err));
 }
 
-/*
-** refuse_function
-**
-** Defines a function for an instance twice. Answers whether the second was
-** refused; the first is, too, for an instance that has run.
-*/
 static bool refuse_function(adopt_t *t, backend_instance_t *i,
     backend_err_t *err)
 {
@@ -64,12 +45,6 @@ static bool refuse_function(adopt_t *t, backend_instance_t *i,
     return (t->api.define_func(i, &entry, err) != 0);
 }
 
-/*
-** adopt_check_functions
-**
-** A function defined for an instance that has run, and one defined twice
-** for an instance that has not, are each refused; and so is that block.
-*/
 int adopt_check_functions(adopt_t *t, backend_instance_t *one)
 {
     backend_err_t err = {};

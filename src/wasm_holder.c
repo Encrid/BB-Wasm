@@ -1,19 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_holder.c -- the module that holds an adopted block.
-** wasmtime asks its creator only for a memory an instance defines, never
-** for one the host creates. So an adopted block enters a store as the
-** memory of a module that does nothing but define one and export it, and
-** the creator answers for that with the block.
-**
-** wasmtime.md, *Memory*
 */
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -32,13 +21,6 @@ static size_t write_leb(uint8_t *out, uint64_t v)
     return (n + 1);
 }
 
-/*
-** build_holder
-**
-** Compiles the module that holds a block of `pages` pages: the header, the
-** memory section, which is one memory with a maximum that is its minimum,
-** and the export section, which is "m", memory 0.
-*/
 static wasmtime_error_t *build_holder(wasm_engine_t *engine, uint64_t pages,
     wasmtime_module_t **holder)
 {
@@ -57,14 +39,6 @@ static wasmtime_error_t *build_holder(wasm_engine_t *engine, uint64_t pages,
     return (wasmtime_module_new(engine, wasm, n, holder));
 }
 
-/*
-** wasm_adopt_into
-**
-** Puts an adopted block into an instance's store, and answers it as an
-** item a linker can define. Under the backend's lock from the holder being
-** found to its memory being made: two threads may each be making an
-** instance, and wasmtime asks for a memory without saying whose it is.
-*/
 wasmtime_error_t *wasm_adopt_into(backend_instance_t *i, backend_memory_t *mem,
     wasmtime_extern_t *item, wasm_trap_t **trap)
 {
@@ -88,13 +62,6 @@ wasmtime_error_t *wasm_adopt_into(backend_instance_t *i, backend_memory_t *mem,
     return (wasmtime_error_new("the holder module exports no memory"));
 }
 
-/*
-** memory_adopt
-**
-** Adopts a block Bridge reserved: a whole number of pages.
-**
-** backend.md, *Memory is adopted, not created*
-*/
 BACKEND_EXPORT backend_memory_t *memory_adopt([[maybe_unused]] backend_t *b,
     void *ptr, uint64_t len, backend_err_t *err)
 {
@@ -111,11 +78,6 @@ BACKEND_EXPORT backend_memory_t *memory_adopt([[maybe_unused]] backend_t *b,
     return (m);
 }
 
-/*
-** memory_release
-**
-** Releases an adopted block, with the modules that held it.
-*/
 BACKEND_EXPORT void memory_release(backend_memory_t *m)
 {
     int k = 0;

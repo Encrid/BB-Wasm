@@ -1,25 +1,12 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/modules/retype.c -- declares one component name with a layout
-** nobody else gives it. It loads only if nothing of that name is left: how
-** a test sees that a component is gone. Built once per name, which WHICH
-** states.
 */
-
 #include "bridge_wasm.h"
 #include "retype.h"
 #include "wasm_idle.h"
 
-/*
-** init
-**
-** Declares the name the build states, with the layout of retype.h.
-*/
 BRIDGE_EXPORT(init) int init(void)
 {
 #if WHICH == 1

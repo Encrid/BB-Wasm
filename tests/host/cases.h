@@ -1,98 +1,32 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/host/cases.h -- the host program: a host that links the library as
-** a host would, and its cases. build.py checks a refusal by the record it
-** emits, not by a return code alone, and every case ends by printing
-** "alive".
 */
-
 #ifndef TEST_CASES_H
     #define TEST_CASES_H
 
     #include "host.h"
 
-/*
-** test_print
-**
-** The sink of this program: prints a record's level and its text.
-*/
 void test_print(void *ud, const bridge_record_t *r);
 
-/*
-** test_state_small
-**
-** States the wasm module of a name as `test:<name>@0.1.0`, with the small
-** limits this stage loads everything under.
-*/
 void test_state_small(bridge_artifact_t *a, char *identity, const char *name);
 
-/*
-** test_load_small
-**
-** Loads the wasm module of a name, stated as test_state_small has it.
-*/
 void test_load_small(host_t *h, const char *name);
 
-/*
-** test_state_module
-**
-** States the wasm module of a file under an identity, with what each test
-** module mints between two barriers: most mint nothing, and say so. The
-** rows modules attach 200,000 rows in one init, at 32 bytes a change.
-*/
 void test_state_module(bridge_artifact_t *a, const char *identity,
     const char *file);
 
-/*
-** test_load_module
-**
-** Loads the wasm module of a file under an identity.
-*/
 void test_load_module(host_t *h, const char *identity, const char *file);
 
-/*
-** test_load_mover
-**
-** Loads the mover, which owns game:Position and spawns the entities.
-*/
 void test_load_mover(host_t *h);
 
-/*
-** test_state_reader
-**
-** States the reader, of another namespace, with the grant to read the two
-** components of the mover.
-*/
 void test_state_reader(bridge_artifact_t *a);
 
-/*
-** test_load_reader
-**
-** Loads the reader with its grant.
-*/
 void test_load_reader(host_t *h);
 
-/*
-** test_state_reader_limited
-**
-** States the reader of the mover, on the wasm backend, with the limits that
-** backend can keep and its grant. It only reads.
-*/
 void test_state_reader_limited(bridge_artifact_t *a);
 
-/*
-** What the sink of this program counts, of the records it does not print.
-**
-**     last_sum      of two decks with one sink, the last sum each said
-**     minted        the ids a run's modules were given, in the order the
-**                   records arrived, for each of three runs
-**     minting       which run is in progress, or -1
-*/
 typedef struct {
     uint32_t last_sum[2];
     uint32_t minted[3][256];
@@ -100,99 +34,39 @@ typedef struct {
     int minting;
 } test_counts_t;
 
-/*
-** Who a deck's records are from: the counts, and which of two decks it
-** is, or -1 where there is one.
-*/
 typedef struct {
     test_counts_t *counts;
     int which;
 } test_listener_t;
 
-/*
-** A call made from a thread that loaded nothing: bridge_destroy if `frames`
-** is negative, one "update" if it is zero, and otherwise that many frames.
-*/
 typedef struct {
-    bridge_t *b;
+    bridge_world_t *w;
     int frames;
     int result;
     host_thread_t thread;
 } test_elsewhere_t;
 
-/*
-** The two components of the game namespace, which a module of another one
-** is granted.
-*/
 static const char *const TEST_GAME[] = {
     "game:Position",
     "game:Marked"
 };
 
-/*
-** test_hear_counts
-**
-** The sink of this program: keeps what the cases count, and prints every
-** other record with its barrier.
-*/
 void test_hear_counts(void *ud, const bridge_record_t *r);
 
-/*
-** test_get_counts
-**
-** Answers what the host's sink counts.
-*/
 test_counts_t *test_get_counts(const host_t *h);
 
-/*
-** test_state_wasm
-**
-** States a wasm module of tests/modules, with what each mints between two
-** barriers: most mint nothing, and say so.
-*/
 void test_state_wasm(bridge_artifact_t *a, const char *identity,
     const char *file);
 
-/*
-** test_load_wasm
-**
-** Loads a module as it is stated.
-*/
 void test_load_wasm(host_t *h, const char *identity, const char *file);
 
-/*
-** test_state_game_reader
-**
-** States the reader, with the grant to read the two components of the game
-** namespace.
-*/
 void test_state_game_reader(bridge_artifact_t *a);
 
-/*
-** test_load_game_reader
-**
-** Loads the reader, with that grant.
-*/
 void test_load_game_reader(host_t *h);
 
-/*
-** test_start_elsewhere, test_join_elsewhere
-**
-** Make a call from another thread, and wait for it.
-*/
-void test_start_elsewhere(test_elsewhere_t *e, bridge_t *b, int frames);
+void test_start_elsewhere(test_elsewhere_t *e, bridge_world_t *w, int frames);
 void test_join_elsewhere(test_elsewhere_t *e);
 
-/*
-** What this program keeps beside the host.
-**
-**     path_at       where the settings module said its text was, each time
-**     out_of_step   how many records said the entity index is out of step
-**     quiet         only warnings and errors are printed
-**     settings      a module's settings, of every kind, as a deployment
-**                   would hand them over: a case changes one before it
-**                   loads
-*/
 typedef struct {
     uint32_t path_at[4];
     uint32_t path_count;
@@ -201,74 +75,26 @@ typedef struct {
     bridge_setting_t settings[10];
 } test_noted_t;
 
-/*
-** test_hear_noted
-**
-** The sink of this program: keeps what the cases count, and prints a
-** record unless the program is quiet and it is below a warning.
-*/
 void test_hear_noted(void *ud, const bridge_record_t *r);
 
-/*
-** test_get_noted
-**
-** Answers what this program keeps beside the host.
-*/
 test_noted_t *test_get_noted(const host_t *h);
 
-/*
-** test_state_wasm_minting
-**
-** States a module that mints up to 32 ids between two barriers.
-*/
 void test_state_wasm_minting(bridge_artifact_t *a, const char *identity,
     const char *file);
 
-/*
-** test_state_ticker
-**
-** States a wasm build of the ticker that is reloadable, and may be
-** reloaded.
-*/
 void test_state_ticker(bridge_artifact_t *a, const char *identity,
     const char *file);
 
-/*
-** test_state_configured
-**
-** States the settings module, with the program's settings and the
-** component they seed.
-*/
 void test_state_configured(const host_t *h, bridge_artifact_t *a,
     const char *identity);
 
-/*
-** test_load_wasm_minting, test_load_spawnless
-**
-** Load a wasm module: as it is stated, or stating that it spawns nothing.
-*/
 void test_load_wasm_minting(host_t *h, const char *identity, const char *file);
 void test_load_spawnless(host_t *h, const char *identity, const char *file);
 
-/*
-** test_reload_settings
-**
-** Loads the settings module and reloads it with another width: into itself,
-** or, with `drop`, into a build that declares nothing.
-*/
 void test_reload_settings(host_t *h, bool drop);
 
-/*
-** test_say_modules
-**
-** The pull: says what is loaded, and whether it still runs.
-*/
 void test_say_modules(host_t *h);
 
-/*
-** A key stated as what a case says: its row's name, where the key is in
-** the struct, how many bytes it is, and the value it is given.
-*/
 typedef struct {
     const char *name;
     size_t at;
@@ -276,52 +102,24 @@ typedef struct {
     int64_t value;
 } test_edit_t;
 
-/*
-** The struct a module's keys are in, by a name that leaves a row of edits
-** its line.
-*/
 typedef bridge_module_config_t test_keys_t;
 
-/*
-** test_put_key, test_find_edit
-**
-** Write a value into a key of `size` bytes, and answer the row of a name
-** among rows that hold it.
-*/
 void test_put_key(void *key, size_t size, int64_t value);
 const test_edit_t *test_find_edit(const test_edit_t *rows, const char *name);
 
-/*
-** What the fixtures keep beside the host, for the sinks that count.
-*/
 typedef struct {
     test_counts_t counts;
     test_listener_t listener;
     test_noted_t noted;
 } test_kept_t;
 
-/*
-** test_hand_setting
-**
-** A setting, handed to a backend that has none: the deck is not created.
-*/
 void test_hand_setting(host_t *h);
 
-/*
-** test_set_small, test_set_wasm, test_set_counting, test_set_noting
-**
-** The fixtures: what a case's host is before the case changes it. The one
-** phase "update" and the sink that prints a level; both phases; and that
-** again with the sink that counts, and with the sink that notes.
-*/
 void test_set_small(host_t *h);
 void test_set_wasm(host_t *h);
 void test_set_counting(host_t *h);
 void test_set_noting(host_t *h);
 
-/*
-** The cases. Each is handed the host as its fixture set it.
-*/
 void test_load_named(host_t *h);
 void test_create_no_sink(host_t *h);
 void test_stop(host_t *h);
@@ -435,6 +233,8 @@ void test_load_twice(host_t *h);
 void test_spawn_past_entities(host_t *h);
 void test_edit_phase_names(host_t *h);
 void test_do_wrong(host_t *h);
+void test_breach(host_t *h);
+void test_hoard(host_t *h);
 void test_outgrow_spans(host_t *h);
 void test_log_levels(host_t *h);
 void test_tag_entities(host_t *h);

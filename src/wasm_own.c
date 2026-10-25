@@ -1,15 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_own.c -- a memory a module defines for itself.
-**
-** wasmtime.md, *Memory*
 */
-
 #include <stdlib.h>
 
 #include "wasm_inside.h"
@@ -42,11 +35,6 @@ static void free_own(void *env)
     free(m);
 }
 
-/*
-** wasm_make_own
-**
-** Answers wasmtime with a memory a module defines for itself.
-*/
 wasmtime_error_t *wasm_make_own(size_t minimum, wasmtime_linear_memory_t *ret)
 {
     wasm_own_t *m = malloc(sizeof(*m));

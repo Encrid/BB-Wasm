@@ -1,14 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/host/hear_noted.c -- the sink of this program, how it loads a
-** module, and the pull.
 */
-
 #include <stdio.h>
 #include <string.h>
 
@@ -19,12 +13,6 @@ static bool begins(const bridge_record_t *r, const char *text, size_t len)
     return (r->len >= len && !memcmp(r->text, text, len));
 }
 
-/*
-** test_hear_noted
-**
-** The sink of this program: keeps what the cases count, and prints a
-** record unless the program is quiet and it is below a warning.
-*/
 void test_hear_noted(void *ud, const bridge_record_t *r)
 {
     test_noted_t *more = ud;
@@ -40,11 +28,6 @@ void test_hear_noted(void *ud, const bridge_record_t *r)
     host_print_record(nullptr, r);
 }
 
-/*
-** test_load_wasm_minting
-**
-** Loads a wasm module as it is stated.
-*/
 void test_load_wasm_minting(host_t *h, const char *identity, const char *file)
 {
     bridge_artifact_t a;
@@ -53,11 +36,6 @@ void test_load_wasm_minting(host_t *h, const char *identity, const char *file)
     host_load(h, &a);
 }
 
-/*
-** test_load_spawnless
-**
-** Loads a wasm module, stating that it spawns nothing.
-*/
 void test_load_spawnless(host_t *h, const char *identity, const char *file)
 {
     bridge_artifact_t a;
@@ -67,15 +45,10 @@ void test_load_spawnless(host_t *h, const char *identity, const char *file)
     host_load(h, &a);
 }
 
-/*
-** test_say_modules
-**
-** The pull: says what is loaded, and whether it still runs.
-*/
 void test_say_modules(host_t *h)
 {
     bridge_module_info_t info[8];
-    int n = bridge_list_modules(h->b, info, 8);
+    int n = bridge_list_modules(h->w, info, 8);
     int i = 0;
 
     printf("modules:");
