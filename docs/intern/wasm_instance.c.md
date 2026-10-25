@@ -8,6 +8,7 @@ An instance carries its own store, context and linker, and a list of the functio
 `open_store` makes the store, the context and the linker for the module's engine.
 A metered module starts with full fuel; a timed module starts with a deadline that never fires until a call arms it.
 `give_memory` adopts an imported block into the instance and defines it on the linker by namespace and field.
+The linker does not take the extern, so `give_memory` deletes it after the definition.
 
 ## Functions
 
