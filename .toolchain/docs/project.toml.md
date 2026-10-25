@@ -1,7 +1,7 @@
 # .toolchain/project.toml
 
 `.toolchain/project.toml` holds `[project]` and `[test]`.
-The other values are in the files of `.toolchain/config`, one file for each concern: `artifacts.toml`, `modules.toml`, `targets.toml`, `kinds.toml`, `sources.toml`, `variables.toml`, `package.toml` and `checks.toml`.
+The other values are in the files of `.toolchain/config`, one file for each concern: `artifacts.toml`, `modules.toml`, `targets.toml`, `kinds.toml`, `sources.toml`, `variables.toml`, `package.toml`, `checks.toml` and `leaks.toml`.
 zig, the compiler flags and the limits of the style are in `.toolchain/toolchain.toml`.
 The tools read every file as one configuration.
 
@@ -318,3 +318,59 @@ why = "A wasm32 memory holds at most 65536 pages, which is the reserve, so a gro
 
 `test --branches` reports an exception that states no reason, or that matches no unreached outcome.
 An exemption with a `system` is applied and checked only on that system.
+
+## [leaks]
+
+`[leaks]` names the functions that `test --leaks` counts, in addition to `malloc`, `calloc`, `realloc` and `free`.
+A project writes it in `leaks.toml` of `.toolchain/config`.
+
+| Key | Value |
+| --- | --- |
+| `memory` | The functions that take memory, which the code gives back with `free`. |
+| `pairs` | A table: each key is a function that takes a resource, and its value is the function that gives it back. |
+| `kinds` | A table of kinds. Each kind has `takes` and `gives`: tables from the name of a function to a place, or to a list of places. |
+| `with` | The files that give more `memory`, `pairs` and `kinds`, each in a table `[leaks]`. The variables of the build are replaced in each path. |
+
+For example:
+
+```toml
+[leaks]
+memory = ["os_path_whole"]
+
+[leaks.pairs]
+os_reserve = "os_release"
+os_lib_open = "os_lib_close"
+```
+
+A kind names its functions at their places, for example a module that a call writes through its fourth argument:
+
+```toml
+[leaks.kinds.wasmtime_module]
+takes = { wasmtime_module_new = "*4" }
+gives = { wasmtime_module_delete = "1" }
+```
+
+A project that uses a package can name the file of the package: `with = ["{bridge_os}/leaks.toml"]`.
+`.toolchain/docs/leaks.py.md` tells what a function of a pair must give and get. `.toolchain/docs/leaks.py.md`, *The places*, tells the places of a kind.
+
+## [[leaks.exception]]
+
+An exception lets a case keep a resource by design, for `test --leaks`.
+
+| Key | Value |
+| --- | --- |
+| `case` | The name of the case. It can contain `*`. |
+| `kind` | The kind of the resource: `memory`, the function that takes the resource of a pair, or a kind of `kinds`. |
+| `why` | The reason the case keeps the resource. |
+| `system` | The system that the exemption applies on. An exemption with no `system` applies on each system. |
+
+For example:
+
+```toml
+[[leaks.exception]]
+case = "a library with no unload stays open"
+kind = "os_lib_open"
+why = "A backend library that cannot unload stays open, and the next world uses it."
+```
+
+`test --leaks` reports an exemption that states no reason, or that excuses no kept resource.

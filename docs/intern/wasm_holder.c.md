@@ -8,7 +8,7 @@ This file synthesises a tiny module that imports and exports one memory, so the 
 `write_leb` writes an unsigned LEB128 number.
 `build_holder` assembles a module by bytes: a memory of the block's page count, exported as `m`.
 `wasm_adopt_into` builds the holder once per engine kind, then instantiates it while the backend points at the block, which makes `make_memory` wrap that block.
-It reads the export `m` as the memory extern the caller defines.
+It reads the export `m` as the memory extern the caller defines. The caller owns that extern, and deletes it.
 
 ## Functions
 
