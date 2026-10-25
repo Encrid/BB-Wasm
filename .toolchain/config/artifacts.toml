@@ -5,7 +5,7 @@ folder = "backends"
 sources = ["src/*.c"]
 link = ["{bridge_os}/os.a"]
 include = ["{bridge}/include", "src", "{bridge_os}/include", "{wasmtime}/include"]
-flags = ["{quiet}", "{system_defines}", "{wasmtime}/{wasmtime_link}", "{system_libraries}", "{rpath}"]
+flags = ["{quiet}", "{system_defines}", "{wasmtime_link}", "{system_libraries}", "{rpath}"]
 beside = ["{wasmtime}/{wasmtime_runtime}"]
 
 [[artifact]]
