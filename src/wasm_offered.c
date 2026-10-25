@@ -1,17 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** src/wasm_offered.c -- a function Bridge offers a module,
-** as wasmtime calls it: with the arguments where the results go, each a raw
-** value of the kind its signature states.
-**
-** signatures.md, *Imports are declared, exports are checked*
 */
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -19,11 +10,6 @@
 
 static const char WASM_REFUSED[] = "refused by Bridge";
 
-/*
-** wasm_make_offered
-**
-** Answers what wasmtime is handed with a function Bridge offers.
-*/
 wasm_offered_t *wasm_make_offered(const backend_entry_t *entry)
 {
     const backend_sig_t *sig = entry->sig;
@@ -66,13 +52,6 @@ static void write_results(const wasm_offered_t *h, const uint64_t *out,
     }
 }
 
-/*
-** wasm_call_offered
-**
-** What wasmtime calls when a module calls a function Bridge offers.
-** One that is refused traps: Bridge knows why and says so itself,
-** and the trap only has to unwind.
-*/
 wasm_trap_t *wasm_call_offered(void *env,
     [[maybe_unused]] wasmtime_caller_t *caller, wasmtime_val_raw_t *raw,
     [[maybe_unused]] size_t count)
@@ -88,11 +67,6 @@ wasm_trap_t *wasm_call_offered(void *env,
     return (nullptr);
 }
 
-/*
-** wasm_make_types
-**
-** Writes the types of wasmtime's that a signature's kinds are.
-*/
 void wasm_make_types(wasm_valtype_vec_t *vec,
     const enum backend_type *kinds, uint32_t count)
 {

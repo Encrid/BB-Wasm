@@ -1,24 +1,13 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/modules/chatty.c -- writes more lines in one phase than its
-** ring holds.
 */
-
 #include "bridge_wasm.h"
 #include "wasm_idle.h"
 
 constexpr uint32_t LINES = 100;
 
-/*
-** talk
-**
-** Writes a hundred lines, each with its number.
-*/
 BRIDGE_EXPORT(talk) int talk(void)
 {
     uint32_t i = 0;
@@ -30,15 +19,10 @@ BRIDGE_EXPORT(talk) int talk(void)
     return (0);
 }
 
-/*
-** init
-**
-** Registers the system.
-*/
 BRIDGE_EXPORT(init) int init(void)
 {
     int none = 0;
 
-    BRIDGE_ADD_SYSTEM("talk", "update", &none, 0, nullptr, 0);
+    BRIDGE_ADD_SYSTEM("talk", "update", &none, 0, nullptr, 0, nullptr, 0);
     return (0);
 }

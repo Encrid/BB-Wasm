@@ -1,4 +1,6 @@
-;; Its own memory starts larger than its limit: it cannot be instantiated at all.
+;; Copyright (C) 2026 Enkrid
+;;
+;; Under the GNU Affero General Public License, version 3 only: see license.
 (module
   (memory 64)
   (func (export "init") (result i32) (i32.const 0)))

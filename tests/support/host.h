@@ -1,18 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/support/host.h -- what the host program of the tests is built on.
-** The program is a table of cases, and a case is a function handed the
-** host: what main built, and what its fixture set.
-**
-** A host is compiled against include/ alone and linked with the library as
-** a host would be.
 */
-
 #ifndef TEST_HOST_H
     #define TEST_HOST_H
 
@@ -23,19 +13,6 @@
 
 constexpr int64_t HOST_MS = 1'000'000;
 
-/*
-** A host under test.
-**
-**     what          the case that was asked for
-**     arg           what the case's row hands it, or "" if it takes nothing
-**     kept          what the program's fixtures keep beside the host
-**     backends      the one backend there is, which cfg names
-**     phases        "update" and "present", of which cfg names some
-**     cfg           what the deck is created from: a case changes it
-**                   before it opens the host
-**     sink, ud      who is handed every record, and with what
-**     b             the deck, once the host is open
-*/
 typedef struct host {
     const char *what;
     const char *arg;
@@ -45,14 +22,9 @@ typedef struct host {
     bridge_config_t cfg;
     bridge_sink_fn_t sink;
     void *ud;
-    bridge_t *b;
+    bridge_world_t *w;
 } host_t;
 
-/*
-** A case of a program: its name on the command line, what runs it, what it
-** is handed, or "" for a case that takes nothing, and the fixture that sets
-** its host first.
-*/
 typedef struct {
     const char *name;
     void (*run)(host_t *h);
@@ -60,110 +32,37 @@ typedef struct {
     void (*set)(host_t *h);
 } host_case_t;
 
-/*
-** host_init
-**
-** Fills a host from the command line, with the configuration every case
-** starts from: the backend, both phases, one thread, and the budgets. Its
-** sink is its fixture's to set.
-*/
 void host_init(host_t *h, int argc, char **argv);
 
-/*
-** host_run
-**
-** Runs the case the command line named, of `count` cases, on the host its
-** fixture set. Answers what main returns: 2, with a line, if there is no
-** such case.
-*/
 int host_run(host_t *h, const host_case_t *cases, size_t count);
 
-/*
-** host_open
-**
-** Creates the host's deck. Answers 1, having said "bridge_create refused"
-** and "alive", if it was refused: the case is over.
-*/
 [[nodiscard]] int host_open(host_t *h);
 
-/*
-** host_close
-**
-** Destroys the host's deck and says "alive".
-*/
 void host_close(host_t *h);
 
-/*
-** host_open_only
-**
-** A whole case: the host is opened as it is configured, and closed.
-*/
 void host_open_only(host_t *h);
 
-/*
-** host_print_record
-**
-** A sink: prints a record with whose it is and its two numbers.
-*/
 void host_print_record(void *ud, const bridge_record_t *r);
 
-/*
-** host_load, host_reload, host_unload
-**
-** Make the call and say how it ended, by the module's identity.
-*/
 void host_load(host_t *h, const bridge_artifact_t *a);
 void host_reload(host_t *h, const bridge_artifact_t *a);
 void host_unload(host_t *h, const char *identity);
 
-/*
-** host_run_frames
-**
-** Runs "update" and "present" `count` times, and says each that was
-** refused.
-*/
 void host_run_frames(host_t *h, int count);
 
-/*
-** host_run_frames_unsaid
-**
-** Runs "update" and "present" `count` times, and says nothing.
-*/
-void host_run_frames_unsaid(bridge_t *b, int count);
+void host_run_frames_unsaid(bridge_world_t *w, int count);
 
-/*
-** A thread of the host's own: what it runs, with what, and the operating
-** system's handle of it.
-*/
 typedef struct {
     void (*run)(void *arg);
     void *arg;
     void *handle;
 } host_thread_t;
 
-/*
-** host_thread_start, host_thread_join
-**
-** Start a thread that calls `t->run` with `t->arg`, and wait for it to end.
-*/
 void host_thread_start(host_thread_t *t);
 void host_thread_join(host_thread_t *t);
 
-/*
-** host_read_module
-**
-** Answers the bytes of the wasm module of a name, from where the build put
-** it, and how many. The program ends if it cannot be read.
-*/
 void *host_read_module(const char *file, size_t *len);
 
-/*
-** host_state_wasm
-**
-** States a wasm module of tests/modules as a deployment must: every key
-** said, with the limits the backend keeps. It spawns nothing unless the
-** case says so.
-*/
 void host_state_wasm(bridge_artifact_t *a, const char *identity,
     const char *file);
 

@@ -1,16 +1,8 @@
 /*
-** Copyright (C) 2026 BB-Wasm Owner
-**
-** This file is part of BB-Wasm.
+** Copyright (C) 2026 Enkrid
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
-**
-** tests/adopt/adopt_host.c -- a function the host defines, with the
-** signature it declared, and timed calls back to back.
-**
-** wasmtime.md, *Deadlines*
 */
-
 #include <stdio.h>
 
 #include "adopt.h"
@@ -18,11 +10,6 @@
 static const enum backend_type ADOPT_PARAMS[2] = { BACKEND_I32, BACKEND_I64 };
 static const enum backend_type ADOPT_RESULTS[1] = { BACKEND_I32 };
 
-/*
-** ping
-**
-** What the host answers a module that calls it: both arguments, added.
-*/
 static int ping([[maybe_unused]] void *ud, const uint64_t *args,
     uint64_t *results)
 {
@@ -30,12 +17,6 @@ static int ping([[maybe_unused]] void *ud, const uint64_t *args,
     return (0);
 }
 
-/*
-** make_host
-**
-** Answers an instance of the module that calls the host, compiled with
-** `demands` and with `ping` defined for it, or nullptr and why in `t->err`.
-*/
 static backend_instance_t *make_host(adopt_t *t, backend_module_t **host,
     enum backend_capability demands)
 {
@@ -54,11 +35,6 @@ static backend_instance_t *make_host(adopt_t *t, backend_module_t **host,
     return (i);
 }
 
-/*
-** adopt_check_host_function
-**
-** A function the host defines, called by a module with an i32 and an i64.
-*/
 int adopt_check_host_function(adopt_t *t)
 {
     backend_module_t *host;
@@ -74,12 +50,6 @@ int adopt_check_host_function(adopt_t *t)
     return (0);
 }
 
-/*
-** call_timed
-**
-** Makes 20,000 calls, each under a timeout of a second. Answers which
-** failed, or 20,000.
-*/
 static int call_timed(adopt_t *t, backend_instance_t *i, backend_func_t *f,
     int32_t *status)
 {
@@ -94,14 +64,6 @@ static int call_timed(adopt_t *t, backend_instance_t *i, backend_func_t *f,
     return (k);
 }
 
-/*
-** adopt_check_timed_calls
-**
-** Timed calls back to back. Each is over long before its second is up, so
-** none may be interrupted, and the backend must still be able to stop its
-** clock afterwards: a watchdog that counted wake-ups instead of looking
-** would lose one here and wait forever.
-*/
 int adopt_check_timed_calls(adopt_t *t)
 {
     backend_module_t *timed;
