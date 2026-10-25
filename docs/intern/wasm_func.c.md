@@ -9,6 +9,7 @@ A module is instantiated once, on the first function looked up in it.
 It builds the type and defines the import on the linker with `wasm_call_offered`.
 `instantiate` links the module once.
 `find_export` reads an export, which must be a function of shape `() -> i32`, and else writes why in `err`.
+It deletes an extern that it gets and refuses. `instance_get_func` keeps the function of the extern, and then deletes the extern.
 
 ## Functions
 
