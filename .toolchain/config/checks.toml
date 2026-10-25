@@ -107,14 +107,14 @@ why = "The holder has no start function, so adopting its memory never traps."
 
 [[branches.exception]]
 path = "src/wasm_instance.c"
-line = 61
+line = 63
 col = 35
 side = "false"
 why = "Giving an adopted memory never traps, so the loop never stops on a trap."
 
 [[branches.exception]]
 path = "src/wasm_instance.c"
-line = 65
+line = 67
 col = 19
 side = "false"
 why = "Giving an adopted memory never traps, so this never reports a trap."

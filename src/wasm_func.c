@@ -63,11 +63,14 @@ static int find_export(backend_instance_t *i, const char *name,
     wasmtime_extern_t *item, backend_err_t *err)
 {
     constexpr size_t room = sizeof(err->text);
-    bool found = wasmtime_instance_export_get(i->ctx, &i->instance, name,
-        strlen(name), item) && item->kind == WASMTIME_EXTERN_FUNC;
+    bool got = wasmtime_instance_export_get(i->ctx, &i->instance, name,
+        strlen(name), item);
+    bool found = got && item->kind == WASMTIME_EXTERN_FUNC;
 
     if (found && is_shaped(i, &item->of.func))
         return (0);
+    if (got)
+        wasmtime_extern_delete(item);
     if (!err)
         return (1);
     if (found)
@@ -80,7 +83,7 @@ static int find_export(backend_instance_t *i, const char *name,
 BACKEND_EXPORT backend_func_t *instance_get_func(backend_instance_t *i,
     const char *name, backend_err_t *err)
 {
-    wasmtime_extern_t item;
+    wasmtime_extern_t item = {};
     backend_func_t *f;
 
     if (instantiate(i, err) || find_export(i, name, &item, err))
@@ -88,6 +91,7 @@ BACKEND_EXPORT backend_func_t *instance_get_func(backend_instance_t *i,
     f = calloc(1, sizeof(*f));
     f->instance = i;
     f->func = item.of.func;
+    wasmtime_extern_delete(&item);
     f->next = i->funcs;
     i->funcs = f;
     return (f);

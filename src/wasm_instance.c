@@ -39,13 +39,15 @@ static void open_store(backend_instance_t *i, backend_module_t *m)
 static wasmtime_error_t *give_memory(backend_instance_t *i,
     const backend_memory_import_t *mi, wasm_trap_t **trap)
 {
-    wasmtime_extern_t item;
+    wasmtime_extern_t item = {};
     wasmtime_error_t *error = wasm_adopt_into(i, mi->memory, &item, trap);
 
     if (error || *trap)
         return (error);
-    return (wasmtime_linker_define(i->linker, i->ctx, mi->ns, strlen(mi->ns),
-        mi->field, strlen(mi->field), &item));
+    error = wasmtime_linker_define(i->linker, i->ctx, mi->ns, strlen(mi->ns),
+        mi->field, strlen(mi->field), &item);
+    wasmtime_extern_delete(&item);
+    return (error);
 }
 
 BACKEND_EXPORT backend_instance_t *instance_create(backend_module_t *m,
