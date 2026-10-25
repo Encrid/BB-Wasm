@@ -151,7 +151,7 @@ It runs each case one time. Then it writes a line for each case that does not gi
 - `leaks: <case> calls realloc with 0 bytes`.
 
 The kind `memory` counts `malloc`, `calloc`, `realloc` and `free`.
-`leaks.toml` of `.toolchain/config` names more functions and pairs, for example `os_reserve` and `os_release`.
+`leaks.toml` of `.toolchain/config` names more functions, pairs and kinds, for example the pair `os_reserve` and `os_release`.
 `.toolchain/docs/project.toml.md`, *[leaks]*, gives its keys.
 
 For each line, make the code give the resource back. If a case keeps a resource by design, write an exemption with its reason.
