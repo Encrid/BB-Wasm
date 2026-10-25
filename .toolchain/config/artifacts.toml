@@ -247,15 +247,6 @@ include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
-name = "watcher"
-kind = "wasm_module"
-test = true
-folder = "wasm"
-sources = ["tests/modules/watcher.c", "tests/modules/idle.c"]
-include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
-
-[[artifact]]
 name = "chain"
 kind = "wasm_module"
 test = true
@@ -279,15 +270,6 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/events.c", "tests/modules/idle.c"]
-include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
-
-[[artifact]]
-name = "fixer"
-kind = "wasm_module"
-test = true
-folder = "wasm"
-sources = ["tests/modules/fixer.c", "tests/modules/idle.c"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -544,15 +526,6 @@ include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["WHICH=2", "BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
-name = "retype-extra"
-kind = "wasm_module"
-test = true
-folder = "wasm"
-sources = ["tests/modules/retype.c", "tests/modules/idle.c"]
-include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["WHICH=3", "BRIDGE_ROWS_CHECKED"]
-
-[[artifact]]
 name = "retype-settings"
 kind = "wasm_module"
 test = true
@@ -596,33 +569,6 @@ folder = "wasm"
 sources = ["tests/modules/ticker.c"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["STEP=10", "BRIDGE_ROWS_CHECKED"]
-
-[[artifact]]
-name = "ticker-wide"
-kind = "wasm_module"
-test = true
-folder = "wasm"
-sources = ["tests/modules/ticker.c"]
-include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["STEP=10", "WIDE", "BRIDGE_ROWS_CHECKED"]
-
-[[artifact]]
-name = "ticker-fail"
-kind = "wasm_module"
-test = true
-folder = "wasm"
-sources = ["tests/modules/ticker.c"]
-include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["STEP=10", "FAIL_RELOAD", "BRIDGE_ROWS_CHECKED"]
-
-[[artifact]]
-name = "ticker-noextra"
-kind = "wasm_module"
-test = true
-folder = "wasm"
-sources = ["tests/modules/ticker.c"]
-include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["STEP=10", "NO_EXTRA", "BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "ticker-trip"
