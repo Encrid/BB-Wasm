@@ -7,6 +7,8 @@ It adds the macros a module registers with, and reads and writes its cells throu
 ## The macros
 
 `BRIDGE_COMPONENT` and `BRIDGE_DECLARE` register a component by its type and descriptor; `BRIDGE_DECLARE_TAG` registers a tag that carries no bytes.
+Each of the three takes `on_unload`, `storage` and `on_destroy`, in the order of the declaration of Bridge.
+
 `BRIDGE_ADD_SYSTEM` and `BRIDGE_OBSERVER` register a system and an observer, each with its terms, its changed slots, and the systems it runs before.
 `BRIDGE_ATTACH` lends a value, then attaches it to a slot.
 `BRIDGE_AT` packs a table and a row, or an id, into one place.
