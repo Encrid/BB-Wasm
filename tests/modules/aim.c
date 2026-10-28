@@ -73,9 +73,9 @@ BRIDGE_EXPORT(init) int init(void)
     };
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_DELETE,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     aim = BRIDGE_COMPONENT("game:Aim", aim_t, BRIDGE_DELETE,
-        BRIDGE_DIRECT_INDEXED);
+        BRIDGE_DIRECT_INDEXED, BRIDGE_ON_DESTROY_REMOVE);
     two[0].slot = position;
     two[1].slot = aim;
     bodies = BRIDGE_ADD_SYSTEM("reached", "present", two, 2, nullptr, 0, nullptr, 0);
