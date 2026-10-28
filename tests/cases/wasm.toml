@@ -67,7 +67,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "module_config.abi-another-refused"
 run = ["{out}/wasm-host{exe}", "module_config.abi-another-refused"]
-claims = { matches = ["module 'test:ok@0.1.0' is refused: it wants ABI 2 and this is ABI 1.*alive"] }
+claims = { matches = ["module 'test:ok@0.1.0' is refused: it wants ABI 3 and this is ABI 2.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -97,7 +97,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "config.abi-another-refused"
 run = ["{out}/wasm-host{exe}", "config.abi-another-refused"]
-claims = { matches = ["the host is of host ABI 2, and this is 1.*bridge_create refused.*alive"] }
+claims = { matches = ["the host is of host ABI 3, and this is 2.*bridge_create refused.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -235,7 +235,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "module_config.spans-too-small-refused"
 run = ["{out}/wasm-host{exe}", "module_config.spans-too-small-refused"]
-claims = { matches = ["module 'view:reader@0.1.0' did not load: its spans of 16 bytes do not hold a column_base of 2 components by \\d+ tables.*moved 2 1000.*alive"] }
+claims = { matches = ["module 'view:reader@0.1.0' did not load: its spans of 16 bytes do not hold a column_base of 2 types by \\d+ tables.*moved 2 1000.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -1609,7 +1609,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "BRIDGE_SPAN_SIZE-what-a-span-takes-of-the-spans"
 run = ["{out}/wasm-host{exe}", "BRIDGE_SPAN_SIZE-what-a-span-takes-of-the-spans"]
-claims = { matches = ["module 'view:reader@0.1.0' did not load: its spans of 16 bytes do not hold a column_base of 2 components by \\d+ tables.*moved 2 1000.*alive"] }
+claims = { matches = ["module 'view:reader@0.1.0' did not load: its spans of 16 bytes do not hold a column_base of 2 types by \\d+ tables.*moved 2 1000.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
