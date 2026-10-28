@@ -53,7 +53,7 @@ BRIDGE_EXPORT(init) int init(void)
     int none = 0;
 
     marked = BRIDGE_COMPONENT("game:Marked", marked_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = marked;
     BRIDGE_ADD_SYSTEM("poke", "update", &none, 0, &marked, 1, nullptr, 0);
     watching = BRIDGE_OBSERVER("any",

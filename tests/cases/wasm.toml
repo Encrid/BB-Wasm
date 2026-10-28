@@ -1013,6 +1013,36 @@ claims = { matches = ["module 'game:wrong@0\\.1\\.0' did not load: type 'game:Od
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
+name = "declare-on-destroy-unset-refused"
+run = ["{out}/wasm-host{exe}", "declare-on-destroy-unset-refused"]
+claims = { matches = ["module 'game:wrong@0\\.1\\.0' did not load: type 'game:Odd': on_destroy is unset.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+
+[[case]]
+name = "BRIDGE_COMPONENT-passes-on_destroy"
+run = ["{out}/wasm-host{exe}", "BRIDGE_COMPONENT-passes-on_destroy"]
+claims = { matches = ["module 'game:wrong@0\\.1\\.0' did not load: type 'game:KeptStruct' is a singleton, and a singleton states BRIDGE_ON_DESTROY_REMOVE.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "BRIDGE_ON_DESTROY_REMOVE-a-singleton-of-each-macro-loads"] }
+
+[[case]]
+name = "BRIDGE_DECLARE-passes-on_destroy"
+run = ["{out}/wasm-host{exe}", "BRIDGE_DECLARE-passes-on_destroy"]
+claims = { matches = ["module 'game:wrong@0\\.1\\.0' did not load: type 'game:KeptDeclared' is a singleton, and a singleton states BRIDGE_ON_DESTROY_REMOVE.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "BRIDGE_ON_DESTROY_REMOVE-a-singleton-of-each-macro-loads"] }
+
+[[case]]
+name = "BRIDGE_DECLARE_TAG-passes-on_destroy"
+run = ["{out}/wasm-host{exe}", "BRIDGE_DECLARE_TAG-passes-on_destroy"]
+claims = { matches = ["module 'game:wrong@0\\.1\\.0' did not load: type 'game:KeptTag' is a singleton, and a singleton states BRIDGE_ON_DESTROY_REMOVE.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "BRIDGE_ON_DESTROY_REMOVE-a-singleton-of-each-macro-loads"] }
+
+[[case]]
+name = "BRIDGE_ON_DESTROY_REMOVE-a-singleton-of-each-macro-loads"
+run = ["{out}/wasm-host{exe}", "BRIDGE_ON_DESTROY_REMOVE-a-singleton-of-each-macro-loads"]
+claims = { matches = ["game:wrong@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "BRIDGE_COMPONENT-passes-on_destroy"] }
+
+[[case]]
 name = "declare-size-other-than-descriptor-refused"
 run = ["{out}/wasm-host{exe}", "declare-size-other-than-descriptor-refused"]
 claims = { matches = ["module 'game:wrong@0\\.1\\.0' did not load: type 'game:Odd' is 12 bytes aligned to 4 in the module and 8 aligned to 4 by its descriptor.*alive"] }

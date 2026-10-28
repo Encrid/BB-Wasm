@@ -57,9 +57,9 @@ BRIDGE_EXPORT(init) int init(void)
     bridge_term_t terms[1] = {{ 0, BRIDGE_READ, BRIDGE_AND, 0 }};
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     roster = BRIDGE_COMPONENT("game:Roster", roster_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = position;
     counting = BRIDGE_ADD_SYSTEM("count", "update", terms, 1, nullptr, 0, nullptr, 0);
     terms[0].slot = roster;

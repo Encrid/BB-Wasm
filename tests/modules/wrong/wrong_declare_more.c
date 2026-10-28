@@ -13,6 +13,14 @@ void wrong_declare_policy_unset(void)
     bridge_declare(bridge_put(&d, sizeof(d)));
 }
 
+void wrong_declare_on_destroy_unset(void)
+{
+    bridge_declaration_t d = wrong_state_type();
+
+    d.on_destroy = (enum bridge_on_destroy)0;
+    bridge_declare(bridge_put(&d, sizeof(d)));
+}
+
 void wrong_declare_size_other(void)
 {
     bridge_declaration_t d = wrong_state_type();

@@ -40,9 +40,9 @@ BRIDGE_EXPORT(init) int init(void)
     };
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_DELETE,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     hit = BRIDGE_COMPONENT("game:Hit", hit_t, BRIDGE_DELETE,
-        BRIDGE_SPARSE_SET);
+        BRIDGE_SPARSE_SET, BRIDGE_ON_DESTROY_REMOVE);
     one[0].slot = hit;
     hits = BRIDGE_ADD_SYSTEM("walked", "update", one, 1, nullptr, 0, nullptr, 0);
     two[0].slot = position;

@@ -35,11 +35,11 @@ BRIDGE_EXPORT(init) int init(void)
     uint32_t i = 0;
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     hidden = BRIDGE_COMPONENT("game:Private", private_t, PRIVATE_POLICY,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     roster = BRIDGE_COMPONENT("game:Roster", roster_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     while (i < ENTITIES) {
         id = spawn_one(i, &r);
         if (!i)

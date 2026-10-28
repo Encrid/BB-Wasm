@@ -56,9 +56,12 @@ BRIDGE_EXPORT(init) int init(void)
     bridge_term_t terms[1] = {{ 0, BRIDGE_READ, BRIDGE_AND, 0 }};
     int none = 0;
 
-    a = BRIDGE_COMPONENT("game:LinkA", link_t, BRIDGE_STRIP, BRIDGE_TABLE);
-    b = BRIDGE_COMPONENT("game:LinkB", link_t, BRIDGE_STRIP, BRIDGE_TABLE);
-    c = BRIDGE_COMPONENT("game:LinkC", link_t, BRIDGE_STRIP, BRIDGE_TABLE);
+    a = BRIDGE_COMPONENT("game:LinkA", link_t, BRIDGE_STRIP, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
+    b = BRIDGE_COMPONENT("game:LinkB", link_t, BRIDGE_STRIP, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
+    c = BRIDGE_COMPONENT("game:LinkC", link_t, BRIDGE_STRIP, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
     BRIDGE_ADD_SYSTEM("start", "update", &none, 0, &a, 1, nullptr, 0);
     terms[0].slot = a;
     on_a = BRIDGE_OBSERVER("got_a", BRIDGE_ON_ENTER, terms, 1, &b, 1, nullptr, 0);

@@ -60,7 +60,7 @@ BRIDGE_EXPORT(init) int init(void)
     uint32_t i = 0;
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_DELETE,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     BRIDGE_ADD_SYSTEM("cull", "update", nullptr, 0, nullptr, 0, nullptr, 0);
     BRIDGE_ADD_SYSTEM("check", "present", nullptr, 0, nullptr, 0, nullptr, 0);
     while (i < ENTITIES) {

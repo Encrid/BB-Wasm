@@ -13,11 +13,11 @@ BRIDGE_EXPORT(init) int init(void)
     bridge_term_t terms[1] = {{ 0, BRIDGE_READ, BRIDGE_OPTIONAL, 0 }};
 
     BRIDGE_DECLARE(BRIDGE_ENUM, "game:mode_t", mode_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     BRIDGE_DECLARE(BRIDGE_BITMASK, "game:flags_t", flags_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     settings = BRIDGE_COMPONENT("game:Settings", settings_t, BRIDGE_DELETE,
-        KEPT);
+        KEPT, BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = settings;
     BRIDGE_ADD_SYSTEM("show", "update", terms, 1, nullptr, 0, nullptr, 0);
     return (0);

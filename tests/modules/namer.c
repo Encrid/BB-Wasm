@@ -36,7 +36,8 @@ BRIDGE_EXPORT(init) int init(void)
     bridge_term_t terms[1] = {{ 0, BRIDGE_READ, BRIDGE_AND, 0 }};
     [[maybe_unused]] name_t n = {{ 0, sizeof(HELLO) - 1 }};
 
-    name = BRIDGE_COMPONENT("game:Name", name_t, BRIDGE_DELETE, BRIDGE_TABLE);
+    name = BRIDGE_COMPONENT("game:Name", name_t, BRIDGE_DELETE, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = name;
     saying = BRIDGE_ADD_SYSTEM("say", "update", terms, 1, nullptr, 0, nullptr, 0);
 #ifndef READER

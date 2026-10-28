@@ -26,10 +26,11 @@ BRIDGE_EXPORT(init) int init(void)
     uint32_t changes[2];
 
     wrong_position = BRIDGE_COMPONENT("game:Position", position_t,
-        BRIDGE_STRIP, BRIDGE_TABLE);
+        BRIDGE_STRIP, BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     wrong_thing = BRIDGE_COMPONENT("other:Thing", marked_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
-    wrong_flag = BRIDGE_DECLARE_TAG("game:Flag", BRIDGE_STRIP, BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
+    wrong_flag = BRIDGE_DECLARE_TAG("game:Flag", BRIDGE_STRIP, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = wrong_position;
     changes[0] = wrong_position;
     changes[1] = wrong_flag;

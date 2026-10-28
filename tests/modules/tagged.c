@@ -52,8 +52,9 @@ BRIDGE_EXPORT(init) int init(void)
     };
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
-    frozen = BRIDGE_DECLARE_TAG("game:Frozen", BRIDGE_STRIP, BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
+    frozen = BRIDGE_DECLARE_TAG("game:Frozen", BRIDGE_STRIP, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = position;
     terms[1].slot = frozen;
     counting = BRIDGE_ADD_SYSTEM("count", "update", terms, 2, nullptr, 0, nullptr, 0);

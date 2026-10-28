@@ -26,7 +26,8 @@ BRIDGE_EXPORT(init) int init(void)
     bridge_term_t terms[1] = {{ 0, BRIDGE_READ, BRIDGE_AND, 0 }};
     body_t b = {{ 1.0f, 2.0f }, 3.0f };
 
-    body = BRIDGE_COMPONENT("game:Body", body_t, BRIDGE_DELETE, BRIDGE_TABLE);
+    body = BRIDGE_COMPONENT("game:Body", body_t, BRIDGE_DELETE, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = body;
     reading = BRIDGE_ADD_SYSTEM("read", "update", terms, 1, nullptr, 0, nullptr, 0);
     BRIDGE_ATTACH(bridge_spawn(), body, b);
