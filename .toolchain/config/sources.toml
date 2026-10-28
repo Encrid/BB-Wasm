@@ -1,6 +1,6 @@
 [[source]]
 name = "bridge"
-url = "https://github.com/Encrid/Bridge/releases/download/v0.1.0/Bridge-{target}.zip"
+url = "https://github.com/Encrid/Bridge/releases/download/v0.2.0/Bridge-{target}.zip"
 sha256 = "{bridge_sha256}"
 into = "{build}/third_party/bridge/{target}"
 
