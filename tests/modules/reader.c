@@ -48,9 +48,9 @@ BRIDGE_EXPORT(init) int init(void)
     };
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     marked = BRIDGE_COMPONENT("game:Marked", marked_t, BRIDGE_STRIP,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = position;
     terms[1].slot = marked;
     summing = BRIDGE_ADD_SYSTEM("sum", "present", terms, 2, nullptr, 0, nullptr, 0);

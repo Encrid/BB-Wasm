@@ -10,13 +10,17 @@
 BRIDGE_EXPORT(init) int init(void)
 {
 #if WHICH == 1
-    BRIDGE_COMPONENT("game:Private", retyped_t, BRIDGE_STRIP, BRIDGE_TABLE);
+    BRIDGE_COMPONENT("game:Private", retyped_t, BRIDGE_STRIP, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
 #elif WHICH == 2
-    BRIDGE_COMPONENT("game:vec2_t", retyped_t, BRIDGE_STRIP, BRIDGE_TABLE);
+    BRIDGE_COMPONENT("game:vec2_t", retyped_t, BRIDGE_STRIP, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
 #elif WHICH == 4
-    BRIDGE_COMPONENT("game:Settings", retyped_t, BRIDGE_STRIP, BRIDGE_TABLE);
+    BRIDGE_COMPONENT("game:Settings", retyped_t, BRIDGE_STRIP, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
 #else
-    BRIDGE_COMPONENT("game:Extra", retyped_t, BRIDGE_STRIP, BRIDGE_TABLE);
+    BRIDGE_COMPONENT("game:Extra", retyped_t, BRIDGE_STRIP, BRIDGE_TABLE,
+        BRIDGE_ON_DESTROY_REMOVE);
 #endif
     return (0);
 }

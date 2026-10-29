@@ -79,7 +79,7 @@ BRIDGE_EXPORT(init) int init(void)
     uint64_t id;
 
     shield = BRIDGE_COMPONENT("game:Shield", shield_t, BRIDGE_DELETE,
-        BRIDGE_TOGGLE);
+        BRIDGE_TOGGLE, BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = shield;
     lowering = BRIDGE_ADD_SYSTEM("lower", "update", terms, 1, nullptr, 0, nullptr, 0);
     terms[0].access = BRIDGE_READ;

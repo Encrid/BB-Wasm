@@ -77,14 +77,14 @@ BRIDGE_EXPORT(init) int init(void)
 #endif
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_DELETE,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
 #if defined(BREACH_SPARSE)
     marked = BRIDGE_COMPONENT("game:Mark", marked_t, BRIDGE_DELETE,
-        BRIDGE_SPARSE_SET);
+        BRIDGE_SPARSE_SET, BRIDGE_ON_DESTROY_REMOVE);
 #endif
 #if defined(BREACH_DIRECT)
     dotted = BRIDGE_COMPONENT("game:Dot", marked_t, BRIDGE_DELETE,
-        BRIDGE_DIRECT_INDEXED);
+        BRIDGE_DIRECT_INDEXED, BRIDGE_ON_DESTROY_REMOVE);
 #endif
     term[0].slot = position;
     moving = BRIDGE_ADD_SYSTEM("breach", "update", term, 1, nullptr, 0,

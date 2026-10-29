@@ -50,7 +50,7 @@ BRIDGE_EXPORT(init) int init(void)
     position_t p = { 1.0f, 0.0f };
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_DELETE,
-        BRIDGE_TABLE);
+        BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = position;
     doubling = BRIDGE_ADD_SYSTEM("twice", "update", terms, 1, nullptr, 0, nullptr, 0);
     adding = BRIDGE_ADD_SYSTEM("more", "update", terms, 1, nullptr, 0, &doubling, 1);

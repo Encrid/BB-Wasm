@@ -15,19 +15,19 @@
     #include "bridge_wasm_span.h"
     #include "bridge_wasm_toggle.h"
 
-    #define BRIDGE_DECLARE(kind, name, T, on_unload, storage) \
+    #define BRIDGE_DECLARE(kind, name, T, on_unload, storage, on_destroy) \
         bridge_declare(BRIDGE_STATE(bridge_declaration_t, \
             bridge_put(name, sizeof(name) - 1), sizeof(name) - 1, kind, \
             sizeof(T), alignof(T), \
             bridge_put(T##_desc, sizeof(T##_desc) - 1), sizeof(T##_desc) - 1, \
-            on_unload, storage))
-    #define BRIDGE_COMPONENT(name, T, on_unload, storage) \
-        BRIDGE_DECLARE(BRIDGE_STRUCT, name, T, on_unload, storage)
+            on_unload, storage, on_destroy))
+    #define BRIDGE_COMPONENT(name, T, on_unload, storage, on_destroy) \
+        BRIDGE_DECLARE(BRIDGE_STRUCT, name, T, on_unload, storage, on_destroy)
 
-    #define BRIDGE_DECLARE_TAG(name, on_unload, storage) \
+    #define BRIDGE_DECLARE_TAG(name, on_unload, storage, on_destroy) \
         bridge_declare(BRIDGE_STATE(bridge_declaration_t, \
             bridge_put(name, sizeof(name) - 1), sizeof(name) - 1, BRIDGE_TAG, \
-            0, 1, 0, 0, on_unload, storage))
+            0, 1, 0, 0, on_unload, storage, on_destroy))
 
     #define BRIDGE_ADD_SYSTEM(name, phase, terms, count, changes, \
         change_count, before, before_count) \
@@ -45,7 +45,7 @@
             BRIDGE_PUT_SLOTS(changes, change_count), change_count, \
             BRIDGE_PUT_SLOTS(before, before_count), before_count))
     #define BRIDGE_PUT_SLOTS(slots, count) \
-        ((count) ? bridge_put(slots, (count) * sizeof(uint32_t)) : 0)
+        bridge_put(slots, (count) * sizeof(uint32_t))
 
     #define BRIDGE_ATTACH(id, slot, value) \
         bridge_attach(id, slot, bridge_lend(&(value), sizeof(value)))

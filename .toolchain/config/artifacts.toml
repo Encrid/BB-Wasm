@@ -749,6 +749,15 @@ include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_policy_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
+name = "wrong-declare-on-destroy-unset"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["AT_INIT=wrong_declare_on_destroy_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
 name = "wrong-declare-size-other"
 kind = "wasm_module"
 test = true
@@ -972,3 +981,39 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_tag_value", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "wrong-keep-component"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["AT_INIT=wrong_keep_component", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "wrong-keep-declare"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["AT_INIT=wrong_keep_declare", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "wrong-keep-tag"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["AT_INIT=wrong_keep_tag", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "wrong-keep-none"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["AT_INIT=wrong_keep_none", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
