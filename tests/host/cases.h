@@ -64,7 +64,8 @@ void test_state_game_reader(bridge_artifact_t *a);
 
 void test_load_game_reader(host_t *h);
 
-void test_start_elsewhere(test_elsewhere_t *e, bridge_world_t *w, int frames);
+void test_start_elsewhere(test_elsewhere_t *e, bridge_world_t *w, int frames,
+    size_t stack);
 void test_join_elsewhere(test_elsewhere_t *e);
 
 typedef struct {
@@ -247,5 +248,6 @@ void test_set_and_load(host_t *h);
 void test_limit_elements(host_t *h);
 void test_load_lent(host_t *h);
 void test_shut_after_fuel(host_t *h);
+void test_run_on_stack(host_t *h);
 
 #endif

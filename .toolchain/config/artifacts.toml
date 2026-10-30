@@ -1087,3 +1087,10 @@ kind = "wasm_text"
 test = true
 folder = "wasm"
 sources = ["tests/modules/startok.wat"]
+
+[[artifact]]
+name = "margin"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/margin.wat"]

@@ -2284,3 +2284,34 @@ run = ["{out}/wasm-host{exe}", "backend.reservation-growth-inside-it-loaded"]
 fail = { os_commit = 1 }
 claims = { matches = ["module 'test:grow@0\\.1\\.0' did not load: its init answered 7.*alive"] }
 false = { fail = {} }
+
+[[case]]
+name = "call-a-thread-with-too-little-stack-refused"
+run = ["{out}/wasm-host{exe}", "call-a-thread-with-too-little-stack-refused"]
+claims = { matches = ["game:ticker@0\\.1\\.0/advance: system 'advance' failed: did not run: the thread has \\d+ bytes of stack left, and max_wasm_stack and stack_margin need 589824.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "call-a-thread-with-enough-stack-runs"] }
+
+[[case]]
+name = "call-a-thread-with-enough-stack-runs"
+run = ["{out}/wasm-host{exe}", "call-a-thread-with-enough-stack-runs"]
+claims = { matches = ["game:ticker@0\\.1\\.0/advance: tick 101 1.*alive"], lacks = ["did not run"] }
+false = { run = ["{out}/wasm-host{exe}", "call-a-thread-with-too-little-stack-refused"] }
+
+[[case]]
+name = "call-a-thread-with-an-unknown-stack-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_thread_stack_left = 1 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: its init did not run: the thread has 0 bytes of stack left, and max_wasm_stack and stack_margin need 589824.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "stack_margin-at-the-threshold-the-deepest-offered-function-runs"
+run = ["{out}/wasm-adopt{exe}"]
+claims = { matches = ["at the threshold of \\d+ bytes, the offered function ran at the deepest wasm frame: trapped: call stack exhausted"] }
+false = { run = ["{out}/wasm-adopt{exe}", "below"] }
+
+[[case]]
+name = "stack_margin-below-the-threshold-refused"
+run = ["{out}/wasm-adopt{exe}", "below"]
+claims = { matches = ["below the threshold: did not run: the thread has \\d+ bytes of stack left, and max_wasm_stack and stack_margin need \\d+"] }
+false = { run = ["{out}/wasm-adopt{exe}"] }

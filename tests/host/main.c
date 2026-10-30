@@ -658,6 +658,10 @@ static const host_case_t TEST_CASES[] = {
         test_load_named, "startok", test_set_small },
     { "call-a-shutdown-after-the-fuel-ran-out-runs",
         test_shut_after_fuel, "", test_set_wasm },
+    { "call-a-thread-with-too-little-stack-refused",
+        test_run_on_stack, "262144", test_set_wasm },
+    { "call-a-thread-with-enough-stack-runs",
+        test_run_on_stack, "4194304", test_set_wasm },
 };
 
 static const bridge_setting_t TEST_SETTINGS[10] = {

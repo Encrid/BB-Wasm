@@ -3,6 +3,8 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 */
+#include <stdlib.h>
+
 #include "cases.h"
 
 void test_load_game_reader(host_t *h)
@@ -25,16 +27,30 @@ static void work_elsewhere(void *arg)
         host_run_frames_unsaid(e->w, e->frames);
 }
 
-void test_start_elsewhere(test_elsewhere_t *e, bridge_world_t *w, int frames)
+void test_start_elsewhere(test_elsewhere_t *e, bridge_world_t *w, int frames,
+    size_t stack)
 {
     e->w = w;
     e->frames = frames;
     e->thread.run = work_elsewhere;
     e->thread.arg = e;
+    e->thread.stack = stack;
     host_thread_start(&e->thread);
 }
 
 void test_join_elsewhere(test_elsewhere_t *e)
 {
     host_thread_join(&e->thread);
+}
+
+void test_run_on_stack(host_t *h)
+{
+    test_elsewhere_t e = {};
+
+    if (host_open(h))
+        return;
+    test_load_wasm_minting(h, "game:ticker@0.1.0", "ticker");
+    test_start_elsewhere(&e, h->w, 0, (size_t)atoll(h->arg));
+    test_join_elsewhere(&e);
+    host_close(h);
 }

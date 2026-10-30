@@ -68,6 +68,7 @@ void host_run_frames_unsaid(bridge_world_t *w, int count);
 typedef struct {
     void (*run)(void *arg);
     void *arg;
+    size_t stack;
     void *handle;
 } host_thread_t;
 
