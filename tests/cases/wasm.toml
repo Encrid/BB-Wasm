@@ -1959,3 +1959,15 @@ name = "isolate.owned-ranges-past-the-cap-clamped"
 run = ["{out}/wasm-host{exe}", "isolate.owned-ranges-past-the-cap-clamped"]
 claims = { matches = ["game:ticker@0\\.9\\.0: reloaded.*alive"], lacks = ["not reloaded"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+
+[[case]]
+name = "isolate.private-store-across-the-table-trapped"
+run = ["{out}/wasm-host{exe}", "isolate.private-store-across-the-table-trapped"]
+claims = { matches = ["game:breach@0\\.1\\.0/breach: system 'breach' failed: trapped: wasm .unreachable. instruction executed.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "isolate.private-store-below-the-table-taken"] }
+
+[[case]]
+name = "isolate.private-store-below-the-table-taken"
+run = ["{out}/wasm-host{exe}", "isolate.private-store-below-the-table-taken"]
+claims = { matches = ["game:breach@0\\.1\\.0/breach: below 4 0.*alive"], lacks = ["trapped"] }
+false = { run = ["{out}/wasm-host{exe}", "isolate.private-store-across-the-table-trapped"] }

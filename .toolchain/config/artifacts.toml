@@ -1017,3 +1017,21 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_keep_none", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "breach-own-edge"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["BREACH_OWN_EDGE", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "breach-own-below"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["BREACH_OWN_BELOW", "BRIDGE_ROWS_CHECKED"]

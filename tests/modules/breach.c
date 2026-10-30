@@ -37,6 +37,11 @@ BRIDGE_EXPORT(breach) int breach(void)
     acc_st_32(position, BRIDGE_AT(0, 0), 0, 0);
 #elif defined(BREACH_FORGE)
     acc_own_st(BRIDGE_HEADER(queries), 0);
+#elif defined(BREACH_OWN_EDGE)
+    acc_own_st(BRIDGE_HEADER(queries) - 3, 0);
+#elif defined(BREACH_OWN_BELOW)
+    acc_own_st(BRIDGE_HEADER(queries) - 4, 0);
+    BRIDGE_LOG(BRIDGE_LOG_INFO, "below", BREACH_ENTITIES, 0);
 #elif defined(BREACH_SPARSE)
     (void)BRIDGE_GET(marked_t, by, marked, 1u << 20, 0);
 #elif defined(BREACH_DIRECT)
