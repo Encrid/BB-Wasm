@@ -37,21 +37,21 @@ why = "grow_adopted never runs, because an adopted block reports a capacity equa
 
 [[branches.exception]]
 path = "src/wasm_adopted.c"
-line = 33
+line = 34
 col = 9
 side = "true"
-why = "wasmtime asks the creator for the reservation it was configured with, which is WASM_RESERVATION, so it never asks for more."
+why = "wasmtime asks the creator for the reservation it was configured with, which is the setting reservation, so it never asks for more."
 
 [[branches.exception]]
 path = "src/wasm_adopted.c"
-line = 33
-col = 40
+line = 34
+col = 47
 side = "true"
-why = "wasmtime asks the creator for the guard it was configured with, which is WASM_GUARD, so it never asks for more."
+why = "wasmtime asks the creator for the guard it was configured with, which is the setting guard, so it never asks for more."
 
 [[branches.exception]]
 path = "src/wasm_adopted.c"
-line = 38
+line = 39
 col = 9
 side = "true"
 why = "The holder declares the adopted block's exact page count, so the import minimum always equals the block length."
@@ -93,28 +93,28 @@ why = "build_holder always exports the memory under the name 'm'."
 
 [[branches.exception]]
 path = "src/wasm_instance.c"
-line = 45
+line = 49
 col = 9
 side = "true"
 why = "wasm_adopt_into of a valid holder never returns an error."
 
 [[branches.exception]]
 path = "src/wasm_instance.c"
-line = 45
+line = 49
 col = 18
 side = "true"
 why = "The holder has no start function, so adopting its memory never traps."
 
 [[branches.exception]]
 path = "src/wasm_instance.c"
-line = 63
+line = 71
 col = 35
 side = "false"
 why = "Giving an adopted memory never traps, so the loop never stops on a trap."
 
 [[branches.exception]]
 path = "src/wasm_instance.c"
-line = 67
+line = 75
 col = 19
 side = "false"
 why = "Giving an adopted memory never traps, so this never reports a trap."
@@ -124,18 +124,4 @@ path = "src/wasm_own.c"
 line = 23
 col = 9
 side = "true"
-why = "A wasm32 memory holds at most 65536 pages, which is WASM_RESERVATION, so a grow never exceeds the reserve."
-
-[[branches.exception]]
-path = "src/wasm_own.c"
-line = 23
-col = 34
-side = "true"
-why = "A commit within the reserved block fails only when the operating system runs out of memory, which the tests do not force."
-
-[[branches.exception]]
-path = "src/wasm_own.c"
-line = 45
-col = 9
-side = "true"
-why = "A 4 GiB reservation fails only when the operating system runs out of address space, which the tests do not force."
+why = "wasmtime grows a memory that may not move only inside the capacity that get_own reports, which is the reserve, so it never asks for more."
