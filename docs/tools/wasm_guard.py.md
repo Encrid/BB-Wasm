@@ -1,6 +1,6 @@
 # tools/wasm_guard.py
 
-`wasm_guard.py` refuses a compiled module that imports a memory or a global.
+`wasm_guard.py` refuses a compiled module that imports a memory, a global or a tag.
 The wasm_module build runs it between the compile and the merge. It does not run alone.
 
 ## Functions
@@ -15,7 +15,7 @@ The wasm_module build runs it between the compile and the merge. It does not run
 ## The guard
 
 A module reaches the shared data only through the accessors, which the merge adds: `docs/intern/bridge_wasm.wat.md`.
-So a compiled module of its own must import no memory and no global.
+So a compiled module of its own must import no memory, no global and no tag.
 `guard` reads the import section of the wasm file, and checks each import:
 
 1. If the file has no wasm magic, it stops: `<path> is refused: it is not a wasm module`.
@@ -23,5 +23,6 @@ So a compiled module of its own must import no memory and no global.
 3. For a function or a table, it steps over the import and goes on.
 4. For a memory, it stops: `<path> is refused: it imports the memory '<module>.<field>'; a module reaches shared data only through the accessors`.
 5. For a global, it stops: `<path> is refused: it imports the global '<module>.<field>'; a module imports no global`.
+6. For a tag, it stops: `<path> is refused: it imports the tag '<module>.<field>'; a module imports no tag`.
 
 A file with no import section passes, since it imports nothing of its own.
