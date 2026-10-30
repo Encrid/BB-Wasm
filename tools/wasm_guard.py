@@ -54,8 +54,11 @@ def guard(path):
             elif kind == 2:
                 refuse(path, "imports the memory '%s.%s'; a module reaches shared "
                     "data only through the accessors" % (module, field))
-            else:
+            elif kind == 3:
                 refuse(path, "imports the global '%s.%s'; a module imports no global"
+                    % (module, field))
+            else:
+                refuse(path, "imports the tag '%s.%s'; a module imports no tag"
                     % (module, field))
         return
     return
