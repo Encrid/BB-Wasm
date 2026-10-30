@@ -1035,3 +1035,11 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_OWN_BELOW", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "importstag"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/importstag.wat"]
+flags = ["--enable-exception-handling"]

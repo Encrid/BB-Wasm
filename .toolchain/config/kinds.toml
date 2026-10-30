@@ -1,7 +1,7 @@
 [kinds.wasm_text]
 output = "{name}.wasm"
 steps = [
-    { run = ["{wasm_as}", "{sources}", "{features}", "-o", "{output}"] },
+    { run = ["{wasm_as}", "{sources}", "{features}", "{flags}", "-o", "{output}"] },
 ]
 
 [kinds.wasm_module]

@@ -1971,3 +1971,15 @@ name = "isolate.private-store-below-the-table-taken"
 run = ["{out}/wasm-host{exe}", "isolate.private-store-below-the-table-taken"]
 claims = { matches = ["game:breach@0\\.1\\.0/breach: below 4 0.*alive"], lacks = ["trapped"] }
 false = { run = ["{out}/wasm-host{exe}", "isolate.private-store-across-the-table-trapped"] }
+
+[[case]]
+name = "isolate.imports-a-tag-refused-at-build"
+run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"]
+claims = { status = 1, has = ["is refused: it imports the tag 'env.boom'; a module imports no tag"] }
+false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"] }
+
+[[case]]
+name = "isolate.imports-a-global-refused-at-build"
+run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"]
+claims = { status = 1, has = ["is refused: it imports the global 'elsewhere.number'; a module imports no global"] }
+false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"] }
