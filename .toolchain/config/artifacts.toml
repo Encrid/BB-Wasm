@@ -1050,3 +1050,26 @@ kind = "wasm_text"
 test = true
 folder = "wasm"
 sources = ["tests/modules/deep.wat"]
+
+[[artifact]]
+name = "tablegrow"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/tablegrow.wat"]
+flags = ["--enable-reference-types"]
+
+[[artifact]]
+name = "twomem"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/twomem.wat"]
+
+[[artifact]]
+name = "twotable"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/twotable.wat"]
+flags = ["--enable-reference-types"]

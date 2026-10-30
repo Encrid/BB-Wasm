@@ -2145,3 +2145,33 @@ name = "memory_get_shape-the-reservation-and-the-guard-of-the-settings"
 run = ["{out}/wasm-adopt{exe}"]
 claims = { matches = ["shape: reservation 4096 MiB, guard 64 MiB"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+
+[[case]]
+name = "module_config.element_limit-table-grown-past-refused"
+run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-past-refused"]
+claims = { matches = ["module 'test:tablegrow@0\\.1\\.0' did not load: its init answered 7.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-inside-loaded"] }
+
+[[case]]
+name = "module_config.element_limit-table-grown-inside-loaded"
+run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-inside-loaded"]
+claims = { matches = ["test:tablegrow@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-past-refused"] }
+
+[[case]]
+name = "module_config.memory_limit-a-second-own-memory-refused"
+run = ["{out}/wasm-host{exe}", "module_config.memory_limit-a-second-own-memory-refused"]
+claims = { matches = ["module 'test:twomem@0\\.1\\.0' did not load: its init made no instance: resource limit exceeded: memory count too high at 2.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.memory_limit-one-own-memory-beside-the-lent-loaded"] }
+
+[[case]]
+name = "module_config.memory_limit-one-own-memory-beside-the-lent-loaded"
+run = ["{out}/wasm-host{exe}", "module_config.memory_limit-one-own-memory-beside-the-lent-loaded"]
+claims = { matches = ["game:mover@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.memory_limit-a-second-own-memory-refused"] }
+
+[[case]]
+name = "module_config.element_limit-a-second-own-table-refused"
+run = ["{out}/wasm-host{exe}", "module_config.element_limit-a-second-own-table-refused"]
+claims = { matches = ["module 'test:twotable@0\\.1\\.0' did not load: its init made no instance: resource limit exceeded: table count too high at 2.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-inside-loaded"] }

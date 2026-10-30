@@ -74,6 +74,7 @@ void host_state_wasm(bridge_artifact_t *a, const char *identity,
     a->bytes = host_read_module(file, &a->len);
     a->cfg.work_limit = 10'000'000;
     a->cfg.memory_limit = 16 << 20;
+    a->cfg.element_limit = 1 << 10;
     a->cfg.init_timeout = 2000 * HOST_MS;
     a->cfg.reload_timeout = 2000 * HOST_MS;
     a->cfg.shutdown_timeout = 2000 * HOST_MS;
