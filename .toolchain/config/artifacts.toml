@@ -1043,3 +1043,10 @@ test = true
 folder = "wasm"
 sources = ["tests/modules/importstag.wat"]
 flags = ["--enable-exception-handling"]
+
+[[artifact]]
+name = "deep"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/deep.wat"]

@@ -10,6 +10,10 @@
     #include "os.h"
 
 constexpr uint32_t ADOPT_PAGE = 65'536;
+constexpr size_t ADOPT_STACK = 1 << 20;
+constexpr int64_t ADOPT_WASM_STACK = 512 << 10;
+constexpr int64_t ADOPT_MARGIN = 64 << 10;
+constexpr uint32_t ADOPT_SETTING_COUNT = 7;
 
 typedef struct {
     backend_api_t api;
@@ -29,6 +33,9 @@ typedef struct {
 } adopt_job_t;
 
 void *adopt_read_file(const char *path, size_t *len);
+
+backend_t *adopt_start_backend(const adopt_t *t, int64_t stack,
+    backend_err_t *err);
 
 backend_instance_t *adopt_make_instance(adopt_t *t);
 

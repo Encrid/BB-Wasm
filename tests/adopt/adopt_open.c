@@ -66,9 +66,10 @@ int adopt_open(adopt_t *t)
     backend_source_t source = {};
     uint64_t shape[3];
 
-    if (!backend_open(BACKEND_PATH, &t->api, &err))
+    if (backend_open(BACKEND_PATH, &t->api, &err))
+        t->be = adopt_start_backend(t, ADOPT_WASM_STACK, &err);
+    if (!t->be)
         return (adopt_fail("%s", err.text));
-    t->be = t->api.backend_create(nullptr, 0, &err);
     t->api.memory_get_shape(t->be, &shape[0], &shape[1], &shape[2]);
     printf("shape: reservation %llu MiB, guard %llu MiB\n",
         (unsigned long long)(shape[0] >> 20),

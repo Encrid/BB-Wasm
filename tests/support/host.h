@@ -13,10 +13,23 @@
 
 constexpr int64_t HOST_MS = 1'000'000;
 
+enum host_setting : uint32_t {
+    HOST_RESERVATION = 0,
+    HOST_GUARD = 1,
+    HOST_STACK = 2,
+    HOST_MARGIN = 3,
+    HOST_WATCHDOG = 4,
+    HOST_LEVEL = 5,
+    HOST_COMPILE = 6
+};
+
+constexpr uint32_t HOST_SETTINGS = 7;
+
 typedef struct host {
     const char *what;
     const char *arg;
     void *kept;
+    bridge_setting_t settings[HOST_SETTINGS];
     bridge_backend_t backends[1];
     const char *phases[2];
     bridge_config_t cfg;
