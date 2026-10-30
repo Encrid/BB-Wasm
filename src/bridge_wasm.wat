@@ -177,7 +177,7 @@
   (func (export "acc_own_64") (param i32) (result i64) (i64.load $private (local.get 0)))
   (func (export "acc_own_st") (param $at i32) (param $v i32)
     (if (i32.or
-          (i32.ge_u (local.get $at) (i32.load $private (i32.const 32)))
+          (i32.gt_u (i32.add (local.get $at) (i32.const 4)) (i32.load $private (i32.const 32)))
           (i32.and (i32.lt_u (local.get $at) (i32.const 128))
             (i32.and (i32.ne (local.get $at) (i32.const 12)) (i32.ne (local.get $at) (i32.const 24)))))
       (then (unreachable)))
