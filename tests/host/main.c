@@ -588,6 +588,10 @@ static const host_case_t TEST_CASES[] = {
         test_breach, "breach-ok", test_set_wasm },
     { "isolate.owned-ranges-past-the-cap-clamped",
         test_hoard, "", test_set_wasm },
+    { "isolate.private-store-across-the-table-trapped",
+        test_breach, "breach-own-edge", test_set_wasm },
+    { "isolate.private-store-below-the-table-taken",
+        test_breach, "breach-own-below", test_set_wasm },
 };
 
 static const bridge_setting_t TEST_SETTINGS[10] = {
