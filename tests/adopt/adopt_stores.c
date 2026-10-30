@@ -53,8 +53,8 @@ int adopt_check_two_stores(adopt_t *t, backend_instance_t *one)
 {
     adopt_job_t low = { t, "fill_low", 200, 0 };
     adopt_job_t high = { t, "fill_high", 200, 0 };
-    os_thread_t *a = os_thread_start(fill, &low);
-    os_thread_t *b = os_thread_start(fill, &high);
+    os_thread_t *a = os_thread_start(fill, &low, ADOPT_STACK);
+    os_thread_t *b = os_thread_start(fill, &high, ADOPT_STACK);
     int32_t status = -1;
     int bad;
 
