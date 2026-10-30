@@ -8,6 +8,16 @@
 
 #include "host.h"
 
+static const bridge_setting_t HOST_WASM[HOST_SETTINGS] = {
+    { .key = "reservation", .kind = BRIDGE_INT, .v = { .i = 1ll << 32 } },
+    { .key = "guard", .kind = BRIDGE_INT, .v = { .i = 32 << 20 } },
+    { .key = "max_wasm_stack", .kind = BRIDGE_INT, .v = { .i = 512 << 10 } },
+    { .key = "stack_margin", .kind = BRIDGE_INT, .v = { .i = 64 << 10 } },
+    { .key = "watchdog_stack", .kind = BRIDGE_INT, .v = { .i = 64 << 10 } },
+    { .key = "opt_level", .kind = BRIDGE_STRING, .v = { .s = "speed" } },
+    { .key = "parallel_compilation", .kind = BRIDGE_BOOL, .v = { .b = false } }
+};
+
 void host_init(host_t *h, int argc, char **argv)
 {
     bridge_budget_t budget = { .entities = 4096, .tables = 64, .types = 64,
@@ -17,10 +27,15 @@ void host_init(host_t *h, int argc, char **argv)
 
     setvbuf(stdout, nullptr, _IONBF, 0);
     *h = (host_t){ .what = argc > 1 ? argv[1] : "" };
-    h->backends[0] = (bridge_backend_t){ "wasm", BACKEND_PATH };
+    memcpy(h->settings, HOST_WASM, sizeof(HOST_WASM));
+    h->backends[0] = (bridge_backend_t){ "wasm", BACKEND_PATH, h->settings,
+        HOST_SETTINGS };
     h->phases[0] = "update";
     h->phases[1] = "present";
-    h->cfg = (bridge_config_t){ .abi = BRIDGE_HOST_ABI, .threads = 1 };
+    h->cfg = (bridge_config_t){ .abi = BRIDGE_HOST_ABI, .threads = 1,
+        .profile = BRIDGE_FALSE, .validate = BRIDGE_FALSE, .observer_passes = 1,
+        .stack = 1 << 20, .table_growth = 150, .table_hash_fill = 50,
+        .table_retry = 50 };
     h->cfg.backends = h->backends;
     h->cfg.backend_count = 1;
     h->cfg.phases = h->phases;

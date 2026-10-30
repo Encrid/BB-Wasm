@@ -20,9 +20,13 @@ static void *run_thread(void *arg)
 void host_thread_start(host_thread_t *t)
 {
     pthread_t *thread = malloc(sizeof(*thread));
+    pthread_attr_t attr;
 
     t->handle = thread;
-    pthread_create(thread, nullptr, run_thread, t);
+    pthread_attr_init(&attr);
+    pthread_attr_setstacksize(&attr, t->stack);
+    pthread_create(thread, &attr, run_thread, t);
+    pthread_attr_destroy(&attr);
 }
 
 void host_thread_join(host_thread_t *t)

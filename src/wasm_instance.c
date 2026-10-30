@@ -22,7 +22,8 @@ BACKEND_EXPORT void instance_destroy(backend_instance_t *i)
     free(i);
 }
 
-static void open_store(backend_instance_t *i, backend_module_t *m)
+static void open_store(backend_instance_t *i, backend_module_t *m,
+    uint32_t lent)
 {
     i->b = m->b;
     i->m = m;
@@ -30,8 +31,11 @@ static void open_store(backend_instance_t *i, backend_module_t *m)
     i->store = wasmtime_store_new(i->engine, nullptr, nullptr);
     i->ctx = wasmtime_store_context(i->store);
     i->linker = wasmtime_linker_new(i->engine);
-    if (m->kind & WASM_METERED)
-        wasm_drop(wasmtime_context_set_fuel(i->ctx, UINT64_MAX));
+    i->memory_limit = -1;
+    i->element_limit = -1;
+    i->memories = (int64_t)lent + WASM_OWN;
+    wasm_set_limits(i);
+    instance_set_work_limit(i, WASM_FUEL);
     if (m->kind & WASM_INTERRUPTIBLE)
         wasmtime_context_set_epoch_deadline(i->ctx, WASM_FAR);
 }
@@ -59,7 +63,11 @@ BACKEND_EXPORT backend_instance_t *instance_create(backend_module_t *m,
     wasm_trap_t *trap = nullptr;
     uint32_t k = 0;
 
-    open_store(i, m);
+    if (!i) {
+        wasm_fail(err, WASM_NO_MEMORY, nullptr, nullptr);
+        return (nullptr);
+    }
+    open_store(i, m, count);
     while (k < count && !error && !trap) {
         error = give_memory(i, &memories[k], &trap);
         k++;
@@ -69,10 +77,4 @@ BACKEND_EXPORT backend_instance_t *instance_create(backend_module_t *m,
     wasm_fail(err, "cannot give a module the memory it imports", error, trap);
     instance_destroy(i);
     return (nullptr);
-}
-
-BACKEND_EXPORT void instance_set_memory_limit(backend_instance_t *i,
-    uint64_t bytes)
-{
-    wasmtime_store_limiter(i->store, (int64_t)bytes, -1, -1, -1, -1);
 }

@@ -8,8 +8,8 @@ wasmtime_link = ["{wasmtime}/lib/libwasmtime.dll.a"]
 wasmtime_runtime = "lib/wasmtime.dll"
 binaryen_archive = "binaryen-version_133-x86_64-windows.tar.gz"
 binaryen_sha256 = "17a2cbeac6b5693c5fbafab3838d3c65fd9c1eb38b05f5baec6c657e8c84995b"
-bridge_sha256 = "73a3646301d3e974094417700f58d5126e20b5f32760516dd6c7f7c3e1bc9284"
-bridge_os_sha256 = "22bc3db5b98e388bfd45748eb1ace90791c6e8c8362bb35c6a21344f6c377fbb"
+bridge_sha256 = "80e0876cfcd73c734b2168c77fc88a74342d916cf608725d2c26f06eee53b56f"
+bridge_os_sha256 = "6739e884ddb04b85ae075cf410ba1e5d92c2a563182acd176baf110b8bd0b4db"
 
 [targets.x86_64-linux-gnu]
 system_defines = []
@@ -21,8 +21,8 @@ wasmtime_link = ["-L{wasmtime}/lib", "-lwasmtime"]
 wasmtime_runtime = "lib/libwasmtime.so"
 binaryen_archive = "binaryen-version_133-x86_64-linux.tar.gz"
 binaryen_sha256 = "2dc9c7813f5375db93d96ead4b78222fcc3e2677bbb832297af4797782a37489"
-bridge_sha256 = "a994eceddc6e5191b3f518763494d8c3c80c8030444a91d56585fe722026baf2"
-bridge_os_sha256 = "974ec7ae45c1028cc3a93c7958688cadfbe754b025287dc7b5ee307c01aa7509"
+bridge_sha256 = "bc277aea7133c5194a27005e65efc7be47339dd40ab20f177811d77e9822a847"
+bridge_os_sha256 = "36726d787d3f7bbdcf2ce64d33111fd0ad77cfd6d0ce01557aa48d3de68889b7"
 
 [targets.aarch64-macos]
 system_defines = ["-D_DARWIN_C_SOURCE"]
@@ -34,8 +34,8 @@ wasmtime_link = ["-L{wasmtime}/lib", "-lwasmtime"]
 wasmtime_runtime = "lib/libwasmtime.dylib"
 binaryen_archive = "binaryen-version_133-arm64-macos.tar.gz"
 binaryen_sha256 = "ad66da82ac13f163e424b1643f16c6dfcccc98b5966296b43e52d3cab04f84a8"
-bridge_sha256 = "55f1016694953a315c2dc625c8af7e2ea8dde8f3b13cf7fa9186dc62506643dc"
-bridge_os_sha256 = "7e4d0e8529002672a1349e9c6fb5b797d6c7143c5c8db27787b3b301dfb8ab0a"
+bridge_sha256 = "c53b3435239c786ce8fcc26d84ac895b32887156ae302f569c2cc03767fc813c"
+bridge_os_sha256 = "44d723ac3ba6607a941925382d282b972a789d054251442c0b0494e9ed9f1233"
 
 [targets.aarch64-linux-gnu]
 system_defines = []
@@ -47,8 +47,8 @@ wasmtime_link = ["-L{wasmtime}/lib", "-lwasmtime"]
 wasmtime_runtime = "lib/libwasmtime.so"
 binaryen_archive = "binaryen-version_133-aarch64-linux.tar.gz"
 binaryen_sha256 = "89c07ea56faf38d0fbecf36ca8ec0721756716185f265b568e133d427f299bf8"
-bridge_sha256 = "f0749aca8cd35f48a9724ab0ad356f5727e0790d537c2fe19d250e64d1172bab"
-bridge_os_sha256 = "bc7f6dbeb7d206437b1d321c7c5597f6a5817ef202eba89564746a89ccf894c3"
+bridge_sha256 = "87ae82c9768502b562a1d9fd848602597387e4abfcd940a569e5d2d3b74496d5"
+bridge_os_sha256 = "56fc140bc4ac70b25267758b981eb05950bb9ebacede418c5cfd1015daa00fe9"
 
 [targets.x86_64-macos]
 system_defines = ["-D_DARWIN_C_SOURCE"]
@@ -60,8 +60,8 @@ wasmtime_link = ["-L{wasmtime}/lib", "-lwasmtime"]
 wasmtime_runtime = "lib/libwasmtime.dylib"
 binaryen_archive = "binaryen-version_133-x86_64-macos.tar.gz"
 binaryen_sha256 = "13a9b90be775c6389ce3d1f879cb8627bea56708ba8c122983941d53a8199b95"
-bridge_sha256 = "696b517ffe65f6dd9aa0acc91a18fe30dec7313d9de08e30e13fbbcddd360abb"
-bridge_os_sha256 = "e273d6f58306079dccd65a3e4477374357cf91d132ec2670d1a42e365af328d5"
+bridge_sha256 = "e349254f621e0849825422cb4143c56294b594cc921d7ad1c0cebf9479edb6e8"
+bridge_os_sha256 = "eeb06b9f73c3683870e527847824b54f36237b5811c85bbf4183a2b4a22409d4"
 
 [targets.aarch64-windows-gnu]
 system_defines = []
@@ -73,5 +73,5 @@ wasmtime_link = ["{wasmtime}/lib/wasmtime.dll.lib"]
 wasmtime_runtime = "lib/wasmtime.dll"
 binaryen_archive = "binaryen-version_133-arm64-windows.tar.gz"
 binaryen_sha256 = "492a8e1847a0be1554bb9a7f384227981d60bc013aedc02d8ba1372c3943178c"
-bridge_sha256 = "419d0567d13ac0c57f61102166aaa2d5dfb93841d3911a9453d7d85bd2c5f252"
-bridge_os_sha256 = "14c7deadceeecf91b91015c7b39e5ef06e2ac2f3d87d99cd55af16252f348428"
+bridge_sha256 = "c41d1edde4d3fd859908aea7b60c32eff5aebd31b68e0efa5c483e6a51ad85bb"
+bridge_os_sha256 = "6d10dd4ea5d76b3ad2a620db8e7013f35c51fc48d21190760069421065774d11"

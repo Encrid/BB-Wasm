@@ -34,7 +34,7 @@ Each accessor below builds on `$resolve` or reads the header the same way:
 - `acc_entity` gives the table and the row of an id, or all ones when the id is dead. `acc_who` gives the id of a row.
 - `acc_has` tells whether a sparse, direct-indexed, or singleton slot holds a value for an id.
 - `acc_toggle` and `acc_toggle_set` read and write the presence bit of a row of a toggle.
-- `acc_own_32`, `acc_own_64` and `acc_own_st` reach the private memory. A write traps unless it stays below the published table and leaves the header alone.
+- `acc_own_32`, `acc_own_64` and `acc_own_st` reach the private memory. `acc_own_st` writes 4 bytes, and traps unless all 4 stay below the published table and leave the header alone.
 - `acc_to_private` copies into the scratch region, below the published table.
 - `acc_to_shared` copies into the shared memory, and stays inside one owned range. `acc_from_shared` copies out, inside the arena bounds.
 

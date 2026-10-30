@@ -28,22 +28,24 @@ static wasmtime_module_t *compile(wasm_engine_t *engine,
 BACKEND_EXPORT backend_module_t *module_compile(backend_t *b,
     const backend_source_t *source, backend_err_t *err)
 {
-    enum wasm_engine kind = 0;
-    wasmtime_module_t *module;
-    backend_module_t *m;
+    backend_module_t *m = calloc(1, sizeof(*m));
 
-    if (source->demands & BACKEND_WORK_LIMIT)
-        kind |= WASM_METERED;
-    if (source->demands & BACKEND_TIMEOUT)
-        kind |= WASM_INTERRUPTIBLE;
-    module = compile(wasm_get_engine(b, kind), source, err);
-    if (!module)
+    if (!m) {
+        wasm_fail(err, WASM_NO_MEMORY, nullptr, nullptr);
         return (nullptr);
-    m = calloc(1, sizeof(*m));
+    }
+    if (source->demands & BACKEND_WORK_LIMIT)
+        m->kind |= WASM_METERED;
+    if (source->demands & BACKEND_TIMEOUT)
+        m->kind |= WASM_INTERRUPTIBLE;
+    m->module = compile(wasm_get_engine(b, m->kind), source, err);
+    if (!m->module) {
+        free(m);
+        return (nullptr);
+    }
     m->b = b;
-    m->kind = kind;
-    m->module = module;
-    wasmtime_module_imports(module, &m->imports);
+    wasmtime_module_imports(m->module, &m->imports);
+    wasmtime_module_exports(m->module, &m->exports);
     return (m);
 }
 
@@ -83,6 +85,7 @@ BACKEND_EXPORT uint32_t module_list_imports(backend_module_t *m,
 
 BACKEND_EXPORT void module_destroy(backend_module_t *m)
 {
+    wasm_exporttype_vec_delete(&m->exports);
     wasm_importtype_vec_delete(&m->imports);
     wasmtime_module_delete(m->module);
     free(m);

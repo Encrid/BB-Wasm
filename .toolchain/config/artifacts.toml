@@ -1017,3 +1017,80 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_keep_none", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "breach-own-edge"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["BREACH_OWN_EDGE", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "breach-own-below"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["BREACH_OWN_BELOW", "BRIDGE_ROWS_CHECKED"]
+
+[[artifact]]
+name = "importstag"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/importstag.wat"]
+flags = ["--enable-exception-handling"]
+
+[[artifact]]
+name = "deep"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/deep.wat"]
+
+[[artifact]]
+name = "tablegrow"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/tablegrow.wat"]
+flags = ["--enable-reference-types"]
+
+[[artifact]]
+name = "twomem"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/twomem.wat"]
+
+[[artifact]]
+name = "twotable"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/twotable.wat"]
+flags = ["--enable-reference-types"]
+
+[[artifact]]
+name = "startspin"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/startspin.wat"]
+
+[[artifact]]
+name = "startok"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/startok.wat"]
+
+[[artifact]]
+name = "margin"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/margin.wat"]

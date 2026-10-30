@@ -135,12 +135,13 @@ static int edge_trap(adopt_t *t)
     backend_module_t *module = nullptr;
     backend_instance_t *i = edge_open_module(t, MODULE_DIR "/trapstart.wasm",
         &module);
+    int32_t status = 0;
     int failed;
 
     if (!i)
         return (adopt_fail("trapstart did not make an instance"));
     failed = adopt_say_refused("a module whose start traps",
-        !t->api.instance_get_func(i, "init", &t->err), &t->err);
+        adopt_run(t, i, "init", &status) != 0, &t->err);
     t->api.instance_destroy(i);
     t->api.module_destroy(module);
     return (failed);
@@ -151,11 +152,13 @@ static int edge_trap_silent(adopt_t *t)
     backend_module_t *module = nullptr;
     backend_instance_t *i = edge_open_module(t, MODULE_DIR "/stray.wasm",
         &module);
+    backend_func_t *f = nullptr;
+    int32_t status = 0;
 
-    if (!i)
-        return (adopt_fail("stray did not make an instance"));
-    if (t->api.instance_get_func(i, "init", nullptr))
-        return (adopt_fail("a module that cannot instantiate found a function"));
+    if (i)
+        f = t->api.instance_get_func(i, "init", nullptr);
+    if (!f || !t->api.call(f, &status, nullptr))
+        return (adopt_fail("a module that cannot instantiate ran its init"));
     printf("a module that cannot instantiate, with no room for a reason, is "
         "refused in silence\n");
     t->api.instance_destroy(i);

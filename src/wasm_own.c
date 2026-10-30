@@ -31,21 +31,27 @@ static void free_own(void *env)
 {
     wasm_own_t *m = env;
 
-    os_release(m->base, m->reserve + (size_t)WASM_GUARD);
+    os_release(m->base, m->reserve + m->guard);
     free(m);
 }
 
-wasmtime_error_t *wasm_make_own(size_t minimum, wasmtime_linear_memory_t *ret)
+wasmtime_error_t *wasm_make_own(const backend_t *b, size_t minimum,
+    wasmtime_linear_memory_t *ret)
 {
     wasm_own_t *m = malloc(sizeof(*m));
 
-    m->reserve = (size_t)WASM_RESERVATION;
+    if (!m)
+        return (wasmtime_error_new(WASM_NO_MEMORY));
+    m->reserve = (size_t)b->settings.reservation;
+    m->guard = (size_t)b->settings.guard;
     m->size = minimum;
-    m->base = os_reserve((size_t)(WASM_RESERVATION + WASM_GUARD), minimum);
+    m->base = nullptr;
+    if (minimum <= m->reserve)
+        m->base = os_reserve(m->reserve + m->guard, minimum);
     if (!m->base) {
         free(m);
-        return (wasmtime_error_new("out of address space for a module's own "
-            "memory"));
+        return (wasmtime_error_new("no room for a module's own memory: it "
+            "starts past the reservation, or the address space is full"));
     }
     ret->env = m;
     ret->get_memory = get_own;

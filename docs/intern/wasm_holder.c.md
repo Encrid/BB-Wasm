@@ -15,5 +15,5 @@ It reads the export `m` as the memory extern the caller defines. The caller owns
 | Function | Result |
 | --- | --- |
 | `wasm_adopt_into` | Instantiates the holder over an adopted block and gives its memory extern. |
-| `memory_adopt` | Records a block as an adoptable memory. Refuses a block that is not whole 64 KiB pages. |
+| `memory_adopt` | Records a block as an adoptable memory. Refuses a block that is not whole 64 KiB pages, and gives `out of memory` for a record that it cannot allocate. |
 | `memory_release` | Deletes the holder of every engine kind and frees the block record. |

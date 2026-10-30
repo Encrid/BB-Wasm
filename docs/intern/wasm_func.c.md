@@ -1,19 +1,20 @@
 # src/wasm_func.c
 
-This file defines the host functions a module imports, instantiates the module, and finds its exported functions.
-A module is instantiated once, on the first function looked up in it.
+This file finds the exported functions of a module in the types of the module, with no instance.
+The instance comes at the first call: `docs/intern/wasm_call.c.md`.
 
-## Defining and finding
+## Finding an export
 
-`define_func` refuses a function after the module is instantiated, or a signature wider than 16 parameters or 4 results.
-It builds the type and defines the import on the linker with `wasm_call_offered`.
-`instantiate` links the module once.
-`find_export` reads an export, which must be a function of shape `() -> i32`, and else writes why in `err`.
-It deletes an extern that it gets and refuses. `instance_get_func` keeps the function of the extern, and then deletes the extern.
+`find_export` looks for the export of a name in the export list that `module_compile` kept.
+`is_shaped` tells if a function type is `() -> i32`.
+`check_export` refuses an export that is no function of that shape, and writes why when `err` gives room for it.
+`instance_get_func` keeps a function of that name and shape, with the name of its export in the list.
+If the instance is there, it finds the function in it at once.
+`wasm_find_func` reads the export of the kept name from the instance, keeps its function, and deletes the extern.
 
 ## Functions
 
 | Function | Result |
 | --- | --- |
-| `define_func` | Defines a host function on the linker. Refuses one that is too wide or too late. |
-| `instance_get_func` | Instantiates the module if needed, then finds an exported `() -> i32` function. |
+| `instance_get_func` | Gives a kept exported `() -> i32` function, or null with `err`. |
+| `wasm_find_func` | Finds a kept function in the instance. |

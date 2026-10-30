@@ -43,7 +43,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "module_config.memory_limit-memory-larger-at-start"
 run = ["{out}/wasm-host{exe}", "module_config.memory_limit-memory-larger-at-start"]
-claims = { matches = ["module 'test:big@0.1.0' did not load: cannot instantiate.*alive"] }
+claims = { matches = ["module 'test:big@0.1.0' did not load: its init made no instance.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -97,7 +97,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "config.abi-another-refused"
 run = ["{out}/wasm-host{exe}", "config.abi-another-refused"]
-claims = { matches = ["the host is of host ABI 3, and this is 2.*bridge_create refused.*alive"] }
+claims = { matches = ["the host is of host ABI 4, and this is 3.*bridge_create refused.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -1309,7 +1309,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "bridge_load-import-nobody-answers"
 run = ["{out}/wasm-host{exe}", "bridge_load-import-nobody-answers"]
-claims = { matches = ["module 'test:stray@0\\.1\\.0' did not load: cannot instantiate: unknown import: `elsewhere::nothing` has not been defined.*alive"] }
+claims = { matches = ["module 'test:stray@0\\.1\\.0' did not load: its init made no instance: unknown import: `elsewhere::nothing` has not been defined.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -1705,7 +1705,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "BACKEND_IMPORT_OTHER-a-global-nobody-answers"
 run = ["{out}/wasm-host{exe}", "BACKEND_IMPORT_OTHER-a-global-nobody-answers"]
-claims = { matches = ["module 'test:strayglobal@0\\.1\\.0' did not load: cannot instantiate: unknown import: `elsewhere::number` has not been defined.*alive"] }
+claims = { matches = ["module 'test:strayglobal@0\\.1\\.0' did not load: its init made no instance: unknown import: `elsewhere::number` has not been defined.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -1959,3 +1959,359 @@ name = "isolate.owned-ranges-past-the-cap-clamped"
 run = ["{out}/wasm-host{exe}", "isolate.owned-ranges-past-the-cap-clamped"]
 claims = { matches = ["game:ticker@0\\.9\\.0: reloaded.*alive"], lacks = ["not reloaded"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+
+[[case]]
+name = "isolate.private-store-across-the-table-trapped"
+run = ["{out}/wasm-host{exe}", "isolate.private-store-across-the-table-trapped"]
+claims = { matches = ["game:breach@0\\.1\\.0/breach: system 'breach' failed: trapped: wasm .unreachable. instruction executed.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "isolate.private-store-below-the-table-taken"] }
+
+[[case]]
+name = "isolate.private-store-below-the-table-taken"
+run = ["{out}/wasm-host{exe}", "isolate.private-store-below-the-table-taken"]
+claims = { matches = ["game:breach@0\\.1\\.0/breach: below 4 0.*alive"], lacks = ["trapped"] }
+false = { run = ["{out}/wasm-host{exe}", "isolate.private-store-across-the-table-trapped"] }
+
+[[case]]
+name = "isolate.imports-a-tag-refused-at-build"
+run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"]
+claims = { status = 1, has = ["is refused: it imports the tag 'env.boom'; a module imports no tag"] }
+false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"] }
+
+[[case]]
+name = "isolate.imports-a-global-refused-at-build"
+run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"]
+claims = { status = 1, has = ["is refused: it imports the global 'elsewhere.number'; a module imports no global"] }
+false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"] }
+
+[[case]]
+name = "backend.opt_level-unset-refused"
+run = ["{out}/wasm-host{exe}", "backend.opt_level-unset-refused"]
+claims = { matches = ["backend 'wasm' would not start: opt_level is unset.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.reservation-text-refused"
+run = ["{out}/wasm-host{exe}", "backend.reservation-text-refused"]
+claims = { matches = ["backend 'wasm' would not start: reservation must be an integer.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.reservation-negative-refused"
+run = ["{out}/wasm-host{exe}", "backend.reservation-negative-refused"]
+claims = { matches = ["backend 'wasm' would not start: reservation is -1 bytes, and it must be 0 or more.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.reservation-zero-taken"
+run = ["{out}/wasm-host{exe}", "backend.reservation-zero-taken"]
+claims = { matches = ["test:deep@0\\.1\\.0: loaded.*alive"], lacks = ["would not start"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.reservation-negative-refused"] }
+
+[[case]]
+name = "backend.guard-negative-refused"
+run = ["{out}/wasm-host{exe}", "backend.guard-negative-refused"]
+claims = { matches = ["backend 'wasm' would not start: guard is -1 bytes, and it must be 0 or more.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.guard-zero-loaded"
+run = ["{out}/wasm-host{exe}", "backend.guard-zero-loaded"]
+claims = { matches = ["test:ok@0\\.1\\.0: loaded.*alive"], lacks = ["would not start"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.guard-negative-refused"] }
+
+[[case]]
+name = "backend.max_wasm_stack-zero-refused"
+run = ["{out}/wasm-host{exe}", "backend.max_wasm_stack-zero-refused"]
+claims = { matches = ["backend 'wasm' would not start: max_wasm_stack is 0 bytes, and it must be 1 or more.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.max_wasm_stack-one-byte-traps"
+run = ["{out}/wasm-host{exe}", "backend.max_wasm_stack-one-byte-traps"]
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: its init trapped: call stack exhausted.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.max_wasm_stack-zero-refused"] }
+
+[[case]]
+name = "backend.max_wasm_stack-above-the-async-stack-loaded"
+run = ["{out}/wasm-host{exe}", "backend.max_wasm_stack-above-the-async-stack-loaded"]
+claims = { matches = ["test:ok@0\\.1\\.0: loaded.*alive"], lacks = ["would not start"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.max_wasm_stack-zero-refused"] }
+
+[[case]]
+name = "backend.stack_margin-negative-refused"
+run = ["{out}/wasm-host{exe}", "backend.stack_margin-negative-refused"]
+claims = { matches = ["backend 'wasm' would not start: stack_margin is -1 bytes, and it must be 0 or more.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.stack_margin-zero-loaded"
+run = ["{out}/wasm-host{exe}", "backend.stack_margin-zero-loaded"]
+claims = { matches = ["test:ok@0\\.1\\.0: loaded.*alive"], lacks = ["would not start"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.stack_margin-negative-refused"] }
+
+[[case]]
+name = "backend.watchdog_stack-negative-refused"
+run = ["{out}/wasm-host{exe}", "backend.watchdog_stack-negative-refused"]
+claims = { matches = ["backend 'wasm' would not start: watchdog_stack is -1 bytes, and it must be 0 or more.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.watchdog_stack-zero-stops-a-spinning-init"
+run = ["{out}/wasm-host{exe}", "backend.watchdog_stack-zero-stops-a-spinning-init"]
+claims = { matches = ["module 'test:spin@0\\.1\\.0' did not load: its init trapped: interrupt.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.watchdog_stack-negative-refused"] }
+
+[[case]]
+name = "backend.watchdog_stack-too-large-for-a-thread-refused"
+run = ["{out}/wasm-host{exe}", "backend.watchdog_stack-too-large-for-a-thread-refused"]
+claims = { matches = ["backend 'wasm' would not start: the operating system gave no event, mutex or thread to the watchdog.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.opt_level-integer-refused"
+run = ["{out}/wasm-host{exe}", "backend.opt_level-integer-refused"]
+claims = { matches = ["backend 'wasm' would not start: opt_level must be a text.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.opt_level-unknown-refused"
+run = ["{out}/wasm-host{exe}", "backend.opt_level-unknown-refused"]
+claims = { matches = ["backend 'wasm' would not start: opt_level is 'fast', and it can be none, speed or speed_and_size.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.opt_level-none-loaded"] }
+
+[[case]]
+name = "backend.opt_level-none-loaded"
+run = ["{out}/wasm-host{exe}", "backend.opt_level-none-loaded"]
+claims = { matches = ["test:ok@0\\.1\\.0: loaded.*alive"], lacks = ["would not start"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.opt_level-unknown-refused"] }
+
+[[case]]
+name = "backend.opt_level-speed_and_size-loaded"
+run = ["{out}/wasm-host{exe}", "backend.opt_level-speed_and_size-loaded"]
+claims = { matches = ["test:ok@0\\.1\\.0: loaded.*alive"], lacks = ["would not start"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.opt_level-unknown-refused"] }
+
+[[case]]
+name = "backend.parallel_compilation-on-loaded"
+run = ["{out}/wasm-host{exe}", "backend.parallel_compilation-on-loaded"]
+claims = { matches = ["test:ok@0\\.1\\.0: loaded.*alive"], lacks = ["would not start"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.parallel_compilation-integer-refused"] }
+
+[[case]]
+name = "backend.parallel_compilation-integer-refused"
+run = ["{out}/wasm-host{exe}", "backend.parallel_compilation-integer-refused"]
+claims = { matches = ["backend 'wasm' would not start: parallel_compilation must be a flag.*bridge_create refused.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-loaded"] }
+
+[[case]]
+name = "backend.reservation-growth-past-it-refused"
+run = ["{out}/wasm-host{exe}", "backend.reservation-growth-past-it-refused"]
+claims = { matches = ["module 'test:grow@0\\.1\\.0' did not load: its init answered 7.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.reservation-growth-inside-it-loaded"] }
+
+[[case]]
+name = "backend.reservation-growth-inside-it-loaded"
+run = ["{out}/wasm-host{exe}", "backend.reservation-growth-inside-it-loaded"]
+claims = { matches = ["test:grow@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.reservation-growth-past-it-refused"] }
+
+[[case]]
+name = "backend.reservation-a-memory-that-starts-past-it-refused"
+run = ["{out}/wasm-host{exe}", "backend.reservation-a-memory-that-starts-past-it-refused"]
+claims = { matches = ["module 'test:big@0\\.1\\.0' did not load: its init made no instance: no room for a module's own memory: it starts past the reservation, or the address space is full.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.reservation-a-memory-that-starts-inside-it-loaded"] }
+
+[[case]]
+name = "backend.reservation-a-memory-that-starts-inside-it-loaded"
+run = ["{out}/wasm-host{exe}", "backend.reservation-a-memory-that-starts-inside-it-loaded"]
+claims = { matches = ["test:big@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.reservation-a-memory-that-starts-past-it-refused"] }
+
+[[case]]
+name = "backend.max_wasm_stack-deep-call-exhausted"
+run = ["{out}/wasm-host{exe}", "backend.max_wasm_stack-deep-call-exhausted"]
+claims = { matches = ["module 'test:deep@0\\.1\\.0' did not load: its init trapped: call stack exhausted.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.max_wasm_stack-deep-call-returned"] }
+
+[[case]]
+name = "backend.max_wasm_stack-deep-call-returned"
+run = ["{out}/wasm-host{exe}", "backend.max_wasm_stack-deep-call-returned"]
+claims = { matches = ["test:deep@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "backend.max_wasm_stack-deep-call-exhausted"] }
+
+[[case]]
+name = "memory_get_shape-the-reservation-and-the-guard-of-the-settings"
+run = ["{out}/wasm-adopt{exe}"]
+claims = { matches = ["shape: reservation 4096 MiB, guard 64 MiB"] }
+false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+
+[[case]]
+name = "module_config.element_limit-table-grown-past-refused"
+run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-past-refused"]
+claims = { matches = ["module 'test:tablegrow@0\\.1\\.0' did not load: its init answered 7.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-inside-loaded"] }
+
+[[case]]
+name = "module_config.element_limit-table-grown-inside-loaded"
+run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-inside-loaded"]
+claims = { matches = ["test:tablegrow@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-past-refused"] }
+
+[[case]]
+name = "module_config.memory_limit-a-second-own-memory-refused"
+run = ["{out}/wasm-host{exe}", "module_config.memory_limit-a-second-own-memory-refused"]
+claims = { matches = ["module 'test:twomem@0\\.1\\.0' did not load: its init made no instance: resource limit exceeded: memory count too high at 2.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.memory_limit-one-own-memory-beside-the-lent-loaded"] }
+
+[[case]]
+name = "module_config.memory_limit-one-own-memory-beside-the-lent-loaded"
+run = ["{out}/wasm-host{exe}", "module_config.memory_limit-one-own-memory-beside-the-lent-loaded"]
+claims = { matches = ["game:mover@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.memory_limit-a-second-own-memory-refused"] }
+
+[[case]]
+name = "module_config.element_limit-a-second-own-table-refused"
+run = ["{out}/wasm-host{exe}", "module_config.element_limit-a-second-own-table-refused"]
+claims = { matches = ["module 'test:twotable@0\\.1\\.0' did not load: its init made no instance: resource limit exceeded: table count too high at 2.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-inside-loaded"] }
+
+[[case]]
+name = "module_config.init_timeout-a-start-that-never-returns-interrupted"
+run = ["{out}/wasm-host{exe}", "module_config.init_timeout-a-start-that-never-returns-interrupted"]
+claims = { matches = ["module 'test:startspin@0\\.1\\.0' did not load: its init made no instance: interrupt.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-a-start-that-returns-runs-before-init"] }
+
+[[case]]
+name = "bridge_load-a-start-that-returns-runs-before-init"
+run = ["{out}/wasm-host{exe}", "bridge_load-a-start-that-returns-runs-before-init"]
+claims = { matches = ["test:startok@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.init_timeout-a-start-that-never-returns-interrupted"] }
+
+[[case]]
+name = "call-a-shutdown-after-the-fuel-ran-out-runs"
+run = ["{out}/wasm-host{exe}", "call-a-shutdown-after-the-fuel-ran-out-runs"]
+claims = { matches = ["test:spin@0\\.1\\.0/forever: system 'forever' failed: trapped: all fuel consumed.*test:spin@0\\.1\\.0: unloaded.*alive"], lacks = ["its shutdown trapped"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.shutdown_timeout-shutdown-interrupted"] }
+
+[[case]]
+name = "backend_create-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 1 }
+claims = { matches = ["backend 'wasm' would not start: out of memory.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "backend_create-no-event-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_event_create = 1 }
+claims = { matches = ["backend 'wasm' would not start: the operating system gave no event, mutex or thread to the watchdog.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "backend_create-no-mutex-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_mutex_create = 1 }
+claims = { matches = ["backend 'wasm' would not start: the operating system gave no event, mutex or thread to the watchdog.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "backend_create-no-thread-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_thread_start = 1 }
+claims = { matches = ["backend 'wasm' would not start: the operating system gave no event, mutex or thread to the watchdog.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "memory_adopt-out-of-memory-for-the-shared-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 2 }
+claims = { matches = ["backend 'wasm' cannot adopt the shared memory: out of memory.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "module_compile-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 3 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "memory_adopt-out-of-memory-for-the-private-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 4 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "instance_create-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 5 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "define_func-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 6 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "instance_get_func-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 14 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "wasm_make_own-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { malloc = 1 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: its init made no instance: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "wasm_make_own-no-address-space-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_reserve = 1 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: its init made no instance: no room for a module's own memory: it starts past the reservation, or the address space is full.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "grow_own-a-failed-commit-refused"
+run = ["{out}/wasm-host{exe}", "backend.reservation-growth-inside-it-loaded"]
+fail = { os_commit = 1 }
+claims = { matches = ["module 'test:grow@0\\.1\\.0' did not load: its init answered 7.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "call-a-thread-with-too-little-stack-refused"
+run = ["{out}/wasm-host{exe}", "call-a-thread-with-too-little-stack-refused"]
+claims = { matches = ["game:ticker@0\\.1\\.0/advance: system 'advance' failed: did not run: the thread has \\d+ bytes of stack left, and max_wasm_stack and stack_margin need 589824.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "call-a-thread-with-enough-stack-runs"] }
+
+[[case]]
+name = "call-a-thread-with-enough-stack-runs"
+run = ["{out}/wasm-host{exe}", "call-a-thread-with-enough-stack-runs"]
+claims = { matches = ["game:ticker@0\\.1\\.0/advance: tick 101 1.*alive"], lacks = ["did not run"] }
+false = { run = ["{out}/wasm-host{exe}", "call-a-thread-with-too-little-stack-refused"] }
+
+[[case]]
+name = "call-a-thread-with-an-unknown-stack-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_thread_stack_left = 1 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: its init did not run: the thread has 0 bytes of stack left, and max_wasm_stack and stack_margin need 589824.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "stack_margin-at-the-threshold-the-deepest-offered-function-runs"
+run = ["{out}/wasm-adopt{exe}"]
+claims = { matches = ["at the threshold of \\d+ bytes, the offered function ran at the deepest wasm frame: trapped: call stack exhausted"] }
+false = { run = ["{out}/wasm-adopt{exe}", "below"] }
+
+[[case]]
+name = "stack_margin-below-the-threshold-refused"
+run = ["{out}/wasm-adopt{exe}", "below"]
+claims = { matches = ["below the threshold: did not run: the thread has \\d+ bytes of stack left, and max_wasm_stack and stack_margin need \\d+"] }
+false = { run = ["{out}/wasm-adopt{exe}"] }
