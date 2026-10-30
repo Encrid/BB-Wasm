@@ -15,6 +15,7 @@
 constexpr uint32_t WASM_PAGE = 65'536;
 
 constexpr uint64_t WASM_FAR = (uint64_t)1 << 62;
+constexpr int64_t WASM_OWN = 1;
 
 enum wasm_engine : uint8_t {
     WASM_METERED = 1,
@@ -95,6 +96,9 @@ struct backend_instance {
     wasmtime_instance_t instance;
     int instantiated;
     uint64_t deadline;
+    int64_t memory_limit;
+    int64_t element_limit;
+    int64_t memories;
     backend_func_t *funcs;
 };
 
@@ -139,5 +143,7 @@ void wasm_make_types(wasm_valtype_vec_t *vec, const enum backend_type *kinds,
 
 wasm_trap_t *wasm_call_offered(void *env, wasmtime_caller_t *caller,
     wasmtime_val_raw_t *raw, size_t count);
+
+void wasm_set_limits(backend_instance_t *i);
 
 #endif
