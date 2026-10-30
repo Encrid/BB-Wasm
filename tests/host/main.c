@@ -642,6 +642,16 @@ static const host_case_t TEST_CASES[] = {
         test_set_and_load, "max_wasm_stack=65536 deep", test_set_small },
     { "backend.max_wasm_stack-deep-call-returned",
         test_set_and_load, "max_wasm_stack=524288 deep", test_set_small },
+    { "module_config.element_limit-table-grown-past-refused",
+        test_limit_elements, "4", test_set_small },
+    { "module_config.element_limit-table-grown-inside-loaded",
+        test_limit_elements, "16", test_set_small },
+    { "module_config.memory_limit-a-second-own-memory-refused",
+        test_load_named, "twomem", test_set_small },
+    { "module_config.memory_limit-one-own-memory-beside-the-lent-loaded",
+        test_load_lent, "", test_set_wasm },
+    { "module_config.element_limit-a-second-own-table-refused",
+        test_load_named, "twotable", test_set_small },
 };
 
 static const bridge_setting_t TEST_SETTINGS[10] = {

@@ -244,5 +244,7 @@ void test_refuse_essential(host_t *h);
 void test_edit_backend(host_t *h);
 void test_level(host_t *h);
 void test_set_and_load(host_t *h);
+void test_limit_elements(host_t *h);
+void test_load_lent(host_t *h);
 
 #endif
