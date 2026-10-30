@@ -17,7 +17,8 @@ static DWORD WINAPI run_thread(LPVOID arg)
 
 void host_thread_start(host_thread_t *t)
 {
-    t->handle = CreateThread(nullptr, 0, run_thread, t, 0, nullptr);
+    t->handle = CreateThread(nullptr, t->stack, run_thread, t,
+        STACK_SIZE_PARAM_IS_A_RESERVATION, nullptr);
 }
 
 void host_thread_join(host_thread_t *t)

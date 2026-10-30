@@ -37,7 +37,7 @@ void test_run_two(host_t *h)
         both[1] = open_one(h, &which[1]);
     if (!both[1])
         return;
-    test_start_elsewhere(&e, both[1], 30);
+    test_start_elsewhere(&e, both[1], 30, 4 << 20);
     host_run_frames_unsaid(both[0], 50);
     test_join_elsewhere(&e);
     printf("two worlds: sums %u and %u\n", c->last_sum[0], c->last_sum[1]);
