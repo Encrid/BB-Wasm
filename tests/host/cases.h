@@ -246,5 +246,6 @@ void test_level(host_t *h);
 void test_set_and_load(host_t *h);
 void test_limit_elements(host_t *h);
 void test_load_lent(host_t *h);
+void test_shut_after_fuel(host_t *h);
 
 #endif

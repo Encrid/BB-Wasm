@@ -35,6 +35,16 @@ void test_time_out_shutdown(host_t *h)
     host_close(h);
 }
 
+void test_shut_after_fuel(host_t *h)
+{
+    if (host_open(h))
+        return;
+    test_load_module(h, "test:spin@0.1.0", "spin3");
+    (void)bridge_run_phase(h->w, "update");
+    host_unload(h, "test:spin@0.1.0");
+    host_close(h);
+}
+
 void test_take_slot(host_t *h)
 {
     h->cfg.budget.modules = 1;
