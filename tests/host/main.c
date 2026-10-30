@@ -652,6 +652,12 @@ static const host_case_t TEST_CASES[] = {
         test_load_lent, "", test_set_wasm },
     { "module_config.element_limit-a-second-own-table-refused",
         test_load_named, "twotable", test_set_small },
+    { "module_config.init_timeout-a-start-that-never-returns-interrupted",
+        test_load_named, "startspin", test_set_small },
+    { "bridge_load-a-start-that-returns-runs-before-init",
+        test_load_named, "startok", test_set_small },
+    { "call-a-shutdown-after-the-fuel-ran-out-runs",
+        test_shut_after_fuel, "", test_set_wasm },
 };
 
 static const bridge_setting_t TEST_SETTINGS[10] = {

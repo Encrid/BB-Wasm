@@ -43,7 +43,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "module_config.memory_limit-memory-larger-at-start"
 run = ["{out}/wasm-host{exe}", "module_config.memory_limit-memory-larger-at-start"]
-claims = { matches = ["module 'test:big@0.1.0' did not load: cannot instantiate.*alive"] }
+claims = { matches = ["module 'test:big@0.1.0' did not load: its init made no instance.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -1309,7 +1309,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "bridge_load-import-nobody-answers"
 run = ["{out}/wasm-host{exe}", "bridge_load-import-nobody-answers"]
-claims = { matches = ["module 'test:stray@0\\.1\\.0' did not load: cannot instantiate: unknown import: `elsewhere::nothing` has not been defined.*alive"] }
+claims = { matches = ["module 'test:stray@0\\.1\\.0' did not load: its init made no instance: unknown import: `elsewhere::nothing` has not been defined.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -1705,7 +1705,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "BACKEND_IMPORT_OTHER-a-global-nobody-answers"
 run = ["{out}/wasm-host{exe}", "BACKEND_IMPORT_OTHER-a-global-nobody-answers"]
-claims = { matches = ["module 'test:strayglobal@0\\.1\\.0' did not load: cannot instantiate: unknown import: `elsewhere::number` has not been defined.*alive"] }
+claims = { matches = ["module 'test:strayglobal@0\\.1\\.0' did not load: its init made no instance: unknown import: `elsewhere::number` has not been defined.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -2175,3 +2175,21 @@ name = "module_config.element_limit-a-second-own-table-refused"
 run = ["{out}/wasm-host{exe}", "module_config.element_limit-a-second-own-table-refused"]
 claims = { matches = ["module 'test:twotable@0\\.1\\.0' did not load: its init made no instance: resource limit exceeded: table count too high at 2.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "module_config.element_limit-table-grown-inside-loaded"] }
+
+[[case]]
+name = "module_config.init_timeout-a-start-that-never-returns-interrupted"
+run = ["{out}/wasm-host{exe}", "module_config.init_timeout-a-start-that-never-returns-interrupted"]
+claims = { matches = ["module 'test:startspin@0\\.1\\.0' did not load: its init made no instance: interrupt.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_load-a-start-that-returns-runs-before-init"] }
+
+[[case]]
+name = "bridge_load-a-start-that-returns-runs-before-init"
+run = ["{out}/wasm-host{exe}", "bridge_load-a-start-that-returns-runs-before-init"]
+claims = { matches = ["test:startok@0\\.1\\.0: loaded.*alive"], lacks = ["did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.init_timeout-a-start-that-never-returns-interrupted"] }
+
+[[case]]
+name = "call-a-shutdown-after-the-fuel-ran-out-runs"
+run = ["{out}/wasm-host{exe}", "call-a-shutdown-after-the-fuel-ran-out-runs"]
+claims = { matches = ["test:spin@0\\.1\\.0/forever: system 'forever' failed: trapped: all fuel consumed.*test:spin@0\\.1\\.0: unloaded.*alive"], lacks = ["its shutdown trapped"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.shutdown_timeout-shutdown-interrupted"] }

@@ -1073,3 +1073,17 @@ test = true
 folder = "wasm"
 sources = ["tests/modules/twotable.wat"]
 flags = ["--enable-reference-types"]
+
+[[artifact]]
+name = "startspin"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/startspin.wat"]
+
+[[artifact]]
+name = "startok"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/startok.wat"]
