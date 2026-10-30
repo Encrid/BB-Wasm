@@ -15,6 +15,8 @@ wasm_offered_t *wasm_make_offered(const backend_entry_t *entry)
     const backend_sig_t *sig = entry->sig;
     wasm_offered_t *h = calloc(1, sizeof(*h));
 
+    if (!h)
+        return (nullptr);
     h->fn = entry->fn;
     h->ud = entry->ud;
     h->params = sig->param_count;

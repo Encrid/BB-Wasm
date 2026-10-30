@@ -73,6 +73,10 @@ BACKEND_EXPORT backend_memory_t *memory_adopt([[maybe_unused]] backend_t *b,
         return (nullptr);
     }
     m = calloc(1, sizeof(*m));
+    if (!m) {
+        wasm_fail(err, WASM_NO_MEMORY, nullptr, nullptr);
+        return (nullptr);
+    }
     m->ptr = ptr;
     m->len = len;
     return (m);

@@ -42,3 +42,18 @@ void wasm_watch(void *arg)
         read_armed(b, &armed);
     }
 }
+
+int wasm_start_watch(backend_t *b, backend_err_t *err)
+{
+    b->wake = os_event_create();
+    b->lock = os_mutex_create();
+    if (b->wake && b->lock)
+        b->watchdog = os_thread_start(wasm_watch, b,
+            (size_t)b->settings.watchdog_stack);
+    if (b->watchdog)
+        return (0);
+    os_event_free(b->wake);
+    os_mutex_free(b->lock);
+    return (wasm_fail(err, "the operating system gave no event, mutex or "
+        "thread to the watchdog", nullptr, nullptr));
+}

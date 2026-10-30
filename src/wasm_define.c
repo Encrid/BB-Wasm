@@ -30,6 +30,8 @@ BACKEND_EXPORT int define_func(backend_instance_t *i,
         return (wasm_fail(err, "define_func: after the first call of the "
             "module, or too wide", nullptr, nullptr));
     h = wasm_make_offered(entry);
+    if (!h)
+        return (wasm_fail(err, WASM_NO_MEMORY, nullptr, nullptr));
     ty = make_type(sig);
     error = wasmtime_linker_define_func_unchecked(i->linker, entry->ns,
         strlen(entry->ns), entry->field, strlen(entry->field), ty,

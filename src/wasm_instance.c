@@ -63,6 +63,10 @@ BACKEND_EXPORT backend_instance_t *instance_create(backend_module_t *m,
     wasm_trap_t *trap = nullptr;
     uint32_t k = 0;
 
+    if (!i) {
+        wasm_fail(err, WASM_NO_MEMORY, nullptr, nullptr);
+        return (nullptr);
+    }
     open_store(i, m, count);
     while (k < count && !error && !trap) {
         error = give_memory(i, &memories[k], &trap);
