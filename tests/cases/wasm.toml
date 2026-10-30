@@ -2193,3 +2193,94 @@ name = "call-a-shutdown-after-the-fuel-ran-out-runs"
 run = ["{out}/wasm-host{exe}", "call-a-shutdown-after-the-fuel-ran-out-runs"]
 claims = { matches = ["test:spin@0\\.1\\.0/forever: system 'forever' failed: trapped: all fuel consumed.*test:spin@0\\.1\\.0: unloaded.*alive"], lacks = ["its shutdown trapped"] }
 false = { run = ["{out}/wasm-host{exe}", "module_config.shutdown_timeout-shutdown-interrupted"] }
+
+[[case]]
+name = "backend_create-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 1 }
+claims = { matches = ["backend 'wasm' would not start: out of memory.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "backend_create-no-event-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_event_create = 1 }
+claims = { matches = ["backend 'wasm' would not start: the operating system gave no event, mutex or thread to the watchdog.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "backend_create-no-mutex-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_mutex_create = 1 }
+claims = { matches = ["backend 'wasm' would not start: the operating system gave no event, mutex or thread to the watchdog.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "backend_create-no-thread-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_thread_start = 1 }
+claims = { matches = ["backend 'wasm' would not start: the operating system gave no event, mutex or thread to the watchdog.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "memory_adopt-out-of-memory-for-the-shared-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 2 }
+claims = { matches = ["backend 'wasm' cannot adopt the shared memory: out of memory.*bridge_create refused.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "module_compile-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 3 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "memory_adopt-out-of-memory-for-the-private-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 4 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "instance_create-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 5 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "define_func-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 6 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "instance_get_func-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { calloc = 14 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "wasm_make_own-out-of-memory-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { malloc = 1 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: its init made no instance: out of memory.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "wasm_make_own-no-address-space-refused"
+run = ["{out}/wasm-host{exe}", "bridge_load-loaded"]
+fail = { os_reserve = 1 }
+claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: its init made no instance: no room for a module's own memory: it starts past the reservation, or the address space is full.*alive"] }
+false = { fail = {} }
+
+[[case]]
+name = "grow_own-a-failed-commit-refused"
+run = ["{out}/wasm-host{exe}", "backend.reservation-growth-inside-it-loaded"]
+fail = { os_commit = 1 }
+claims = { matches = ["module 'test:grow@0\\.1\\.0' did not load: its init answered 7.*alive"] }
+false = { fail = {} }
