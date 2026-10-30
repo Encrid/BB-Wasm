@@ -9,90 +9,73 @@
 
 #include "wasm_inside.h"
 
-BACKEND_EXPORT int define_func(backend_instance_t *i,
-    const backend_entry_t *entry, backend_err_t *err)
+static const wasm_exporttype_t *find_export(const backend_module_t *m,
+    const char *name)
 {
-    const backend_sig_t *sig = entry->sig;
-    wasm_valtype_vec_t params;
-    wasm_valtype_vec_t results;
-    wasm_functype_t *ty;
-    wasmtime_error_t *error = nullptr;
+    size_t len = strlen(name);
+    const wasm_name_t *at;
+    size_t k = 0;
 
-    if (i->instantiated || sig->param_count > 16 || sig->result_count > 4)
-        return (wasm_fail(err, "define_func: after the module's first "
-            "function, or too wide", nullptr, nullptr));
-    wasm_make_types(&params, sig->params, sig->param_count);
-    wasm_make_types(&results, sig->results, sig->result_count);
-    ty = wasm_functype_new(&params, &results);
-    error = wasmtime_linker_define_func_unchecked(i->linker, entry->ns,
-        strlen(entry->ns), entry->field, strlen(entry->field), ty,
-        wasm_call_offered, wasm_make_offered(entry), free);
-    wasm_functype_delete(ty);
-    if (error)
-        return (wasm_fail(err, "cannot define a function", error, nullptr));
-    return (0);
+    while (k < m->exports.size) {
+        at = wasm_exporttype_name(m->exports.data[k]);
+        if (at->size == len && !memcmp(at->data, name, len))
+            return (m->exports.data[k]);
+        k++;
+    }
+    return (nullptr);
 }
 
-static int instantiate(backend_instance_t *i, backend_err_t *err)
+static bool is_shaped(const wasm_functype_t *ty)
 {
-    wasm_trap_t *trap = nullptr;
-    wasmtime_error_t *error;
-
-    if (i->instantiated)
-        return (0);
-    error = wasmtime_linker_instantiate(i->linker, i->ctx, i->m->module,
-        &i->instance, &trap);
-    if (error || trap)
-        return (wasm_fail(err, "cannot instantiate", error, trap));
-    i->instantiated = 1;
-    return (0);
-}
-
-static bool is_shaped(backend_instance_t *i, const wasmtime_func_t *func)
-{
-    wasm_functype_t *ty = wasmtime_func_type(i->ctx, func);
     const wasm_valtype_vec_t *results = wasm_functype_results(ty);
-    bool shaped = !wasm_functype_params(ty)->size && results->size == 1
-        && wasm_valtype_kind(results->data[0]) == WASM_I32;
 
-    wasm_functype_delete(ty);
-    return (shaped);
+    return (!wasm_functype_params(ty)->size && results->size == 1
+        && wasm_valtype_kind(results->data[0]) == WASM_I32);
 }
 
-static int find_export(backend_instance_t *i, const char *name,
-    wasmtime_extern_t *item, backend_err_t *err)
+static int check_export(const wasm_exporttype_t *export, const char *name,
+    backend_err_t *err)
 {
     constexpr size_t room = sizeof(err->text);
-    bool got = wasmtime_instance_export_get(i->ctx, &i->instance, name,
-        strlen(name), item);
-    bool found = got && item->kind == WASMTIME_EXTERN_FUNC;
+    const wasm_functype_t *ty = nullptr;
 
-    if (found && is_shaped(i, &item->of.func))
+    if (export)
+        ty = wasm_externtype_as_functype_const(wasm_exporttype_type(export));
+    if (ty && is_shaped(ty))
         return (0);
-    if (got)
-        wasmtime_extern_delete(item);
     if (!err)
         return (1);
-    if (found)
+    if (ty)
         snprintf(err->text, room, "its export '%.100s' is not () -> i32", name);
     else
         snprintf(err->text, room, "no exported function '%s'", name);
     return (1);
 }
 
+void wasm_find_func(backend_instance_t *i, backend_func_t *f)
+{
+    wasmtime_extern_t item = {};
+
+    wasmtime_instance_export_get(i->ctx, &i->instance, f->name->data,
+        f->name->size, &item);
+    f->func = item.of.func;
+    wasmtime_extern_delete(&item);
+}
+
 BACKEND_EXPORT backend_func_t *instance_get_func(backend_instance_t *i,
     const char *name, backend_err_t *err)
 {
-    wasmtime_extern_t item = {};
+    const wasm_exporttype_t *export = find_export(i->m, name);
     backend_func_t *f;
 
-    if (instantiate(i, err) || find_export(i, name, &item, err))
+    if (check_export(export, name, err))
         return (nullptr);
     f = calloc(1, sizeof(*f));
     f->instance = i;
-    f->func = item.of.func;
-    wasmtime_extern_delete(&item);
+    f->name = wasm_exporttype_name(export);
     f->next = i->funcs;
     i->funcs = f;
+    if (i->instantiated)
+        wasm_find_func(i, f);
     return (f);
 }

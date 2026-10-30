@@ -44,6 +44,7 @@ BACKEND_EXPORT backend_module_t *module_compile(backend_t *b,
     m->kind = kind;
     m->module = module;
     wasmtime_module_imports(module, &m->imports);
+    wasmtime_module_exports(module, &m->exports);
     return (m);
 }
 
@@ -83,6 +84,7 @@ BACKEND_EXPORT uint32_t module_list_imports(backend_module_t *m,
 
 BACKEND_EXPORT void module_destroy(backend_module_t *m)
 {
+    wasm_exporttype_vec_delete(&m->exports);
     wasm_importtype_vec_delete(&m->imports);
     wasmtime_module_delete(m->module);
     free(m);

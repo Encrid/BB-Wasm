@@ -35,8 +35,7 @@ static void open_store(backend_instance_t *i, backend_module_t *m,
     i->element_limit = -1;
     i->memories = (int64_t)lent + WASM_OWN;
     wasm_set_limits(i);
-    if (m->kind & WASM_METERED)
-        wasm_drop(wasmtime_context_set_fuel(i->ctx, UINT64_MAX));
+    instance_set_work_limit(i, WASM_FUEL);
     if (m->kind & WASM_INTERRUPTIBLE)
         wasmtime_context_set_epoch_deadline(i->ctx, WASM_FAR);
 }

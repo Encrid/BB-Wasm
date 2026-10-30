@@ -15,6 +15,7 @@
 constexpr uint32_t WASM_PAGE = 65'536;
 
 constexpr uint64_t WASM_FAR = (uint64_t)1 << 62;
+constexpr uint64_t WASM_FUEL = UINT64_MAX;
 constexpr int64_t WASM_OWN = 1;
 
 enum wasm_engine : uint8_t {
@@ -78,10 +79,12 @@ struct backend_module {
     enum wasm_engine kind;
     wasmtime_module_t *module;
     wasm_importtype_vec_t imports;
+    wasm_exporttype_vec_t exports;
 };
 
 struct backend_func {
     backend_instance_t *instance;
+    const wasm_name_t *name;
     wasmtime_func_t func;
     backend_func_t *next;
 };
@@ -145,5 +148,10 @@ wasm_trap_t *wasm_call_offered(void *env, wasmtime_caller_t *caller,
     wasmtime_val_raw_t *raw, size_t count);
 
 void wasm_set_limits(backend_instance_t *i);
+
+BACKEND_EXPORT void instance_set_work_limit(backend_instance_t *i,
+    uint64_t units);
+
+void wasm_find_func(backend_instance_t *i, backend_func_t *f);
 
 #endif
