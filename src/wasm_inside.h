@@ -12,8 +12,6 @@
     #include "bridge_backend.h"
     #include "os.h"
 
-constexpr uint64_t WASM_RESERVATION = (uint64_t)1 << 32;
-constexpr uint64_t WASM_GUARD = (uint64_t)32 << 20;
 constexpr uint32_t WASM_PAGE = 65'536;
 
 constexpr uint64_t WASM_FAR = (uint64_t)1 << 62;
@@ -25,6 +23,28 @@ enum wasm_engine : uint8_t {
 
 constexpr int WASM_ENGINES = 4;
 
+enum wasm_key : uint8_t {
+    WASM_KEY_RESERVATION = 0,
+    WASM_KEY_GUARD = 1,
+    WASM_KEY_STACK = 2,
+    WASM_KEY_MARGIN = 3,
+    WASM_KEY_WATCHDOG = 4,
+    WASM_KEY_LEVEL = 5,
+    WASM_KEY_COMPILE = 6
+};
+
+constexpr int WASM_SETTINGS = 7;
+
+typedef struct {
+    uint64_t reservation;
+    uint64_t guard;
+    uint64_t wasm_stack;
+    uint64_t stack_margin;
+    uint64_t watchdog_stack;
+    wasmtime_opt_level_t opt_level;
+    bool parallel_compilation;
+} wasm_settings_t;
+
 struct backend {
     wasm_engine_t *engines[WASM_ENGINES];
     os_thread_t *watchdog;
@@ -35,6 +55,7 @@ struct backend {
     uint64_t until;
     wasm_engine_t *ticking;
     backend_memory_t *adopting;
+    wasm_settings_t settings;
     int quit;
 };
 
@@ -81,6 +102,7 @@ typedef struct {
     uint8_t *base;
     size_t size;
     size_t reserve;
+    size_t guard;
 } wasm_own_t;
 
 typedef struct {
@@ -97,7 +119,11 @@ void wasm_drop(wasmtime_error_t *error);
 int wasm_fail(backend_err_t *err, const char *what, wasmtime_error_t *error,
     wasm_trap_t *trap);
 
-wasmtime_error_t *wasm_make_own(size_t minimum, wasmtime_linear_memory_t *ret);
+int wasm_read_settings(wasm_settings_t *s, const backend_setting_t *settings,
+    uint32_t count, backend_err_t *err);
+
+wasmtime_error_t *wasm_make_own(const backend_t *b, size_t minimum,
+    wasmtime_linear_memory_t *ret);
 
 wasmtime_error_t *wasm_adopt_into(backend_instance_t *i, backend_memory_t *mem,
     wasmtime_extern_t *item, wasm_trap_t **trap);

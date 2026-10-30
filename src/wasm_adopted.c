@@ -28,13 +28,14 @@ static wasmtime_error_t *make_memory(void *env,
     [[maybe_unused]] size_t maximum, size_t reserved, size_t guard,
     wasmtime_linear_memory_t *ret)
 {
-    backend_memory_t *adopting = ((backend_t *)env)->adopting;
+    const backend_t *b = env;
+    backend_memory_t *adopting = b->adopting;
 
-    if (reserved > WASM_RESERVATION || guard > WASM_GUARD)
+    if (reserved > b->settings.reservation || guard > b->settings.guard)
         return (wasmtime_error_new("wasmtime asked for more address space "
             "than memory_get_shape states"));
     if (!adopting)
-        return (wasm_make_own(minimum, ret));
+        return (wasm_make_own(b, minimum, ret));
     if (minimum != adopting->len)
         return (wasmtime_error_new("an adopted block is not the size its "
             "import declares"));
@@ -55,8 +56,13 @@ static wasm_engine_t *make_engine(backend_t *b, enum wasm_engine kind)
     wasmtime_config_wasm_multi_memory_set(config, true);
     wasmtime_config_consume_fuel_set(config, metered);
     wasmtime_config_epoch_interruption_set(config, interruptible);
-    wasmtime_config_memory_reservation_set(config, WASM_RESERVATION);
-    wasmtime_config_memory_guard_size_set(config, WASM_GUARD);
+    wasmtime_config_memory_reservation_set(config, b->settings.reservation);
+    wasmtime_config_memory_guard_size_set(config, b->settings.guard);
+    wasmtime_config_max_wasm_stack_set(config, b->settings.wasm_stack);
+    wasmtime_config_async_stack_size_set(config, b->settings.wasm_stack);
+    wasmtime_config_cranelift_opt_level_set(config, b->settings.opt_level);
+    wasmtime_config_parallel_compilation_set(config,
+        b->settings.parallel_compilation);
     wasmtime_config_memory_may_move_set(config, false);
     wasmtime_config_memory_init_cow_set(config, false);
     wasmtime_config_host_memory_creator_set(config, &creator);
