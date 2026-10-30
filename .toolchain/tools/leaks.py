@@ -98,18 +98,18 @@ def tested(effect, kinds):
 
 def wrapped(name, effects, kinds, declaration):
     head, call = rewrite.signed(name, declaration, PREFIX)
-    returned, parameters, _ = declaration
+    returned, parameters, _, _ = declaration
     fitted(name, effects, returned, parameters)
     if effects[0][0] == 'move':
         body = ('    typeof(%s) r;\n\n    if (!a1)\n        %skept[%d]++;\n    r = %s;\n    if (!a0 && r)\n'
                 '        %skept[%d]++;\n    return (r);\n'
-                % (returned, PREFIX, len(kinds), call, PREFIX, kinds.index(effects[0][1])))
+                % (call, PREFIX, len(kinds), call, PREFIX, kinds.index(effects[0][1])))
         return head + body + '}\n'
     before = ''.join(tested(one, kinds) for one in effects if one[0] == 'give' and one[2] != 'result')
     after = ''.join(tested(one, kinds) for one in effects if one[0] == 'take' or one[2] == 'result')
     if returned == 'void':
         return head + before + '    %s;\n' % call + after + '}\n'
-    return head + before + '    typeof(%s) r = %s;\n\n' % (returned, call) + after + '    return (r);\n}\n'
+    return head + before + '    typeof(%s) r = %s;\n\n' % (call, call) + after + '    return (r);\n}\n'
 
 
 def rewritten(text, path, used, ends, declared, names, kinds, outer=(0, '', '')):
