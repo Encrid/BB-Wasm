@@ -25,12 +25,16 @@ gives = { wasm_byte_vec_delete = "*1" }
 takes = { wasmtime_module_imports = "*2" }
 gives = { wasm_importtype_vec_delete = "*1" }
 
+[leaks.kinds.wasm_exporttype_vec]
+takes = { wasmtime_module_exports = "*2" }
+gives = { wasm_exporttype_vec_delete = "*1" }
+
 [leaks.kinds.wasm_valtype_vec]
 takes = { wasm_valtype_vec_new_uninitialized = "*1" }
 gives = { wasm_functype_new = ["*1", "*2"] }
 
 [leaks.kinds.wasm_functype]
-takes = { wasm_functype_new = "result", wasmtime_func_type = "result" }
+takes = { wasm_functype_new = "result" }
 gives = { wasm_functype_delete = "1" }
 
 [leaks.kinds.wasm_config]
