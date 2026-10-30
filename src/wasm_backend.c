@@ -12,15 +12,15 @@ BACKEND_EXPORT backend_t *backend_create(const backend_setting_t *settings,
 {
     backend_t *b = calloc(1, sizeof(*b));
 
-    if (wasm_read_settings(&b->settings, settings, count, err)) {
-        free(b);
+    if (!b) {
+        wasm_fail(err, WASM_NO_MEMORY, nullptr, nullptr);
         return (nullptr);
     }
-    b->wake = os_event_create();
-    b->lock = os_mutex_create();
-    b->watchdog = os_thread_start(wasm_watch, b,
-        (size_t)b->settings.watchdog_stack);
-    return (b);
+    if (!wasm_read_settings(&b->settings, settings, count, err)
+        && !wasm_start_watch(b, err))
+        return (b);
+    free(b);
+    return (nullptr);
 }
 
 BACKEND_EXPORT void backend_destroy(backend_t *b)

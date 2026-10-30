@@ -40,6 +40,8 @@ wasmtime_error_t *wasm_make_own(const backend_t *b, size_t minimum,
 {
     wasm_own_t *m = malloc(sizeof(*m));
 
+    if (!m)
+        return (wasmtime_error_new(WASM_NO_MEMORY));
     m->reserve = (size_t)b->settings.reservation;
     m->guard = (size_t)b->settings.guard;
     m->size = minimum;

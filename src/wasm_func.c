@@ -71,6 +71,10 @@ BACKEND_EXPORT backend_func_t *instance_get_func(backend_instance_t *i,
     if (check_export(export, name, err))
         return (nullptr);
     f = calloc(1, sizeof(*f));
+    if (!f) {
+        wasm_fail(err, WASM_NO_MEMORY, nullptr, nullptr);
+        return (nullptr);
+    }
     f->instance = i;
     f->name = wasm_exporttype_name(export);
     f->next = i->funcs;

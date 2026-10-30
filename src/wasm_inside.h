@@ -18,6 +18,8 @@ constexpr uint64_t WASM_FAR = (uint64_t)1 << 62;
 constexpr uint64_t WASM_FUEL = UINT64_MAX;
 constexpr int64_t WASM_OWN = 1;
 
+constexpr char WASM_NO_MEMORY[] = "out of memory";
+
 enum wasm_engine : uint8_t {
     WASM_METERED = 1,
     WASM_INTERRUPTIBLE = 2
@@ -136,6 +138,8 @@ wasmtime_error_t *wasm_adopt_into(backend_instance_t *i, backend_memory_t *mem,
     wasmtime_extern_t *item, wasm_trap_t **trap);
 
 void wasm_watch(void *arg);
+
+int wasm_start_watch(backend_t *b, backend_err_t *err);
 
 wasm_engine_t *wasm_get_engine(backend_t *b, enum wasm_engine kind);
 
