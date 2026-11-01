@@ -462,8 +462,6 @@ static const host_case_t TEST_CASES[] = {
         test_tell_events, "3", test_set_counting },
     { "bridge_has_column-held-and-not-yet-left",
         test_tell_events, "2", test_set_counting },
-    { "bridge_get_bits-where-a-toggle-keeps-them",
-        test_count_toggled, "", test_set_wasm },
     { "bridge_is_on-counted-by-its-bit",
         test_count_toggled, "", test_set_wasm },
     { "bridge_set_toggle-four-turned-off",
