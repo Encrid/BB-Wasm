@@ -44,3 +44,7 @@ Each accessor below builds on `$resolve` or reads the header the same way:
 
 The module build merges this file into the compiled module as `acc`, inlines every accessor into its callers, and strips the exports.
 Before the merge, `tools/wasm_guard.py` checks the imports of the compiled module: `docs/tools/wasm_guard.py.md`.
+
+The compile takes the setting `simd` of `.toolchain/config/variables.toml`, which is `-msimd128`, and then the `flags` of the module.
+So `-mno-simd128`, as the setting or in the `flags` of one module, turns SIMD off.
+The merge and the optimizer take `--enable-simd` in `features`, so binaryen keeps the SIMD instructions that the compile made.
