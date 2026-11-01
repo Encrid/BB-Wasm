@@ -60,6 +60,7 @@ BRIDGE_ACC(acc_st_f64) void acc_st_f64(uint32_t slot, uint64_t ab,
 
 BRIDGE_ACC(acc_entity) uint64_t acc_entity(uint64_t id);
 BRIDGE_ACC(acc_who) uint64_t acc_who(uint32_t table, uint32_t row);
+BRIDGE_ACC(acc_rows) uint32_t acc_rows(uint32_t table);
 BRIDGE_ACC(acc_has) uint32_t acc_has(uint32_t slot, uint32_t id);
 BRIDGE_ACC(acc_toggle) uint32_t acc_toggle(uint32_t slot, uint32_t table,
     uint32_t row);
