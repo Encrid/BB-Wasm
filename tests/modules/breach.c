@@ -11,6 +11,12 @@ constexpr uint32_t BREACH_ENTITIES = 4;
 
 static uint32_t position;
 static uint32_t moving;
+#if defined(BREACH_TOGGLE) || defined(BREACH_OK)
+static uint32_t lit;
+#endif
+#if defined(BREACH_OK)
+static uint64_t ids[BREACH_ENTITIES];
+#endif
 #if defined(BREACH_SPARSE)
 static uint32_t marked;
 #endif
@@ -18,10 +24,26 @@ static uint32_t marked;
 static uint32_t dotted;
 #endif
 
-#if defined(BREACH_ROW) || defined(BREACH_OK)
+#if defined(BREACH_ROW) || defined(BREACH_WHO) || defined(BREACH_TOGGLE) \
+    || defined(BREACH_OK)
 static uint32_t a_table(void)
 {
     return (bridge_span_table(bridge_get_span(moving, 0)));
+}
+#endif
+
+#if defined(BREACH_OK)
+static uint32_t get_last_found(void)
+{
+    uint64_t last = bridge_get_entity(a_table(), BREACH_ENTITIES - 1);
+    uint32_t found = 0;
+
+    (void)BRIDGE_GET(position_t, x, position, a_table(), BREACH_ENTITIES - 1);
+    (void)bridge_is_on(lit, a_table(), BREACH_ENTITIES - 1);
+    (void)acc_rows(BRIDGE_HEADER(tables) - 1);
+    for (uint32_t i = 0; i < BREACH_ENTITIES; i++)
+        found += ids[i] == last;
+    return (found);
 }
 #endif
 
@@ -30,7 +52,13 @@ BRIDGE_EXPORT(breach) int breach(void)
 #if defined(BREACH_SLOT)
     (void)acc_ld_32(50, 0, 0);
 #elif defined(BREACH_ROW)
-    (void)BRIDGE_GET(position_t, x, position, a_table(), 1u << 20);
+    (void)BRIDGE_GET(position_t, x, position, a_table(), BREACH_ENTITIES);
+#elif defined(BREACH_WHO)
+    (void)bridge_get_entity(a_table(), BREACH_ENTITIES);
+#elif defined(BREACH_TOGGLE)
+    (void)bridge_is_on(lit, a_table(), BREACH_ENTITIES);
+#elif defined(BREACH_ROWS)
+    (void)acc_rows(BRIDGE_HEADER(tables));
 #elif defined(BREACH_FIELD)
     acc_st_32(position, BRIDGE_AT(0, 0), 1u << 20, 0);
 #elif defined(BREACH_READONLY)
@@ -56,8 +84,7 @@ BRIDGE_EXPORT(breach) int breach(void)
     acc_from_shared(&word, 0, sizeof(word));
     (void)word;
 #elif defined(BREACH_OK)
-    (void)BRIDGE_GET(position_t, x, position, a_table(), 0);
-    BRIDGE_LOG(BRIDGE_LOG_INFO, "ok", BREACH_ENTITIES, 0);
+    BRIDGE_LOG(BRIDGE_LOG_INFO, "ok", BREACH_ENTITIES, get_last_found());
 #endif
     return (0);
 }
@@ -65,10 +92,21 @@ BRIDGE_EXPORT(breach) int breach(void)
 static void populate(void)
 {
     position_t p = { 0.0f, 0.0f };
+#if defined(BREACH_TOGGLE) || defined(BREACH_OK)
+    marked_t on = {};
+#endif
+    uint64_t id;
     uint32_t i = 0;
 
     while (i < BREACH_ENTITIES) {
-        BRIDGE_ATTACH(bridge_spawn(), position, p);
+        id = bridge_spawn();
+        BRIDGE_ATTACH(id, position, p);
+#if defined(BREACH_TOGGLE) || defined(BREACH_OK)
+        BRIDGE_ATTACH(id, lit, on);
+#endif
+#if defined(BREACH_OK)
+        ids[i] = id;
+#endif
         i++;
     }
 }
@@ -83,6 +121,10 @@ BRIDGE_EXPORT(init) int init(void)
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_DELETE,
         BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
+#if defined(BREACH_TOGGLE) || defined(BREACH_OK)
+    lit = BRIDGE_COMPONENT("game:Lit", marked_t, BRIDGE_DELETE,
+        BRIDGE_TOGGLE, BRIDGE_ON_DESTROY_REMOVE);
+#endif
 #if defined(BREACH_SPARSE)
     marked = BRIDGE_COMPONENT("game:Mark", marked_t, BRIDGE_DELETE,
         BRIDGE_SPARSE_SET, BRIDGE_ON_DESTROY_REMOVE);

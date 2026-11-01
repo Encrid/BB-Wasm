@@ -677,6 +677,33 @@ include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_FROM_SHARED", "BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
+name = "breach-who"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["BREACH_WHO"]
+
+[[artifact]]
+name = "breach-toggle"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["BREACH_TOGGLE"]
+
+[[artifact]]
+name = "breach-rows"
+kind = "wasm_module"
+test = true
+folder = "wasm"
+sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+include = ["{bridge}/include", "include", "tests/modules"]
+defines = ["BREACH_ROWS"]
+
+[[artifact]]
 name = "breach-ok"
 kind = "wasm_module"
 test = true
