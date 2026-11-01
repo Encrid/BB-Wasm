@@ -1,7 +1,8 @@
 [variables]
 quiet = ["-Wno-missing-field-initializers"]
 binaryen_top = "binaryen-version_133"
-features = ["--enable-multimemory", "--enable-bulk-memory", "--enable-sign-ext", "--enable-nontrapping-float-to-int", "--enable-mutable-globals"]
+simd = "-msimd128"
+features = ["--enable-multimemory", "--enable-bulk-memory", "--enable-sign-ext", "--enable-nontrapping-float-to-int", "--enable-mutable-globals", "--enable-simd"]
 acc_wasm = "{out}/wasm/acc.wasm"
 
 [tools]
