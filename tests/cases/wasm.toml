@@ -67,7 +67,7 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "module_config.abi-another-refused"
 run = ["{out}/wasm-host{exe}", "module_config.abi-another-refused"]
-claims = { matches = ["module 'test:ok@0.1.0' is refused: it wants ABI 3 and this is ABI 2.*alive"] }
+claims = { matches = ["module 'test:ok@0.1.0' is refused: it wants ABI 4 and this is ABI 3.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
@@ -1189,8 +1189,8 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "module_config.spans-outgrown-at-a-barrier"
 run = ["{out}/wasm-host{exe}", "module_config.spans-outgrown-at-a-barrier"]
-claims = { matches = ["module 'game:mover@0\\.1\\.0' is stopped: what its queries match no longer fits in its spans of 1160 bytes.*alive"] }
-false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+claims = { matches = ["module 'game:mover@0\\.1\\.0' is stopped: what its queries match no longer fits in its spans of 640 bytes.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "BRIDGE_SPAN_SIZE-what-a-span-takes-of-the-spans"] }
 
 [[case]]
 name = "BRIDGE_ACC-the-accessors-merged-in"
@@ -1609,8 +1609,8 @@ false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 [[case]]
 name = "BRIDGE_SPAN_SIZE-what-a-span-takes-of-the-spans"
 run = ["{out}/wasm-host{exe}", "BRIDGE_SPAN_SIZE-what-a-span-takes-of-the-spans"]
-claims = { matches = ["module 'view:reader@0.1.0' did not load: its spans of 16 bytes do not hold a column_base of 2 types by \\d+ tables.*moved 2 1000.*alive"] }
-false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+claims = { matches = ["game:mover@0\\.1\\.0/count: moved 2 1000.*alive"], lacks = ["is stopped"] }
+false = { run = ["{out}/wasm-host{exe}", "module_config.spans-outgrown-at-a-barrier"] }
 
 [[case]]
 name = "BRIDGE_SCHEMA_TEXT-a-descriptor-of-the-type-s-own-text"
@@ -1901,6 +1901,24 @@ claims = { matches = ["game:breach@0\\.1\\.0/breach: system 'breach' failed: tra
 false = { run = ["{out}/wasm-host{exe}", "isolate.a-valid-access-is-allowed"] }
 
 [[case]]
+name = "isolate.who-at-the-row-count-trapped"
+run = ["{out}/wasm-host{exe}", "isolate.who-at-the-row-count-trapped"]
+claims = { matches = ["game:breach@0\\.1\\.0/breach: system 'breach' failed: trapped: wasm .unreachable. instruction executed.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "isolate.a-valid-access-is-allowed"] }
+
+[[case]]
+name = "isolate.toggle-at-the-row-count-trapped"
+run = ["{out}/wasm-host{exe}", "isolate.toggle-at-the-row-count-trapped"]
+claims = { matches = ["game:breach@0\\.1\\.0/breach: system 'breach' failed: trapped: wasm .unreachable. instruction executed.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "isolate.a-valid-access-is-allowed"] }
+
+[[case]]
+name = "isolate.rows-past-the-tables-trapped"
+run = ["{out}/wasm-host{exe}", "isolate.rows-past-the-tables-trapped"]
+claims = { matches = ["game:breach@0\\.1\\.0/breach: system 'breach' failed: trapped: wasm .unreachable. instruction executed.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "isolate.a-valid-access-is-allowed"] }
+
+[[case]]
 name = "isolate.field-out-of-the-cell-trapped"
 run = ["{out}/wasm-host{exe}", "isolate.field-out-of-the-cell-trapped"]
 claims = { matches = ["game:breach@0\\.1\\.0/breach: system 'breach' failed: trapped: wasm .unreachable. instruction executed.*alive"] }
@@ -1945,8 +1963,8 @@ false = { run = ["{out}/wasm-host{exe}", "isolate.a-valid-access-is-allowed"] }
 [[case]]
 name = "isolate.a-valid-access-is-allowed"
 run = ["{out}/wasm-host{exe}", "isolate.a-valid-access-is-allowed"]
-claims = { matches = ["game:breach@0\\.1\\.0/breach: ok 4 0.*alive"], lacks = ["trapped"] }
-false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+claims = { matches = ["game:breach@0\\.1\\.0/breach: ok 4 1.*alive"], lacks = ["trapped"] }
+false = { run = ["{out}/wasm-host{exe}", "isolate.row-out-of-range-trapped"] }
 
 [[case]]
 name = "isolate.imports-shared-memory-refused-at-build"
