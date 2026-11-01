@@ -19,19 +19,21 @@ It takes a slot, a packed place, a field, a width, and a flag that tells a store
 
 1. It traps if the slot is past the declared types, or a store names a read-only type.
 2. It traps if the field and the width run past the stride of the type.
-3. For a table or a toggle, it returns the column base plus the row by the stride.
+3. For a table or a toggle, it traps unless the row is below the row count. Then it returns the column base plus the row by the stride.
 4. For a singleton, it returns the kept cell of the slot.
 5. For a sparse set, it reads the cell for the id, and traps when the cell is 0.
 6. For a direct-indexed type, it tests the presence bit of the id, then takes the cell.
 
 Each branch adds the field, and each one traps when a bound does not hold.
+The header points at the row counts and the blocks of the tables, which Bridge keeps in `$shared`.
 
 ## The accessors
 
 Each accessor below builds on `$resolve` or reads the header the same way:
 
 - `acc_ld_*` and `acc_st_*` resolve by width, then load or store the shared memory. A store sets the flag, so a read-only type traps.
-- `acc_entity` gives the table and the row of an id, or all ones when the id is dead. `acc_who` gives the id of a row.
+- `acc_entity` gives the table and the row of an id, or all ones when the id is dead. `acc_who` gives the id of a row, from the block of its table.
+- `acc_rows` gives the row count of a table. It traps when the id is past the tables of the header.
 - `acc_has` tells whether a sparse, direct-indexed, or singleton slot holds a value for an id.
 - `acc_toggle` and `acc_toggle_set` read and write the presence bit of a row of a toggle.
 - `acc_own_32`, `acc_own_64` and `acc_own_st` reach the private memory. `acc_own_st` writes 4 bytes, and traps unless all 4 stay below the published table and leave the header alone.
@@ -42,3 +44,7 @@ Each accessor below builds on `$resolve` or reads the header the same way:
 
 The module build merges this file into the compiled module as `acc`, inlines every accessor into its callers, and strips the exports.
 Before the merge, `tools/wasm_guard.py` checks the imports of the compiled module: `docs/tools/wasm_guard.py.md`.
+
+The compile takes the setting `simd` of `.toolchain/config/variables.toml`, which is `-msimd128`, and then the `flags` of the module.
+So `-mno-simd128`, as the setting or in the `flags` of one module, turns SIMD off.
+The merge and the optimizer take `--enable-simd` in `features`, so binaryen keeps the SIMD instructions that the compile made.

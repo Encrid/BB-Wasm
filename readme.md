@@ -12,6 +12,8 @@ So a module cannot read or write the memory of the world or of another module.
 A module compiles against the SDK of this repository for wasm32: `docs/extern/bridge_wasm.h.md` tells how to write one.
 The SDK includes `bridge_abi.h` and `bridge_schema.h`, thus a module also compiles with the headers of a release of Bridge.
 The build of a module merges `acc.wasm`, the accessors of the SDK, into the module: `docs/intern/bridge_wasm.wat.md`, *The build*.
+A module compiles with SIMD by default. Then a loop over its own memory can work on 4 values in one instruction, about 3 times faster.
+A loop through `BRIDGE_GET` and `BRIDGE_SET` gets no gain, because each access is a call.
 
 ## Install
 
@@ -74,6 +76,18 @@ The backend keeps each limit that Bridge sets:
 - `memory_limit` bounds the bytes of the own memory of the module, and `element_limit` the elements of its own reference table.
 - wasmtime bounds each memory and each table alone, and not their sum. Thus a module has one own memory and one own table.
 - The memories that Bridge lends a module are not its own. A second own memory or a second own table fails the first call.
+
+A work limit and a timeout each slow every call of a module, and not only the call that they bound.
+A work limit makes wasmtime count fuel in each loop. A timeout of `init`, `reload` or `shutdown` makes it check an epoch in each loop.
+For the full speed, a host gives a module no work limit and no timeout. A deployment of Bridge-Host states `none` for each.
+
+The table gives the price on a Ryzen 5 7640U, measured on 2026-10-30.
+Each tick moves 100 000 positions of 3 floats: 300 000 multiplications and additions over the memory of the module.
+
+| A tick, us | No limit | A timeout | A work limit | Both |
+| --- | --- | --- | --- | --- |
+| No SIMD | 77.2 | 84.6 | 88.4 | 114.1 |
+| SIMD | 24.6 | 74.0 | 73.6 | 74.4 |
 
 ## Messages
 

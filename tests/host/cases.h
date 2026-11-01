@@ -122,6 +122,7 @@ void test_set_counting(host_t *h);
 void test_set_noting(host_t *h);
 
 void test_load_named(host_t *h);
+void test_run_named(host_t *h);
 void test_create_no_sink(host_t *h);
 void test_stop(host_t *h);
 void test_state_no_limit(host_t *h);

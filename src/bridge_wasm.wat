@@ -33,7 +33,7 @@
             (i32.mul (i32.const 4)
               (i32.add (i32.mul (local.get $a) (local.get $types)) (local.get $slot))))))
         (if (i32.eqz (local.get $base)) (then (unreachable)))
-        (if (i32.ge_u (local.get $b) (i32.load $private
+        (if (i32.ge_u (local.get $b) (i32.load $shared
               (i32.add (i32.load $private (i32.const 84)) (i32.mul (local.get $a) (i32.const 4)))))
           (then (unreachable)))
         (return (i32.add (local.get $base)
@@ -108,12 +108,17 @@
 
   (func (export "acc_who") (param $table i32) (param $row i32) (result i64)
     (if (i32.ge_u (local.get $table) (i32.load $private (i32.const 44))) (then (unreachable)))
-    (if (i32.ge_u (local.get $row) (i32.load $private
+    (if (i32.ge_u (local.get $row) (i32.load $shared
           (i32.add (i32.load $private (i32.const 84)) (i32.mul (local.get $table) (i32.const 4)))))
       (then (unreachable)))
-    (i64.load $shared (i32.add (i32.load $private
+    (i64.load $shared (i32.add (i32.load $shared
           (i32.add (i32.load $private (i32.const 88)) (i32.mul (local.get $table) (i32.const 4))))
         (i32.mul (local.get $row) (i32.const 8)))))
+
+  (func (export "acc_rows") (param $table i32) (result i32)
+    (if (i32.ge_u (local.get $table) (i32.load $private (i32.const 44))) (then (unreachable)))
+    (i32.load $shared
+      (i32.add (i32.load $private (i32.const 84)) (i32.mul (local.get $table) (i32.const 4)))))
 
   (func (export "acc_has") (param $slot i32) (param $id i32) (result i32)
     (local $kind i32) (local $base i32)
@@ -151,7 +156,7 @@
         (i32.mul (i32.const 4)
           (i32.add (i32.mul (local.get $table) (local.get $types)) (local.get $slot))))))
     (if (i32.eqz (local.get $base)) (then (unreachable)))
-    (if (i32.ge_u (local.get $row) (i32.load $private
+    (if (i32.ge_u (local.get $row) (i32.load $shared
           (i32.add (i32.load $private (i32.const 84)) (i32.mul (local.get $table) (i32.const 4)))))
       (then (unreachable)))
     (i32.add (i32.load $shared (i32.sub (local.get $base) (i32.const 16)))

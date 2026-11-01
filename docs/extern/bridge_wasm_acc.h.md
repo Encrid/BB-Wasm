@@ -16,6 +16,7 @@ The host calls are the load-time and phase entries: declare, add_system, observe
 | `acc_ld_*` and `acc_st_*` | Load and store a cell of the shared memory, by width and sign. |
 | `acc_entity` | Packs an id into its table and row, or returns all ones for a dead id. |
 | `acc_who` | Gives the id that owns a table and a row. |
+| `acc_rows` | Gives the row count of a table, from the table directory. |
 | `acc_has` | Gives 1 when a slot kept outside a table is present for an id. |
 | `acc_toggle` and `acc_toggle_set` | Read and set a row's bit in a toggle. |
 | `acc_own_32`, `acc_own_64` and `acc_own_st` | Load and store the private memory. |
