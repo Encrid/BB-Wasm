@@ -12,6 +12,8 @@ So a module cannot read or write the memory of the world or of another module.
 A module compiles against the SDK of this repository for wasm32: `docs/extern/bridge_wasm.h.md` tells how to write one.
 The SDK includes `bridge_abi.h` and `bridge_schema.h`, thus a module also compiles with the headers of a release of Bridge.
 The build of a module merges `acc.wasm`, the accessors of the SDK, into the module: `docs/intern/bridge_wasm.wat.md`, *The build*.
+A module compiles with SIMD by default. Then a loop over its own memory can work on 4 values in one instruction, about 3 times faster.
+A loop through `BRIDGE_GET` and `BRIDGE_SET` gets no gain, because each access is a call.
 
 ## Install
 
