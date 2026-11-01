@@ -566,6 +566,8 @@ static const host_case_t TEST_CASES[] = {
         test_load_named, "strayglobal", test_set_small },
     { "order-unordered-conflict-refused",
         test_leave_unordered, "", test_set_counting },
+    { "simd-the-sum-of-a-vectorized-loop",
+        test_run_named, "vector", test_set_wasm },
     { "isolate.slot-out-of-range-trapped",
         test_breach, "breach-slot", test_set_wasm },
     { "isolate.row-out-of-range-trapped",

@@ -1889,6 +1889,18 @@ claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: no backend named '
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
+name = "simd-a-loop-over-its-own-memory-vectorized"
+run = ["{wasm_dis}", "{out}/wasm/vector.wasm", "{features}"]
+claims = { matches = ["i32x4\\.add"] }
+false = { run = ["{wasm_dis}", "{out}/wasm/vector-scalar.wasm", "{features}"] }
+
+[[case]]
+name = "simd-the-sum-of-a-vectorized-loop"
+run = ["{out}/wasm-host{exe}", "simd-the-sum-of-a-vectorized-loop"]
+claims = { matches = ["test:vector@0\\.1\\.0/add: sum 523776 1024.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "isolate.a-valid-access-is-allowed"] }
+
+[[case]]
 name = "isolate.slot-out-of-range-trapped"
 run = ["{out}/wasm-host{exe}", "isolate.slot-out-of-range-trapped"]
 claims = { matches = ["game:breach@0\\.1\\.0/breach: system 'breach' failed: trapped: wasm .unreachable. instruction executed.*alive"] }
