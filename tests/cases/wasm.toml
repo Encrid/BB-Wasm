@@ -1505,22 +1505,22 @@ claims = { matches = ["game:namer@0.1.0/say: kept in the arena.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
-name = "bridge_count_spans-one-table-matched"
-run = ["{out}/wasm-host{exe}", "bridge_count_spans-one-table-matched"]
+name = "bridge_get_span_count-one-table-matched"
+run = ["{out}/wasm-host{exe}", "bridge_get_span_count-one-table-matched"]
 claims = { matches = ["saw 1 500.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
-name = "bridge_count_rows-rows-of-a-span"
-run = ["{out}/wasm-host{exe}", "bridge_count_rows-rows-of-a-span"]
+name = "bridge_get_rows-rows-of-a-span"
+run = ["{out}/wasm-host{exe}", "bridge_get_rows-rows-of-a-span"]
 claims = { matches = ["saw 1 500.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
-name = "bridge_get_base-where-a-column-begins"
-run = ["{out}/wasm-host{exe}", "bridge_get_base-where-a-column-begins"]
-claims = { matches = ["sum 250500 0.*alive"] }
-false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+name = "bridge_has_column-held-and-then-left"
+run = ["{out}/wasm-host{exe}", "bridge_has_column-held-and-then-left"]
+claims = { matches = ["any: event 3 1.*any: event 4 57005.*alive"] }
+false = { run = ["{out}/wasm-host{exe}", "bridge_has_column-held-and-not-yet-left"] }
 
 [[case]]
 name = "bridge_get_entity-the-id-of-a-row"
@@ -1571,8 +1571,8 @@ claims = { matches = ["left 10 5.*game:keeper@0.1.0: unloaded.*left 9 0.*game:re
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
-name = "bridge_count_triggers-how-many-this-barrier"
-run = ["{out}/wasm-host{exe}", "bridge_count_triggers-how-many-this-barrier"]
+name = "bridge_get_trigger_count-how-many-this-barrier"
+run = ["{out}/wasm-host{exe}", "bridge_get_trigger_count-how-many-this-barrier"]
 claims = { matches = ["any: event 3 1.*any: event 2 2.*any: event 4 57005.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
@@ -1601,8 +1601,8 @@ claims = { matches = ["game:shield@0.1.0/count: shields 10 10.*game:shield@0.1.0
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
-name = "bridge_turn-four-turned-off"
-run = ["{out}/wasm-host{exe}", "bridge_turn-four-turned-off"]
+name = "bridge_set_toggle-four-turned-off"
+run = ["{out}/wasm-host{exe}", "bridge_set_toggle-four-turned-off"]
 claims = { matches = ["shields 10 10.*shields 10 6.*alive"], lacks = ["did not load"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 

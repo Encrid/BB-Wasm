@@ -3,6 +3,8 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 */
+#include <stdlib.h>
+
 #include "cases.h"
 
 static void run_one(host_t *h, const char *identity, const char *file,
@@ -27,7 +29,8 @@ void test_chain(host_t *h)
 
 void test_tell_events(host_t *h)
 {
-    run_one(h, "game:events@0.1.0", "events", 3);
+    run_one(h, "game:events@0.1.0", "events",
+        (int)strtol(h->arg, nullptr, 10));
 }
 
 void test_nest(host_t *h)
