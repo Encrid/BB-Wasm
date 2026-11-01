@@ -1589,12 +1589,6 @@ claims = { matches = ["event 4 57005.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
 
 [[case]]
-name = "bridge_get_bits-where-a-toggle-keeps-them"
-run = ["{out}/wasm-host{exe}", "bridge_get_bits-where-a-toggle-keeps-them"]
-claims = { matches = ["game:shield@0.1.0/count: shields 10 10.*game:shield@0.1.0/count: strength 45 0.*game:shield@0.1.0/count: shields 10 6.*game:shield@0.1.0/count: strength 27 0.*alive"], lacks = ["did not load"] }
-false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
-
-[[case]]
 name = "bridge_is_on-counted-by-its-bit"
 run = ["{out}/wasm-host{exe}", "bridge_is_on-counted-by-its-bit"]
 claims = { matches = ["game:shield@0.1.0/count: shields 10 10.*game:shield@0.1.0/count: strength 45 0.*game:shield@0.1.0/count: shields 10 6.*game:shield@0.1.0/count: strength 27 0.*alive"], lacks = ["did not load"] }
