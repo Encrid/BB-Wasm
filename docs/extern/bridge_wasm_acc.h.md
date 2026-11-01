@@ -13,11 +13,11 @@ The host calls are the load-time and phase entries: declare, add_system, observe
 
 | Function | Result |
 | --- | --- |
-| `acc_ld_*` and `acc_st_*` | Load and store a cell of the shared memory, by width and sign. |
-| `acc_entity` | Packs an id into its table and row, or returns all ones for a dead id. |
-| `acc_who` | Gives the id that owns a table and a row. |
-| `acc_rows` | Gives the row count of a table, from the table directory. |
+| `acc_get_*` and `acc_set_*` | Get and set a cell of the shared memory, by width and sign. |
+| `acc_get_location` | Gives the location of an id, packed in 64 bits, or all ones for a dead id. |
+| `acc_get_entity` | Gives the id that owns a table and a row. |
+| `acc_get_rows` | Gives the row count of a table, from the table directory. |
 | `acc_has` | Gives 1 when a slot kept outside a table is present for an id. |
-| `acc_toggle` and `acc_toggle_set` | Read and set a row's bit in a toggle. |
-| `acc_own_32`, `acc_own_64` and `acc_own_st` | Load and store the private memory. |
-| `acc_to_private`, `acc_to_shared` and `acc_from_shared` | Copy bytes between the module's own memory and the other two. |
+| `acc_is_on` and `acc_set_toggle` | Read and set a row's bit in a toggle. |
+| `acc_get_own_32`, `acc_get_own_64` and `acc_set_own_32` | Get and set a value of the private memory. |
+| `acc_copy_to_private`, `acc_copy_to_shared` and `acc_copy_from_shared` | Copy bytes between the module's own memory and the other two. |
