@@ -28,7 +28,7 @@ static uint32_t dotted;
     || defined(BREACH_OK)
 static uint32_t a_table(void)
 {
-    return (bridge_span_table(bridge_get_span(moving, 0)));
+    return (bridge_get_span_table(bridge_get_span(moving, 0)));
 }
 #endif
 
@@ -40,7 +40,7 @@ static uint32_t get_last_found(void)
 
     (void)BRIDGE_GET(position_t, x, position, a_table(), BREACH_ENTITIES - 1);
     (void)bridge_is_on(lit, a_table(), BREACH_ENTITIES - 1);
-    (void)acc_rows(BRIDGE_HEADER(tables) - 1);
+    (void)acc_get_rows(BRIDGE_HEADER(tables) - 1);
     for (uint32_t i = 0; i < BREACH_ENTITIES; i++)
         found += ids[i] == last;
     return (found);
@@ -50,7 +50,7 @@ static uint32_t get_last_found(void)
 BRIDGE_EXPORT(breach) int breach(void)
 {
 #if defined(BREACH_SLOT)
-    (void)acc_ld_32(50, 0, 0);
+    (void)acc_get_32(50, 0, 0);
 #elif defined(BREACH_ROW)
     (void)BRIDGE_GET(position_t, x, position, a_table(), BREACH_ENTITIES);
 #elif defined(BREACH_WHO)
@@ -58,17 +58,17 @@ BRIDGE_EXPORT(breach) int breach(void)
 #elif defined(BREACH_TOGGLE)
     (void)bridge_is_on(lit, a_table(), BREACH_ENTITIES);
 #elif defined(BREACH_ROWS)
-    (void)acc_rows(BRIDGE_HEADER(tables));
+    (void)acc_get_rows(BRIDGE_HEADER(tables));
 #elif defined(BREACH_FIELD)
-    acc_st_32(position, BRIDGE_AT(0, 0), 1u << 20, 0);
+    acc_set_32(position, BRIDGE_AT(0, 0), 1u << 20, 0);
 #elif defined(BREACH_READONLY)
-    acc_st_32(position, BRIDGE_AT(0, 0), 0, 0);
+    acc_set_32(position, BRIDGE_AT(0, 0), 0, 0);
 #elif defined(BREACH_FORGE)
-    acc_own_st(BRIDGE_HEADER(queries), 0);
+    acc_set_own_32(BRIDGE_HEADER(queries), 0);
 #elif defined(BREACH_OWN_EDGE)
-    acc_own_st(BRIDGE_HEADER(queries) - 3, 0);
+    acc_set_own_32(BRIDGE_HEADER(queries) - 3, 0);
 #elif defined(BREACH_OWN_BELOW)
-    acc_own_st(BRIDGE_HEADER(queries) - 4, 0);
+    acc_set_own_32(BRIDGE_HEADER(queries) - 4, 0);
     BRIDGE_LOG(BRIDGE_LOG_INFO, "below", BREACH_ENTITIES, 0);
 #elif defined(BREACH_SPARSE)
     (void)BRIDGE_GET(marked_t, by, marked, 1u << 20, 0);
@@ -77,11 +77,11 @@ BRIDGE_EXPORT(breach) int breach(void)
 #elif defined(BREACH_TO_SHARED)
     uint32_t word = 0;
 
-    acc_to_shared(0, &word, sizeof(word));
+    acc_copy_to_shared(0, &word, sizeof(word));
 #elif defined(BREACH_FROM_SHARED)
     uint32_t word = 0;
 
-    acc_from_shared(&word, 0, sizeof(word));
+    acc_copy_from_shared(&word, 0, sizeof(word));
     (void)word;
 #elif defined(BREACH_OK)
     BRIDGE_LOG(BRIDGE_LOG_INFO, "ok", BREACH_ENTITIES, get_last_found());

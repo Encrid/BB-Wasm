@@ -8,7 +8,7 @@ The row count of each table is in the table directory of the shared memory, whic
 
 | Function | Result |
 | --- | --- |
-| `bridge_count_spans` | Gives how many spans a query matched. |
+| `bridge_get_span_count` | Gives how many spans a query matched. |
 | `bridge_get_span` | Gives the address of span `i` of a query. |
-| `bridge_span_table` | Gives the id of the table that a span names. |
-| `bridge_count_rows` | Gives how many rows the table of a span has, through `acc_rows`. |
+| `bridge_get_span_table` | Gives the id of the table that a span names. |
+| `bridge_get_rows` | Gives how many rows the table of a span has, through `acc_get_rows`. |

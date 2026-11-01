@@ -13,8 +13,8 @@ The document of the header `bridge_abi.h` of Bridge gives the capability table t
 ## resolve
 
 `$resolve` maps a coordinate to an offset in the shared memory, or it traps.
-It takes a slot, a packed place, a field, a width, and a flag that tells a store from a load.
-`docs/extern/bridge_wasm.h.md`, *The macros* packs the place from a table and a row, or from an id.
+It takes a slot, a packed location, a field, a width, and a flag that tells a store from a load.
+`docs/extern/bridge_wasm.h.md`, *The macros* packs the location from a table and a row, or from an id.
 `$resolve` reads the capability table from the private header, and branches on the `kind` of the slot:
 
 1. It traps if the slot is past the declared types, or a store names a read-only type.
@@ -31,14 +31,14 @@ The header points at the row counts and the blocks of the tables, which Bridge k
 
 Each accessor below builds on `$resolve` or reads the header the same way:
 
-- `acc_ld_*` and `acc_st_*` resolve by width, then load or store the shared memory. A store sets the flag, so a read-only type traps.
-- `acc_entity` gives the table and the row of an id, or all ones when the id is dead. `acc_who` gives the id of a row, from the block of its table.
-- `acc_rows` gives the row count of a table. It traps when the id is past the tables of the header.
+- `acc_get_*` and `acc_set_*` resolve by width, then read or write the shared memory. A store sets the flag, so a read-only type traps.
+- `acc_get_location` gives the table and the row of an id, or all ones when the id is dead. `acc_get_entity` gives the id of a row, from the block of its table.
+- `acc_get_rows` gives the row count of a table. It traps when the id is past the tables of the header.
 - `acc_has` tells whether a sparse, direct-indexed, or singleton slot holds a value for an id.
-- `acc_toggle` and `acc_toggle_set` read and write the presence bit of a row of a toggle.
-- `acc_own_32`, `acc_own_64` and `acc_own_st` reach the private memory. `acc_own_st` writes 4 bytes, and traps unless all 4 stay below the published table and leave the header alone.
-- `acc_to_private` copies into the scratch region, below the published table.
-- `acc_to_shared` copies into the shared memory, and stays inside one owned range. `acc_from_shared` copies out, inside the arena bounds.
+- `acc_is_on` and `acc_set_toggle` read and write the presence bit of a row of a toggle.
+- `acc_get_own_32`, `acc_get_own_64` and `acc_set_own_32` reach the private memory. `acc_set_own_32` writes 4 bytes, and traps unless all 4 stay below the published table and leave the header alone.
+- `acc_copy_to_private` copies into the scratch region, below the published table.
+- `acc_copy_to_shared` copies into the shared memory, and stays inside one owned range. `acc_copy_from_shared` copies out, inside the arena bounds.
 
 ## The build
 
