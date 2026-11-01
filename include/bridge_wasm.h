@@ -52,22 +52,22 @@
 
     #define BRIDGE_AT(a, b) (((uint64_t)(uint32_t)(a) << 32) | (uint32_t)(b))
     #define BRIDGE_GET(T, field, slot, a, b) \
-        BRIDGE_LD_(((T *)0)->field)(slot, BRIDGE_AT(a, b), \
+        BRIDGE_GET_(((T *)0)->field)(slot, BRIDGE_AT(a, b), \
             (uint32_t)offsetof(T, field))
     #define BRIDGE_SET(T, field, slot, a, b, value) \
-        BRIDGE_ST_(((T *)0)->field)(slot, BRIDGE_AT(a, b), \
+        BRIDGE_SET_(((T *)0)->field)(slot, BRIDGE_AT(a, b), \
             (uint32_t)offsetof(T, field), (value))
-    #define BRIDGE_LD_(v) _Generic((v), \
-        bool: acc_ld_u8, char: acc_ld_i8, signed char: acc_ld_i8, \
-        unsigned char: acc_ld_u8, short: acc_ld_i16, \
-        unsigned short: acc_ld_u16, int: acc_ld_32, unsigned: acc_ld_32, \
-        long: acc_ld_32, unsigned long: acc_ld_32, long long: acc_ld_64, \
-        unsigned long long: acc_ld_64, float: acc_ld_f32, double: acc_ld_f64)
-    #define BRIDGE_ST_(v) _Generic((v), \
-        bool: acc_st_8, char: acc_st_8, signed char: acc_st_8, \
-        unsigned char: acc_st_8, short: acc_st_16, unsigned short: acc_st_16, \
-        int: acc_st_32, unsigned: acc_st_32, long: acc_st_32, \
-        unsigned long: acc_st_32, long long: acc_st_64, \
-        unsigned long long: acc_st_64, float: acc_st_f32, double: acc_st_f64)
+    #define BRIDGE_GET_(v) _Generic((v), \
+        bool: acc_get_u8, char: acc_get_i8, signed char: acc_get_i8, \
+        unsigned char: acc_get_u8, short: acc_get_i16, \
+        unsigned short: acc_get_u16, int: acc_get_32, unsigned: acc_get_32, \
+        long: acc_get_32, unsigned long: acc_get_32, long long: acc_get_64, \
+        unsigned long long: acc_get_64, float: acc_get_f32, double: acc_get_f64)
+    #define BRIDGE_SET_(v) _Generic((v), \
+        bool: acc_set_8, char: acc_set_8, signed char: acc_set_8, \
+        unsigned char: acc_set_8, short: acc_set_16, \
+        unsigned short: acc_set_16, int: acc_set_32, unsigned: acc_set_32, \
+        long: acc_set_32, unsigned long: acc_set_32, long long: acc_set_64, \
+        unsigned long long: acc_set_64, float: acc_set_f32, double: acc_set_f64)
 
 #endif

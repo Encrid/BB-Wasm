@@ -8,4 +8,4 @@ The accessors find the bits word below the column, then test or change the one b
 | Function | Result |
 | --- | --- |
 | `bridge_is_on` | Gives whether the bit of a row is set. |
-| `bridge_turn` | Sets or clears the bit of a row. |
+| `bridge_set_toggle` | Sets or clears the bit of a row. |
