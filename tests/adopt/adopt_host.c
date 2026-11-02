@@ -74,7 +74,7 @@ int adopt_check_timed_calls(adopt_t *t)
     int k;
 
     if (i)
-        f = t->api.instance_get_func(i, "init", &t->err);
+        f = t->api.instance_get_func(i, t->in.timed, &t->err);
     if (!f)
         return (adopt_fail("timed calls: %s", t->err.text));
     k = call_timed(t, i, f, &status);

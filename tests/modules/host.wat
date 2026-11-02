@@ -4,4 +4,7 @@
 (module
   (import "bridge" "ping" (func $ping (param i32 i64) (result i32)))
   (func (export "init") (result i32)
-    (call $ping (i32.const 7) (i64.const 9))))
+    (call $ping (i32.const 7) (i64.const 9)))
+  (func (export "spin") (result i32)
+    (loop $again (br $again))
+    (unreachable)))

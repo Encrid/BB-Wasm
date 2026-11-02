@@ -3,6 +3,7 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 */
+#include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -20,6 +21,17 @@ static int run_all(adopt_t *t)
     return (failed);
 }
 
+static void say_release(adopt_t *t)
+{
+    uint32_t kept = 0;
+
+    memset(t->block + 16, 0, t->in.cleared);
+    t->api.memory_release(t->memory);
+    memcpy(&kept, t->block + 16, sizeof(kept));
+    printf("after memory_release: the block keeps %08" PRIX32 " at 16\n",
+        kept);
+}
+
 int main(int argc, char **argv)
 {
     adopt_t t = {};
@@ -34,7 +46,7 @@ int main(int argc, char **argv)
     else
         failed = run_all(&t);
     t.api.module_destroy(t.module);
-    t.api.memory_release(t.memory);
+    say_release(&t);
     t.api.backend_destroy(t.be);
     os_release(t.block, t.reserved);
     return (failed);

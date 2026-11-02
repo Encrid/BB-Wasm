@@ -26,6 +26,8 @@ typedef struct {
     const char *store_field;
     uint32_t store_imports;
     const char *stray;
+    const char *timed;
+    uint32_t cleared;
 } adopt_in_t;
 
 typedef struct {
