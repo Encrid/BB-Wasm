@@ -25,7 +25,7 @@ static void populate(void)
         id = bridge_spawn();
         p.x = (float)h.by;
         BRIDGE_ATTACH(id, position, p);
-        if (h.by % 3 == 0)
+        if (h.by % HIT_STEP == 0)
             BRIDGE_ATTACH(id, hit, h);
         h.by++;
     }

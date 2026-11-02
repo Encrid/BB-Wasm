@@ -59,7 +59,7 @@ static void populate(void)
         id = bridge_spawn();
         p.x = (float)value.at;
         BRIDGE_ATTACH(id, position, p);
-        if (value.at % 2 == 0)
+        if (value.at % AIM_STEP == 0)
             BRIDGE_ATTACH(id, aim, value);
         value.at++;
     }
@@ -69,7 +69,7 @@ BRIDGE_EXPORT(init) int init(void)
 {
     bridge_term_t two[2] = {
         { 0, BRIDGE_READ, BRIDGE_AND, 0 },
-        { 0, BRIDGE_READ, BRIDGE_OPTIONAL, 0 },
+        { 0, BRIDGE_READ, AIM_OPER, 0 },
     };
 
     position = BRIDGE_COMPONENT("game:Position", position_t, BRIDGE_DELETE,

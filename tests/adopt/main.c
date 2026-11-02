@@ -26,6 +26,7 @@ int main(int argc, char **argv)
     int failed;
 
     setvbuf(stdout, nullptr, _IONBF, 0);
+    adopt_set_input(&t, argc > 1 ? argv[1] : "");
     if (adopt_open(&t))
         return (1);
     if (argc > 1 && !strcmp(argv[1], "below"))

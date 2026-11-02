@@ -21,14 +21,13 @@ void test_state_beyond_reach(host_t *h)
 
 void test_state_too_big(host_t *h)
 {
-    h->cfg.budget.persistent = (uint64_t)3 << 30;
-    h->cfg.budget.columns = (uint64_t)2 << 30;
+    h->cfg.budget.persistent = UINT32_MAX;
     host_open_only(h);
 }
 
 void test_use_up_types(host_t *h)
 {
-    h->cfg.budget.types = 1;
+    h->cfg.budget.types = (uint32_t)strtol(h->arg, nullptr, 10);
     if (host_open(h))
         return;
     test_load_mover(h);
@@ -37,7 +36,7 @@ void test_use_up_types(host_t *h)
 
 void test_use_up_systems(host_t *h)
 {
-    h->cfg.budget.systems = 1;
+    h->cfg.budget.systems = (uint32_t)strtol(h->arg, nullptr, 10);
     if (host_open(h))
         return;
     test_load_mover(h);

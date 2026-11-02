@@ -29,14 +29,14 @@ void wrong_declare_size_other(void)
     bridge_declare(bridge_put(&d, sizeof(d)));
 }
 
-void wrong_declare_late(void)
+void wrong_declare_valid(void)
 {
     bridge_declaration_t d = wrong_state_type();
 
     bridge_declare(bridge_put(&d, sizeof(d)));
 }
 
-void wrong_alloc_stated_none(void)
+void wrong_alloc(void)
 {
     bridge_alloc(8);
 }

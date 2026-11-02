@@ -4,6 +4,7 @@
 ** Under the GNU Affero General Public License, version 3 only: see license.
 */
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "cases.h"
 
@@ -38,7 +39,7 @@ void test_hoard(host_t *h)
     a.cfg.persistent = 64;
     host_load(h, &a);
     host_run_frames(h, 1);
-    while (v <= 9) {
+    while (v <= strtoul(h->arg, nullptr, 10)) {
         snprintf(identity, sizeof(identity), "game:ticker@0.%u.0", v);
         test_state_ticker(&a, identity, "ticker");
         a.cfg.persistent = 64 * v;

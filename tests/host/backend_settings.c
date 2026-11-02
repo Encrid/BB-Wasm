@@ -39,7 +39,7 @@ static const test_edit_t TEST_BACKEND_EDITS[] = {
 void test_hand_setting(host_t *h)
 {
     h->backends[0].settings = TEST_SETTING;
-    h->backends[0].setting_count = 1;
+    h->backends[0].setting_count = (uint32_t)strtol(h->arg, nullptr, 10);
     host_open_only(h);
 }
 

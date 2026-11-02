@@ -4,6 +4,7 @@
 ** Under the GNU Affero General Public License, version 3 only: see license.
 */
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "cases.h"
 
@@ -20,7 +21,7 @@ void test_fail_unlimited(host_t *h)
         return;
     test_state_wasm_minting(&a, "test:flaky@0.1.0", "flaky-always");
     a.cfg.spawns = BRIDGE_NONE;
-    a.cfg.max_system_failures = BRIDGE_NO_LIMIT;
+    a.cfg.max_system_failures = strtol(h->arg, nullptr, 10);
     host_load(h, &a);
     host_run_frames(h, 8);
     test_say_modules(h);
@@ -62,9 +63,9 @@ void test_unload_declarer(host_t *h)
     test_load_wasm_minting(h, "game:user@0.1.0", "user");
     host_unload(h, "game:typer@0.1.0");
     host_run_frames(h, 1);
-    test_load_spawnless(h, "game:retype@0.1.0", "retype-vec2");
+    test_load_spawnless(h, "game:retype@0.1.0", h->arg);
     host_unload(h, "game:user@0.1.0");
-    test_load_spawnless(h, "game:retype@0.1.0", "retype-vec2");
+    test_load_spawnless(h, "game:retype@0.1.0", h->arg);
     host_close(h);
 }
 
@@ -72,6 +73,7 @@ void test_unload_nobody(host_t *h)
 {
     if (host_open(h))
         return;
-    host_unload(h, "game:nobody@0.1.0");
+    test_load_small(h, "ok");
+    host_unload(h, h->arg);
     host_close(h);
 }
