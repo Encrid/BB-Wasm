@@ -19,7 +19,7 @@ static const adopt_in_t ADOPT_IN = {
     .block_len = 2 * ADOPT_PAGE, .guard = 64 << 20,
     .params = { BACKEND_I32, BACKEND_I64 }, .param_count = 2,
     .module = "bridge", .field = "ping", .store_field = "shared",
-    .store_imports = 1, .stray = "stray"
+    .store_imports = 1, .stray = "stray", .timed = "init", .cleared = 0
 };
 
 static const adopt_word_t ADOPT_WORDS[] = {
@@ -32,7 +32,9 @@ static const adopt_word_t ADOPT_WORDS[] = {
     { "pong", offsetof(adopt_in_t, field), sizeof(char *), 0, "pong" },
     { "spare", offsetof(adopt_in_t, store_field), sizeof(char *), 0, "spare" },
     { "no-import", offsetof(adopt_in_t, store_imports), 4, 0, nullptr },
-    { "no-trap", offsetof(adopt_in_t, stray), sizeof(char *), 0, "write" }
+    { "no-trap", offsetof(adopt_in_t, stray), sizeof(char *), 0, "write" },
+    { "spin", offsetof(adopt_in_t, timed), sizeof(char *), 0, "spin" },
+    { "cleared", offsetof(adopt_in_t, cleared), 4, 4, nullptr }
 };
 
 constexpr size_t ADOPT_WORD_COUNT = sizeof(ADOPT_WORDS) / sizeof(*ADOPT_WORDS);

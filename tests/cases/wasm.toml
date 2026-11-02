@@ -1219,8 +1219,8 @@ false = { run = ["{out}/wasm-adopt{exe}", "spare"] }
 [[case]]
 name = "memory_release-after-the-last-instance"
 run = ["{out}/wasm-adopt{exe}"]
-claims = { matches = ["20000 timed calls back to back: none interrupted"] }
-false = { run = ["{out}/wasm-host{exe}", "no-such-case"] }
+claims = { matches = ["after memory_release: the block keeps 600DF00D at 16"] }
+false = { run = ["{out}/wasm-adopt{exe}", "cleared"] }
 
 [[case]]
 name = "instance_create-one-block-in-two-stores"
@@ -1683,6 +1683,12 @@ name = "instance_set_work_limit-a-spinning-system-ended"
 run = ["{out}/wasm-host{exe}", "instance_set_work_limit-a-spinning-system-ended"]
 claims = { matches = ["test:spin@0.1.0/forever: system 'forever' failed: trapped: all fuel consumed.*still here.*all fuel consumed.*still here.*alive"] }
 false = { run = ["{out}/wasm-host{exe}", "module_config.work_limit-a-system-that-ends-in-time"] }
+
+[[case]]
+name = "instance_set_timeout-20000-calls-back-to-back-none-interrupted"
+run = ["{out}/wasm-adopt{exe}"]
+claims = { matches = ["20000 timed calls back to back: none interrupted"] }
+false = { run = ["{out}/wasm-adopt{exe}", "spin"] }
 
 [[case]]
 name = "instance_set_timeout-a-spinning-init-interrupted"
