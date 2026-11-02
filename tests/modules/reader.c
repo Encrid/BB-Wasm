@@ -7,6 +7,27 @@
 #include "game.h"
 #include "wasm_idle.h"
 
+#ifdef READER_POSITION
+    #define READER_TERMS 1
+#else
+    #define READER_TERMS 2
+#endif
+#ifdef READER_WARN
+    #define READER_LEVEL BRIDGE_LOG_WARN
+#else
+    #define READER_LEVEL BRIDGE_LOG_INFO
+#endif
+#ifdef READER_TOTAL
+    #define READER_TEXT "total"
+#else
+    #define READER_TEXT "sum"
+#endif
+#ifdef READER_ADD
+    #define READER_SYSTEM "add"
+#else
+    #define READER_SYSTEM "sum"
+#endif
+
 static uint32_t position;
 static uint32_t marked;
 static uint32_t summing;
@@ -24,7 +45,11 @@ static uint32_t add_span(uint32_t span, float *total)
     return (count);
 }
 
+#ifdef READER_ADD
+BRIDGE_EXPORT(add) int add(void)
+#else
 BRIDGE_EXPORT(sum) int sum(void)
+#endif
 {
     uint32_t spans = bridge_get_span_count(summing);
     uint32_t rows = 0;
@@ -35,8 +60,8 @@ BRIDGE_EXPORT(sum) int sum(void)
         rows += add_span(bridge_get_span(summing, s), &total);
         s++;
     }
-    BRIDGE_LOG(BRIDGE_LOG_INFO, "saw", spans, rows);
-    BRIDGE_LOG(BRIDGE_LOG_INFO, "sum", (uint32_t)total, 0);
+    BRIDGE_LOG(READER_LEVEL, "saw", spans, rows);
+    BRIDGE_LOG(READER_LEVEL, READER_TEXT, (uint32_t)total, 0);
     return (0);
 }
 
@@ -53,6 +78,7 @@ BRIDGE_EXPORT(init) int init(void)
         BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = position;
     terms[1].slot = marked;
-    summing = BRIDGE_ADD_SYSTEM("sum", "present", terms, 2, nullptr, 0, nullptr, 0);
+    summing = BRIDGE_ADD_SYSTEM(READER_SYSTEM, "present", terms, READER_TERMS,
+        nullptr, 0, nullptr, 0);
     return (0);
 }

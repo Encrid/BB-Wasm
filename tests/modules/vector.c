@@ -6,7 +6,13 @@
 #include "bridge_wasm.h"
 #include "wasm_idle.h"
 
-constexpr uint32_t VECTOR_COUNT = 1024;
+#ifdef SHORT
+    #define LENGTH 1020
+#else
+    #define LENGTH 1024
+#endif
+
+constexpr uint32_t VECTOR_COUNT = LENGTH;
 
 static uint32_t values[VECTOR_COUNT];
 

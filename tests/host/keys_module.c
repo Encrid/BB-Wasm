@@ -3,6 +3,8 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 */
+#include <stdlib.h>
+
 #include "cases.h"
 
 static const test_edit_t TEST_MODULE_EDITS[] = {
@@ -48,7 +50,7 @@ void test_load_twice(host_t *h)
     if (host_open(h))
         return;
     test_load_small(h, "ok");
-    test_load_small(h, "ok");
+    test_load_small(h, h->arg);
     host_close(h);
 }
 
@@ -63,7 +65,7 @@ void test_spawn_past_entities(host_t *h)
     a.cfg.spawns = 3000;
     host_load(h, &a);
     test_state_small(&a, identity, "image");
-    a.cfg.spawns = 3000;
+    a.cfg.spawns = strtol(h->arg, nullptr, 10);
     host_load(h, &a);
     host_close(h);
 }
@@ -78,7 +80,7 @@ void test_edit_phase_names(host_t *h)
     if (host_open(h))
         return;
     test_state_small(&a, identity, "ok");
-    names[1].from = *h->arg ? names[1].from : nullptr;
+    names[1].from = *h->arg ? h->arg : nullptr;
     a.cfg.phases = names;
     a.cfg.phase_count = 2;
     host_load(h, &a);

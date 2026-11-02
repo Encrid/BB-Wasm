@@ -16,3 +16,13 @@ void wrong_attach_tag_value(void)
 
     bridge_attach(1, wrong_flag, bridge_lend(&value, sizeof(value)));
 }
+
+void wrong_detach_declared(void)
+{
+    bridge_detach(1, wrong_position);
+}
+
+void wrong_attach_tag(void)
+{
+    bridge_attach(1, wrong_flag, BRIDGE_ZEROED);
+}

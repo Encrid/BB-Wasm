@@ -9,7 +9,7 @@
 
 static const backend_setting_t ADOPT_SETTINGS[ADOPT_SETTING_COUNT] = {
     { .key = "reservation", .kind = BACKEND_INT, .v = { .i = 1ll << 32 } },
-    { .key = "guard", .kind = BACKEND_INT, .v = { .i = 64 << 20 } },
+    { .key = "guard", .kind = BACKEND_INT },
     { .key = "max_wasm_stack", .kind = BACKEND_INT },
     { .key = "stack_margin", .kind = BACKEND_INT, .v = { .i = ADOPT_MARGIN } },
     { .key = "watchdog_stack", .kind = BACKEND_INT, .v = { .i = 64 << 10 } },
@@ -23,6 +23,7 @@ backend_t *adopt_start_backend(const adopt_t *t, int64_t stack,
     backend_setting_t settings[ADOPT_SETTING_COUNT];
 
     memcpy(settings, ADOPT_SETTINGS, sizeof(settings));
+    settings[1].v.i = t->in.guard;
     settings[2].v.i = stack;
     return (t->api.backend_create(settings, ADOPT_SETTING_COUNT, err));
 }

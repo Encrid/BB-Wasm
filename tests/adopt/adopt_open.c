@@ -78,7 +78,7 @@ int adopt_open(adopt_t *t)
     t->block = os_reserve(t->reserved, 2 * ADOPT_PAGE);
     if (!t->block)
         return (adopt_fail("cannot reserve the block"));
-    t->memory = t->api.memory_adopt(t->be, t->block, 2 * ADOPT_PAGE, &err);
+    t->memory = t->api.memory_adopt(t->be, t->block, t->in.block_len, &err);
     source.bytes = adopt_read_file(MODULE_DIR "/adopt.wasm", &source.len);
     t->module = t->api.module_compile(t->be, &source, &err);
     return (t->module ? 0 : adopt_fail("module_compile: %s", err.text));

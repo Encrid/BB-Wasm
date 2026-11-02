@@ -22,7 +22,7 @@ static void lower_span(uint32_t span)
 
     while (r < count) {
         strength = BRIDGE_GET(shield_t, strength, shield, table, r);
-        bridge_set_toggle(shield, table, r, strength % 3 != 0);
+        bridge_set_toggle(shield, table, r, strength % SHIELD_STEP != 0);
         r++;
     }
 }

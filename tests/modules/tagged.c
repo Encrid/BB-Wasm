@@ -38,7 +38,7 @@ static void populate(void)
     while (i < 3) {
         id = bridge_spawn();
         BRIDGE_ATTACH(id, position, p);
-        if (i)
+        if (i < TAGGED)
             bridge_attach(id, frozen, BRIDGE_ZEROED);
         i++;
     }

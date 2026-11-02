@@ -9,6 +9,6 @@ void test_take_reserved_name(host_t *h)
 {
     if (host_open(h))
         return;
-    test_load_wasm(h, "game:badobs@0.1.0", "badobs");
+    test_load_wasm(h, "game:badobs@0.1.0", h->arg);
     host_close(h);
 }

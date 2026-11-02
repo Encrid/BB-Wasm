@@ -13,6 +13,8 @@ void test_reload_nothing(host_t *h)
 
     if (host_open(h))
         return;
+    test_state_ticker(&a, h->arg, "ticker");
+    host_load(h, &a);
     test_state_ticker(&a, "game:ticker@0.2.0", "ticker-ten");
     host_reload(h, &a);
     host_close(h);
@@ -24,7 +26,7 @@ void test_revive(host_t *h)
 
     if (host_open(h))
         return;
-    test_state_ticker(&a, "game:ticker@0.1.0", "ticker-trip");
+    test_state_ticker(&a, "game:ticker@0.1.0", h->arg);
     host_load(h, &a);
     host_run_frames(h, 4);
     test_say_modules(h);

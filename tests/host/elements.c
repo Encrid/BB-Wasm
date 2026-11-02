@@ -24,6 +24,6 @@ void test_load_lent(host_t *h)
 {
     if (host_open(h))
         return;
-    test_load_mover(h);
+    test_load_module(h, "game:mover@0.1.0", h->arg);
     host_close(h);
 }

@@ -6,7 +6,13 @@
 #include "bridge_wasm.h"
 #include "wasm_idle.h"
 
-static volatile int going = 1;
+#ifdef ENDED
+    #define GOING 0
+#else
+    #define GOING 1
+#endif
+
+static volatile int going = GOING;
 
 BRIDGE_EXPORT(forever) int forever(void)
 {

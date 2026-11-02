@@ -53,7 +53,8 @@ BRIDGE_EXPORT(init) int init(void)
         BRIDGE_TABLE, BRIDGE_ON_DESTROY_REMOVE);
     terms[0].slot = position;
     doubling = BRIDGE_ADD_SYSTEM("twice", "update", terms, 1, nullptr, 0, nullptr, 0);
-    adding = BRIDGE_ADD_SYSTEM("more", "update", terms, 1, nullptr, 0, &doubling, 1);
+    adding = BRIDGE_ADD_SYSTEM("more", "update", terms, 1, nullptr, 0,
+        &doubling, BEFORE_COUNT);
     terms[0].access = BRIDGE_READ;
     showing = BRIDGE_ADD_SYSTEM("show", "present", terms, 1, nullptr, 0, nullptr, 0);
     BRIDGE_ATTACH(bridge_spawn(), position, p);
