@@ -17,8 +17,23 @@ constexpr size_t ADOPT_ROOM = 16 << 10;
 constexpr uint32_t ADOPT_SETTING_COUNT = 7;
 
 typedef struct {
+    uint64_t block_len;
+    int64_t guard;
+    enum backend_type params[2];
+    uint32_t param_count;
+    const char *module;
+    const char *field;
+    const char *store_field;
+    uint32_t store_imports;
+    const char *stray;
+    const char *timed;
+    uint32_t cleared;
+} adopt_in_t;
+
+typedef struct {
     backend_api_t api;
     backend_err_t err;
+    adopt_in_t in;
     backend_t *be;
     backend_module_t *module;
     backend_memory_t *memory;
@@ -64,6 +79,7 @@ int adopt_run(adopt_t *t, backend_instance_t *i, const char *name,
 [[gnu::format(printf, 1, 2)]] int adopt_fail(const char *format, ...);
 
 int adopt_open(adopt_t *t);
+void adopt_set_input(adopt_t *t, const char *word);
 int adopt_check_write(adopt_t *t, backend_instance_t *one);
 int adopt_check_two_stores(adopt_t *t, backend_instance_t *one);
 int adopt_check_stray(adopt_t *t, backend_instance_t *one);

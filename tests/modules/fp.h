@@ -8,7 +8,11 @@
 
     #include "bridge_schema.h"
 
-    #define POSITION_FIELDS { float x; float y; float z; }
+    #ifdef FP_SAME
+        #define POSITION_FIELDS { float x; float y; }
+    #else
+        #define POSITION_FIELDS { float x; float y; float z; }
+    #endif
 
 BRIDGE_SCHEMA_STRUCT_TYPE(position_t, POSITION_FIELDS);
 BRIDGE_SCHEMA_STRUCT_DESC(position_t, POSITION_FIELDS);

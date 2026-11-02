@@ -20,6 +20,11 @@ BRIDGE_EXPORT(act) int act(void)
     return (0);
 }
 
+BRIDGE_EXPORT(again) int again(void)
+{
+    return (0);
+}
+
 BRIDGE_EXPORT(init) int init(void)
 {
     bridge_term_t terms[1] = {{ 0, BRIDGE_READ, BRIDGE_AND, 0 }};

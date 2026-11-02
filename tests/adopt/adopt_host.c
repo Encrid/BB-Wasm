@@ -7,7 +7,6 @@
 
 #include "adopt.h"
 
-static const enum backend_type ADOPT_PARAMS[2] = { BACKEND_I32, BACKEND_I64 };
 static const enum backend_type ADOPT_RESULTS[1] = { BACKEND_I32 };
 
 static int ping([[maybe_unused]] void *ud, const uint64_t *args,
@@ -20,9 +19,11 @@ static int ping([[maybe_unused]] void *ud, const uint64_t *args,
 static backend_instance_t *make_host(adopt_t *t, backend_module_t **host,
     enum backend_capability demands)
 {
-    backend_sig_t sig = { .params = ADOPT_PARAMS, .param_count = 2,
-        .results = ADOPT_RESULTS, .result_count = 1 };
-    backend_entry_t entry = { "bridge", "ping", ping, nullptr, &sig };
+    backend_sig_t sig = { .params = t->in.params,
+        .param_count = t->in.param_count, .results = ADOPT_RESULTS,
+        .result_count = 1 };
+    backend_entry_t entry = { t->in.module, t->in.field, ping, nullptr,
+        &sig };
     backend_source_t source = { .demands = demands };
     backend_instance_t *i = nullptr;
 
@@ -73,7 +74,7 @@ int adopt_check_timed_calls(adopt_t *t)
     int k;
 
     if (i)
-        f = t->api.instance_get_func(i, "init", &t->err);
+        f = t->api.instance_get_func(i, t->in.timed, &t->err);
     if (!f)
         return (adopt_fail("timed calls: %s", t->err.text));
     k = call_timed(t, i, f, &status);

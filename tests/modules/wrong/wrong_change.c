@@ -29,3 +29,20 @@ void wrong_attach_outside(void)
 {
     bridge_attach(1, wrong_position, WRONG_OUTSIDE);
 }
+
+void wrong_change_declared(void)
+{
+    wrong_add_with_change(wrong_position);
+}
+
+void wrong_attach_declared(void)
+{
+    bridge_attach(1, wrong_position, BRIDGE_ZEROED);
+}
+
+void wrong_attach_lent(void)
+{
+    position_t value = {};
+
+    bridge_attach(1, wrong_position, bridge_lend(&value, sizeof(value)));
+}

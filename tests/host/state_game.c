@@ -10,8 +10,8 @@
 void test_state_wasm(bridge_artifact_t *a, const char *identity,
     const char *file)
 {
-    bool few = !strcmp(file, "twostep") || !strcmp(file, "chain")
-        || !strcmp(file, "events") || !strcmp(file, "nested")
+    bool few = !strncmp(file, "twostep", 7) || !strcmp(file, "chain")
+        || !strncmp(file, "events", 6) || !strcmp(file, "nested")
         || !strcmp(file, "nested2");
 
     host_state_wasm(a, identity, file);

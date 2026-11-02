@@ -26,14 +26,14 @@ void wrong_observe_events_unset(void)
     bridge_observe(bridge_put(&o, sizeof(o)));
 }
 
-void wrong_system_late(void)
+void wrong_system_valid(void)
 {
     bridge_system_statement_t s = wrong_state_system();
 
     bridge_add_system(bridge_put(&s, sizeof(s)));
 }
 
-void wrong_observe_late(void)
+void wrong_observe_valid(void)
 {
     bridge_observer_statement_t o = wrong_state_observer();
 

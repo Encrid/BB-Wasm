@@ -29,3 +29,8 @@ void wrong_term_write_ungranted(void)
 {
     wrong_add_with_term(wrong_thing, BRIDGE_WRITE, BRIDGE_AND);
 }
+
+void wrong_term_read_granted(void)
+{
+    wrong_add_with_term(wrong_thing, BRIDGE_READ, BRIDGE_AND);
+}

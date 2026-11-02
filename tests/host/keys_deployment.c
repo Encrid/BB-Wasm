@@ -11,16 +11,31 @@ constexpr int64_t BEYOND = 1ll << 24;
 
 static const test_edit_t TEST_DEPLOYMENT_EDITS[] = {
     { "backends=0", offsetof(bridge_config_t, backend_count), 4, 0 },
+    { "backends=1", offsetof(bridge_config_t, backend_count), 4, 1 },
     { "entities=0", offsetof(bridge_config_t, budget.entities), 8, 0 },
+    { "entities=4096", offsetof(bridge_config_t, budget.entities), 8,
+        4096 },
+    { "tables=64", offsetof(bridge_config_t, budget.tables), 4, 64 },
+    { "types=64", offsetof(bridge_config_t, budget.types), 4, 64 },
+    { "systems=128", offsetof(bridge_config_t, budget.systems), 4, 128 },
+    { "terms=8", offsetof(bridge_config_t, budget.terms), 4, 8 },
     { "modules=0", offsetof(bridge_config_t, budget.modules), 4, 0 },
+    { "modules=8", offsetof(bridge_config_t, budget.modules), 4, 8 },
     { "persistent=0", offsetof(bridge_config_t, budget.persistent), 8, 0 },
+    { "persistent=4096", offsetof(bridge_config_t, budget.persistent), 8,
+        4096 },
+    { "columns=1048576", offsetof(bridge_config_t, budget.columns), 8,
+        1 << 20 },
     { "sparse_sets=0", offsetof(bridge_config_t, budget.sparse_sets), 8, 0 },
+    { "sparse_sets=8", offsetof(bridge_config_t, budget.sparse_sets), 8, 8 },
     { "sparse_sets=-5", offsetof(bridge_config_t, budget.sparse_sets), 8,
         -5 },
     { "sparse_sets=beyond", offsetof(bridge_config_t, budget.sparse_sets),
         8, BEYOND },
     { "direct_indexed=0", offsetof(bridge_config_t, budget.direct_indexed),
         8, 0 },
+    { "direct_indexed=8", offsetof(bridge_config_t, budget.direct_indexed),
+        8, 8 },
     { "direct_indexed=no limit",
         offsetof(bridge_config_t, budget.direct_indexed), 8, BRIDGE_NO_LIMIT },
     { "direct_indexed=beyond",
@@ -49,6 +64,6 @@ void test_edit_deployment(host_t *h)
 
 void test_edit_phases(host_t *h)
 {
-    h->phases[1] = strcmp(h->arg, "twice") ? nullptr : h->phases[0];
+    h->phases[1] = *h->arg ? h->arg : nullptr;
     host_open_only(h);
 }

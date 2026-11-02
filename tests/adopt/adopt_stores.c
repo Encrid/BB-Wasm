@@ -23,18 +23,24 @@ int adopt_check_write(adopt_t *t, backend_instance_t *one)
 static void fill(void *arg)
 {
     adopt_job_t *j = arg;
-    backend_instance_t *i = adopt_make_instance(j->t);
+    backend_memory_import_t imports[1] = {{ "bridge", j->t->in.store_field,
+        j->t->memory }};
     backend_err_t err = {};
-    backend_func_t *f = j->t->api.instance_get_func(i, j->name, &err);
+    backend_instance_t *i = j->t->api.instance_create(j->t->module, imports,
+        j->t->in.store_imports, &err);
+    backend_func_t *f = nullptr;
     int32_t status = 0;
     int r = 0;
 
+    if (i)
+        f = j->t->api.instance_get_func(i, j->name, &err);
     while (r < j->rounds) {
         if (!f || j->t->api.call(f, &status, &err) || status)
             j->failed++;
         r++;
     }
-    j->t->api.instance_destroy(i);
+    if (i)
+        j->t->api.instance_destroy(i);
 }
 
 static int count_wrong(const adopt_t *t)
@@ -77,7 +83,7 @@ int adopt_check_stray(adopt_t *t, backend_instance_t *one)
 {
     int32_t status = -1;
 
-    if (!adopt_run(t, one, "stray", &status))
+    if (!adopt_run(t, one, t->in.stray, &status))
         return (adopt_fail("a load past the block returned %d instead of "
             "trapping", status));
     printf("stray load: %s\n", t->err.text);

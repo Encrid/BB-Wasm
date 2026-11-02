@@ -3,6 +3,8 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 */
+#include <stdlib.h>
+
 #include "cases.h"
 
 void test_state_no_host_abi(host_t *h)
@@ -48,7 +50,7 @@ void test_leave_flag_unset(host_t *h)
     if (host_open(h))
         return;
     test_state_small(&a, identity, "ok");
-    a.cfg.pinned = BRIDGE_UNSET;
+    a.cfg.pinned = (enum bridge_flag)strtol(h->arg, nullptr, 10);
     host_load(h, &a);
     test_state_small(&a, identity, "ok");
     a.cfg.hot_reload = (enum bridge_flag)3;
