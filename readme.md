@@ -18,7 +18,7 @@ A loop through `BRIDGE_GET` and `BRIDGE_SET` gets no gain, because each access i
 ## Install
 
 1. Install Python 3.11 or a later version.
-2. Run `python project.py fetch`. It downloads zig, Bridge, Bridge-OS, wasmtime and binaryen.
+2. Run `python project.py fetch`. It downloads zig, Bridge, mosl, wasmtime and binaryen.
 
 ## Usage
 
