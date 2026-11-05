@@ -15,11 +15,11 @@ It then finds each function that `instance_get_func` kept before: `docs/intern/w
 An instance that it cannot make fails the call, with `made no instance` and the reason in `err`.
 `run` runs the function with no argument, reads its one `i32` status, and reports a trap through `err`.
 
-`call` first reads how many bytes of stack the thread has left, with `os_thread_stack_left` of Bridge-OS.
+`call` first reads how many bytes of stack the thread has left, with `os_thread_stack_left` of mosl.
 With less than `max_wasm_stack` and `stack_margin` together, it refuses the call before any wasm runs.
 The reason names the bytes that are left and the bytes that the two need.
-Bridge-OS gives 0 if the system does not tell the stack. Since `max_wasm_stack` is 1 or more, `call` then refuses too.
-Source: the row `os_thread_stack_left` of the document of `os.h` of Bridge-OS.
+mosl gives 0 if the system does not tell the stack. Since `max_wasm_stack` is 1 or more, `call` then refuses too.
+Source: the row `os_thread_stack_left` of the document of `os.h` of mosl.
 
 wasmtime bounds only the wasm frames, from the first one down: `max_wasm_stack` in `wasmtime/config.h` of wasmtime 48.0.5.
 `stack_margin` holds the other frames: those of `call` and of wasmtime up to the first wasm frame, and an offered function at the deepest one.

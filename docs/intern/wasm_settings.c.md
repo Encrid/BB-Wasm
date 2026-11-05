@@ -23,7 +23,7 @@ The backend refuses a value only when it or wasmtime 48.0.5 cannot run with it. 
 | `guard` | 0 | wasmtime takes any guard, and with 0 it checks each access. Source: `memory_guard_size` in `crates/wasmtime/src/config.rs`. |
 | `max_wasm_stack` | 1 | `validate` in `crates/wasmtime/src/config.rs` refuses 0: "max_wasm_stack size cannot be zero". Its C API stops the process on that error, since `wasm_engine_new_with_config` unwraps it. |
 | `stack_margin` | 0 | Any number of bytes is a margin. With 0, a call keeps no stack for the frames that are not wasm. |
-| `watchdog_stack` | 0 | Bridge-OS starts a thread on at least the bytes that it gets, and rounds the size up to its least stack. Source: the row `os_thread_start` of the document of `os.h` of Bridge-OS. |
+| `watchdog_stack` | 0 | mosl starts a thread on at least the bytes that it gets, and rounds the size up to its least stack. Source: the row `os_thread_start` of the document of `os.h` of mosl. |
 
 A negative number is no number of bytes, thus each key refuses it.
 
