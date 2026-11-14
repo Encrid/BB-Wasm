@@ -3,7 +3,7 @@ name = "bridge_wasm"
 kind = "library"
 folder = "backends"
 sources = ["src/*.c"]
-link = ["{bridge_os}/os.a"]
+link = ["{bridge_os}/os.a", "{wasmtime_import}"]
 include = ["{bridge}/include", "src", "{bridge_os}/include", "{wasmtime}/include"]
 flags = ["{quiet}", "{system_defines}", "{wasmtime_link}", "{system_libraries}", "{rpath}"]
 beside = ["{wasmtime}/{wasmtime_runtime}"]
@@ -153,6 +153,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/mover.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -162,6 +163,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -171,6 +173,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["READER_POSITION", "BRIDGE_ROWS_CHECKED"]
 
@@ -180,6 +183,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["READER_WARN", "BRIDGE_ROWS_CHECKED"]
 
@@ -189,6 +193,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["READER_ADD", "BRIDGE_ROWS_CHECKED"]
 
@@ -198,6 +203,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["READER_TOTAL", "BRIDGE_ROWS_CHECKED"]
 
@@ -207,6 +213,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/refs.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -216,6 +223,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/fp.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -225,6 +233,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/fp.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["FP_SAME", "BRIDGE_ROWS_CHECKED"]
 
@@ -234,6 +243,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/badterm.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BADTERM_OPER=4", "BRIDGE_ROWS_CHECKED"]
 
@@ -243,6 +253,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/badterm.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BADTERM_OPER=3", "BRIDGE_ROWS_CHECKED"]
 
@@ -252,6 +263,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/spin3.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -261,6 +273,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/spin3.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["ENDED", "BRIDGE_ROWS_CHECKED"]
 
@@ -270,6 +283,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/flood.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -279,6 +293,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/chatty.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -288,6 +303,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/rows.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -297,6 +313,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/halver.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -306,6 +323,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/twostep.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BEFORE_COUNT=1", "BRIDGE_ROWS_CHECKED"]
 
@@ -315,6 +333,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/twostep.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BEFORE_COUNT=0", "BRIDGE_ROWS_CHECKED"]
 
@@ -324,6 +343,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/chain.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -333,6 +353,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/badobs.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -342,6 +363,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/badobs.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["SEEN", "BRIDGE_ROWS_CHECKED"]
 
@@ -351,6 +373,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/events.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["TOLD_ENTER=BRIDGE_ON_ENTER", "TOLD_ATTACH=BRIDGE_ON_ATTACH", "BRIDGE_ROWS_CHECKED"]
 
@@ -360,6 +383,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/events.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["TOLD_ENTER=0", "TOLD_ATTACH=BRIDGE_ON_ATTACH", "BRIDGE_ROWS_CHECKED"]
 
@@ -369,6 +393,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/events.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["TOLD_ENTER=BRIDGE_ON_ENTER", "TOLD_ATTACH=0", "BRIDGE_ROWS_CHECKED"]
 
@@ -378,6 +403,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -387,6 +413,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/namer.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -396,6 +423,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/spawner.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -405,6 +433,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/counter.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -414,6 +443,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/typer.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -423,6 +453,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/user.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -432,6 +463,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/hang.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -441,6 +473,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/hit/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["HIT_STEP=3", "BRIDGE_ROWS_CHECKED"]
 
@@ -450,6 +483,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/hit/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["HIT_STEP=2", "BRIDGE_ROWS_CHECKED"]
 
@@ -459,6 +493,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/shield.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["SHIELD_STEP=3", "BRIDGE_ROWS_CHECKED"]
 
@@ -468,6 +503,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/shield.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["SHIELD_STEP=2", "BRIDGE_ROWS_CHECKED"]
 
@@ -477,6 +513,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/aim.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AIM_STEP=2", "AIM_OPER=BRIDGE_OPTIONAL", "BRIDGE_ROWS_CHECKED"]
 
@@ -486,6 +523,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/aim.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AIM_STEP=3", "AIM_OPER=BRIDGE_OPTIONAL", "BRIDGE_ROWS_CHECKED"]
 
@@ -495,6 +533,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/aim.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AIM_STEP=2", "AIM_OPER=BRIDGE_AND", "BRIDGE_ROWS_CHECKED"]
 
@@ -504,6 +543,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/levels.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_CHECKED"]
 
@@ -513,6 +553,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/tagged.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["TAGGED=2", "BRIDGE_ROWS_CHECKED"]
 
@@ -522,6 +563,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/tagged.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["TAGGED=3", "BRIDGE_ROWS_CHECKED"]
 
@@ -531,6 +573,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/rows.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BRIDGE_ROWS_UNCHECKED"]
 
@@ -540,6 +583,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["LEAVE_OUT_VEC2", "BRIDGE_ROWS_CHECKED"]
 
@@ -549,6 +593,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["LEAVE_OUT_TEAM", "BRIDGE_ROWS_CHECKED"]
 
@@ -558,6 +603,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["LEAVE_OUT_FLAGS", "BRIDGE_ROWS_CHECKED"]
 
@@ -567,6 +613,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["WIDE_TEAM_TYPE", "BRIDGE_ROWS_CHECKED"]
 
@@ -576,6 +623,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["WIDE_TEAM_DESC", "BRIDGE_ROWS_CHECKED"]
 
@@ -585,6 +633,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["WIDE_FLAGS_TYPE", "BRIDGE_ROWS_CHECKED"]
 
@@ -594,6 +643,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["WIDE_FLAGS_DESC", "BRIDGE_ROWS_CHECKED"]
 
@@ -603,6 +653,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/settings/*.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["KEPT=BRIDGE_SINGLETON", "BRIDGE_ROWS_CHECKED"]
 
@@ -612,6 +663,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/kept.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["KEPT=0", "BRIDGE_ROWS_CHECKED"]
 
@@ -621,6 +673,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/kept.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["KEPT=9", "BRIDGE_ROWS_CHECKED"]
 
@@ -630,6 +683,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/kept.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["KEPT=BRIDGE_SPARSE_SET", "BRIDGE_ROWS_CHECKED"]
 
@@ -639,6 +693,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/kept.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["KEPT=BRIDGE_TABLE", "BRIDGE_ROWS_CHECKED"]
 
@@ -648,6 +703,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/namer.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["READER", "BRIDGE_ROWS_CHECKED"]
 
@@ -657,6 +713,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/flaky.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["OF=1", "FAILS=1", "BRIDGE_ROWS_CHECKED"]
 
@@ -666,6 +723,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/flaky.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["OF=3", "FAILS=1", "BRIDGE_ROWS_CHECKED"]
 
@@ -675,6 +733,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/flaky.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["OF=3", "FAILS=2", "BRIDGE_ROWS_CHECKED"]
 
@@ -684,6 +743,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/flaky.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["OF=1", "FAILS=1", "CALM", "BRIDGE_ROWS_CHECKED"]
 
@@ -693,6 +753,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/keeper.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["PRIVATE_POLICY=BRIDGE_STRIP", "BRIDGE_ROWS_CHECKED"]
 
@@ -702,6 +763,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/keeper.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["PRIVATE_POLICY=BRIDGE_SWEEP", "BRIDGE_ROWS_CHECKED"]
 
@@ -711,6 +773,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/keeper.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["PRIVATE_POLICY=BRIDGE_DELETE", "BRIDGE_ROWS_CHECKED"]
 
@@ -720,6 +783,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/retype.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["WHICH=1", "BRIDGE_ROWS_CHECKED"]
 
@@ -729,6 +793,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/retype.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["WHICH=2", "BRIDGE_ROWS_CHECKED"]
 
@@ -738,6 +803,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/retype.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["WHICH=4", "BRIDGE_ROWS_CHECKED"]
 
@@ -747,6 +813,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/settings/*.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["DROP", "KEPT=BRIDGE_SINGLETON", "BRIDGE_ROWS_CHECKED"]
 
@@ -756,6 +823,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/settings/*.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["KEPT=BRIDGE_TABLE", "BRIDGE_ROWS_CHECKED"]
 
@@ -765,6 +833,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/ticker.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["STEP=1", "BRIDGE_ROWS_CHECKED"]
 
@@ -774,6 +843,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/ticker.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["STEP=10", "BRIDGE_ROWS_CHECKED"]
 
@@ -783,6 +853,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/ticker.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["STEP=1", "TRIP", "BRIDGE_ROWS_CHECKED"]
 
@@ -792,6 +863,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/ticker.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["STEP=10", "ALLOC", "BRIDGE_ROWS_CHECKED"]
 
@@ -850,6 +922,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_SLOT", "BRIDGE_ROWS_CHECKED"]
 
@@ -859,6 +932,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_ROW", "BRIDGE_ROWS_CHECKED"]
 
@@ -868,6 +942,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_FIELD", "BRIDGE_ROWS_CHECKED"]
 
@@ -877,6 +952,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_READONLY", "BRIDGE_ROWS_CHECKED"]
 
@@ -886,6 +962,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_FORGE", "BRIDGE_ROWS_CHECKED"]
 
@@ -895,6 +972,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_SPARSE", "BRIDGE_ROWS_CHECKED"]
 
@@ -904,6 +982,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_DIRECT", "BRIDGE_ROWS_CHECKED"]
 
@@ -913,6 +992,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_TO_SHARED", "BRIDGE_ROWS_CHECKED"]
 
@@ -922,6 +1002,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_FROM_SHARED", "BRIDGE_ROWS_CHECKED"]
 
@@ -931,6 +1012,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_WHO"]
 
@@ -940,6 +1022,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_TOGGLE"]
 
@@ -949,6 +1032,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_ROWS"]
 
@@ -958,6 +1042,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/vector.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 
 [[artifact]]
@@ -966,6 +1051,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/vector.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 flags = ["-mno-simd128"]
 
@@ -975,6 +1061,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/vector.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["SHORT"]
 
@@ -984,6 +1071,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_OK", "BRIDGE_ROWS_CHECKED"]
 
@@ -993,6 +1081,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1002,6 +1091,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_name_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1011,6 +1101,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_no_namespace", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1020,6 +1111,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_name_zero", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1029,6 +1121,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_kind_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1038,6 +1131,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_tag_with_bytes", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1047,6 +1141,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_policy_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1056,6 +1151,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_on_destroy_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1065,6 +1161,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_size_other", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1074,6 +1171,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_system_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1083,6 +1181,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_system_phase_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1092,6 +1191,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_system_name_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1101,6 +1201,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_system_many_changes", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1110,6 +1211,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_system_twice", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1119,6 +1221,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_observer_no_term", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1128,6 +1231,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_observe_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1137,6 +1241,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_observe_events_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1146,6 +1251,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_term_access_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1155,6 +1261,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_term_access_other", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1164,6 +1271,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_term_oper_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1173,6 +1281,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_term_slot_undeclared", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1182,6 +1291,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_term_write_ungranted", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1191,6 +1301,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_change_slot_undeclared", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1200,6 +1311,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_change_ungranted", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1209,6 +1321,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_alloc", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1218,6 +1331,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_declare_valid", "BRIDGE_ROWS_CHECKED"]
 
@@ -1227,6 +1341,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_system_valid", "BRIDGE_ROWS_CHECKED"]
 
@@ -1236,6 +1351,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_observe_valid", "BRIDGE_ROWS_CHECKED"]
 
@@ -1245,6 +1361,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_undeclared", "BRIDGE_ROWS_CHECKED"]
 
@@ -1254,6 +1371,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_ungranted", "BRIDGE_ROWS_CHECKED"]
 
@@ -1263,6 +1381,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_outside", "BRIDGE_ROWS_CHECKED"]
 
@@ -1272,6 +1391,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_detach_undeclared", "BRIDGE_ROWS_CHECKED"]
 
@@ -1281,6 +1401,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_tag_value", "BRIDGE_ROWS_CHECKED"]
 
@@ -1290,6 +1411,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_keep_component", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1299,6 +1421,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_keep_declare", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1308,6 +1431,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_keep_tag", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1317,6 +1441,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_keep_none", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1326,6 +1451,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_declare_valid", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1335,6 +1461,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_system_valid", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1344,6 +1471,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_observe_valid", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1353,6 +1481,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_term_read_granted", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1362,6 +1491,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_change_declared", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
 
@@ -1371,6 +1501,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_declared", "BRIDGE_ROWS_CHECKED"]
 
@@ -1380,6 +1511,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_lent", "BRIDGE_ROWS_CHECKED"]
 
@@ -1389,6 +1521,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_detach_declared", "BRIDGE_ROWS_CHECKED"]
 
@@ -1398,6 +1531,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_tag", "BRIDGE_ROWS_CHECKED"]
 
@@ -1407,6 +1541,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_OWN_EDGE", "BRIDGE_ROWS_CHECKED"]
 
@@ -1416,6 +1551,7 @@ kind = "wasm_module"
 test = true
 folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
+link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
 defines = ["BREACH_OWN_BELOW", "BRIDGE_ROWS_CHECKED"]
 
