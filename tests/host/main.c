@@ -1007,9 +1007,12 @@ int main(int argc, char **argv)
     constexpr size_t count = sizeof(TEST_CASES) / sizeof(*TEST_CASES);
     test_kept_t kept;
     host_t h;
+    int status;
 
     host_init(&h, argc, argv);
     fill_kept(&kept);
     h.kept = &kept;
-    return (host_run(&h, TEST_CASES, count));
+    status = host_run(&h, TEST_CASES, count);
+    host_free_modules();
+    return (status);
 }

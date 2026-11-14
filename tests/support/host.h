@@ -76,6 +76,7 @@ void host_thread_start(host_thread_t *t);
 void host_thread_join(host_thread_t *t);
 
 void *host_read_module(const char *file, size_t *len);
+void host_free_modules(void);
 
 void host_state_wasm(bridge_artifact_t *a, const char *identity,
     const char *file);

@@ -63,10 +63,10 @@ int adopt_run(adopt_t *t, backend_instance_t *i, const char *name,
 int adopt_open(adopt_t *t)
 {
     backend_err_t err = {};
-    backend_source_t source = {};
     uint64_t shape[3];
 
-    if (backend_open(BACKEND_PATH, &t->api, &err))
+    t->lib = backend_open(BACKEND_PATH, &t->api, &err);
+    if (t->lib)
         t->be = adopt_start_backend(t, ADOPT_WASM_STACK, &err);
     if (!t->be)
         return (adopt_fail("%s", err.text));
@@ -79,7 +79,6 @@ int adopt_open(adopt_t *t)
     if (!t->block)
         return (adopt_fail("cannot reserve the block"));
     t->memory = t->api.memory_adopt(t->be, t->block, t->in.block_len, &err);
-    source.bytes = adopt_read_file(MODULE_DIR "/adopt.wasm", &source.len);
-    t->module = t->api.module_compile(t->be, &source, &err);
+    t->module = adopt_compile(t, MODULE_DIR "/adopt.wasm", 0, &err);
     return (t->module ? 0 : adopt_fail("module_compile: %s", err.text));
 }

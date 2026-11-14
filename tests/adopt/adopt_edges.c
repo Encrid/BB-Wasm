@@ -85,10 +85,8 @@ static backend_instance_t *edge_open_module(adopt_t *t, const char *path,
 {
     backend_err_t err = {};
     backend_memory_import_t imports[1] = {{ "bridge", "shared", t->memory }};
-    backend_source_t source = {};
 
-    source.bytes = adopt_read_file(path, &source.len);
-    *module = t->api.module_compile(t->be, &source, &err);
+    *module = adopt_compile(t, path, 0, &err);
     if (!*module)
         return (nullptr);
     return (t->api.instance_create(*module, imports, 1, &err));

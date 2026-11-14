@@ -34,6 +34,7 @@ typedef struct {
     backend_api_t api;
     backend_err_t err;
     adopt_in_t in;
+    void *lib;
     backend_t *be;
     backend_module_t *module;
     backend_memory_t *memory;
@@ -67,6 +68,9 @@ typedef struct {
 } adopt_margin_t;
 
 void *adopt_read_file(const char *path, size_t *len);
+
+backend_module_t *adopt_compile(adopt_t *t, const char *path,
+    enum backend_capability demands, backend_err_t *err);
 
 backend_t *adopt_start_backend(const adopt_t *t, int64_t stack,
     backend_err_t *err);
