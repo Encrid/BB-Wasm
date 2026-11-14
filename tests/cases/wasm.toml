@@ -1,3 +1,5 @@
+code = ["include/**", "src/**", "tests/**", "tools/**", ".toolchain/config/**", ".toolchain/project.toml"]
+
 [[case]]
 name = "adopt"
 run = ["{out}/wasm-adopt{exe}"]
