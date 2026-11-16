@@ -16,36 +16,42 @@ false = { run = ["{out}/wasm-host{exe}", "call-a-thread-with-too-little-stack-re
 
 [[case]]
 name = "BRIDGE_ROW-no-call-in-the-loop"
+process = "command"
 run = ["{wasm_dis}", "{out}/wasm/mover.wasm", "{features}"]
 claims = { matches = ["\\(module"], lacks = ["acc_"] }
 false = { run = ["{wasm_dis}", "{out}/obj/mover.raw.wasm", "{features}"] }
 
 [[case]]
 name = "BRIDGE_ACC-the-accessors-merged-in"
+process = "command"
 run = ["{wasm_dis}", "{out}/wasm/mover.wasm", "{features}"]
 claims = { matches = ["\\(module"], lacks = ["acc_"] }
 false = { run = ["{wasm_dis}", "{out}/obj/mover.raw.wasm", "{features}"] }
 
 [[case]]
 name = "simd-a-loop-over-its-own-memory-vectorized"
+process = "command"
 run = ["{wasm_dis}", "{out}/wasm/vector.wasm", "{features}"]
 claims = { matches = ["i32x4\\.add"] }
 false = { run = ["{wasm_dis}", "{out}/wasm/vector-scalar.wasm", "{features}"] }
 
 [[case]]
 name = "isolate.imports-shared-memory-refused-at-build"
+process = "command"
 run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importsshared.wasm"]
 claims = { status = 1, has = ["is refused: it imports the memory 'bridge.shared'"] }
 false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/obj/mover.raw.wasm"] }
 
 [[case]]
 name = "isolate.imports-a-tag-refused-at-build"
+process = "command"
 run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"]
 claims = { status = 1, has = ["is refused: it imports the tag 'env.boom'; a module imports no tag"] }
 false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"] }
 
 [[case]]
 name = "isolate.imports-a-global-refused-at-build"
+process = "command"
 run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"]
 claims = { status = 1, has = ["is refused: it imports the global 'elsewhere.number'; a module imports no global"] }
 false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"] }
