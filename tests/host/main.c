@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "cases.h"
+#include "rows.h"
 
 static const host_case_t TEST_CASES[] = {
     { "bridge_value_t-a-value-of-each-kind",
@@ -1002,7 +1003,7 @@ static void fill_kept(test_kept_t *kept)
     memcpy(kept->noted.settings, TEST_SETTINGS, sizeof(TEST_SETTINGS));
 }
 
-int main(int argc, char **argv)
+static int run(int argc, char **argv)
 {
     constexpr size_t count = sizeof(TEST_CASES) / sizeof(*TEST_CASES);
     test_kept_t kept;
@@ -1015,4 +1016,10 @@ int main(int argc, char **argv)
     status = host_run(&h, TEST_CASES, count);
     host_free_modules();
     return (status);
+}
+
+int main(int argc, char **argv)
+{
+    setvbuf(stdout, nullptr, _IONBF, 0);
+    return (argc > 1 ? run(argc, argv) : rows_run(run));
 }

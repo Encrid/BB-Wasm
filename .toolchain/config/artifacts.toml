@@ -13,7 +13,7 @@ name = "wasm-host"
 kind = "program"
 test = true
 sources = ["tests/host/*.c", "tests/support/host*.c", "tests/support/{system}/host*.c"]
-include = ["{bridge}/include", "tests/host", "tests/support"]
+include = ["{bridge}/include", "tests/host", "tests/support", "{toolchain}/runtime"]
 defines = ['BACKEND_PATH="{out}/backends/bridge_wasm{library}"', 'MODULE_DIR="{out}/wasm"']
 flags = ["{quiet}", "{system_defines}", "{system_libraries}"]
 link = ["{bridge}/bridge{library}"]
@@ -24,7 +24,7 @@ name = "wasm-adopt"
 kind = "program"
 test = true
 sources = ["tests/adopt/*.c"]
-include = ["{bridge}/include", "{bridge_os}/include", "tests/adopt"]
+include = ["{bridge}/include", "{bridge_os}/include", "tests/adopt", "{toolchain}/runtime"]
 defines = ['BACKEND_PATH="{out}/backends/bridge_wasm{library}"', 'MODULE_DIR="{out}/wasm"']
 flags = ["{quiet}", "{system_defines}", "{system_libraries}"]
 link = ["{bridge_os}/os.a"]

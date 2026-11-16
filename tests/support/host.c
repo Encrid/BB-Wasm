@@ -25,7 +25,6 @@ void host_init(host_t *h, int argc, char **argv)
         .columns = 1 << 20, .sparse_sets = BRIDGE_NONE,
         .direct_indexed = BRIDGE_NONE };
 
-    setvbuf(stdout, nullptr, _IONBF, 0);
     *h = (host_t){ .what = argc > 1 ? argv[1] : "" };
     memcpy(h->settings, HOST_WASM, sizeof(HOST_WASM));
     h->backends[0] = (bridge_backend_t){ "wasm", BACKEND_PATH, h->settings,
