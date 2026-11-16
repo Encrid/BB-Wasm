@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "adopt.h"
+#include "rows.h"
 
 static int run_all(adopt_t *t)
 {
@@ -32,12 +33,11 @@ static void say_release(adopt_t *t)
         kept);
 }
 
-int main(int argc, char **argv)
+static int run(int argc, char **argv)
 {
     adopt_t t = {};
     int failed;
 
-    setvbuf(stdout, nullptr, _IONBF, 0);
     adopt_set_input(&t, argc > 1 ? argv[1] : "");
     if (adopt_open(&t))
         return (1);
@@ -51,4 +51,10 @@ int main(int argc, char **argv)
     os_release(t.block, t.reserved);
     os_lib_close(t.lib);
     return (failed);
+}
+
+int main(int argc, char **argv)
+{
+    setvbuf(stdout, nullptr, _IONBF, 0);
+    return (argc > 1 ? run(argc, argv) : rows_run(run));
 }
