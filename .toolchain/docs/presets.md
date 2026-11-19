@@ -40,6 +40,29 @@ A source of the module puts the manifest into the section with this line:
 [[gnu::section(MANIFEST_SECTION), gnu::used, gnu::retain]] static const char WHO[] = MANIFEST;
 ```
 
+## wasm_module
+
+`wasm_module` is the preset of a wasm module that runs on Bridge. BB-Wasm loads such a module, and runs it in its sandbox.
+
+| File | Content |
+| --- | --- |
+| `wasm_sources.toml` | The sources `binaryen`, the release `version_133` of binaryen, and `bb_wasm`, the release `v0.7.0` of BB-Wasm. |
+| `wasm_targets.toml` | For each target, the archive of binaryen, and the sha256 of each release. |
+| `wasm_kinds.toml` | The variables `wasm_simd` and `wasm_features`, the programs of binaryen in `[tools]`, and the kinds `wasm_text` and `wasm_module`. |
+
+The headers of BB-Wasm include `bridge_abi.h` of Bridge, so a project of wasm modules also takes the source `bridge` of `native_module`.
+An artifact of the kind `wasm_module` names the accessors in `link`, for example `{bb_wasm}/acc.wasm`, and the headers in `include`: `{bridge}/include` and `{bb_wasm}/include`.
+
+The kind `wasm_module` makes a module in 5 steps:
+
+1. zig compiles the sources for `wasm32-freestanding`, with no library of C, into `<name>.raw.wasm`.
+2. `.toolchain/tools/wasm_guard.py` checks the imports of that module: `.toolchain/docs/wasm_guard.py.md`.
+3. `wasm-opt` optimizes the code of the module with `-O3`.
+4. `wasm-merge` merges the accessors of `link` into the module, under the name `acc`.
+5. `wasm-opt` removes the exports of the accessors and each part that nothing uses. It runs no other pass, so each accessor keeps the body that BB-Wasm checks at load.
+
+The kind `wasm_text` makes a module from wasm text with `wasm-as`. It holds no accessor, so it is for a test or for the accessors themselves.
+
 ## engine
 
 `engine` is the preset of a project of the engine. Such a project does its work in rounds, and its parts are modules.
