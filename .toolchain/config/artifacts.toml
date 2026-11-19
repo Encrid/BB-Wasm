@@ -1,4 +1,10 @@
 [[artifact]]
+name = "acc"
+kind = "wasm_text"
+folder = "wasm"
+sources = ["src/bridge_wasm.wat"]
+
+[[artifact]]
 name = "bridge_wasm"
 kind = "library"
 folder = "backends"
@@ -7,6 +13,7 @@ link = ["{bridge_os}/os.a", "{wasmtime_import}"]
 include = ["{bridge}/include", "src", "{bridge_os}/include", "{wasmtime}/include"]
 flags = ["{quiet}", "{system_defines}", "{wasmtime_link}", "{system_libraries}", "{rpath}"]
 beside = ["{wasmtime}/{wasmtime_runtime}"]
+inputs = ["{out}/wasm/acc.wasm"]
 
 [[artifact]]
 name = "wasm-host"
@@ -28,12 +35,6 @@ include = ["{bridge}/include", "{bridge_os}/include", "tests/adopt", "{toolchain
 defines = ['BACKEND_PATH="{out}/backends/bridge_wasm{library}"', 'MODULE_DIR="{out}/wasm"']
 flags = ["{quiet}", "{system_defines}", "{system_libraries}"]
 link = ["{bridge_os}/os.a"]
-
-[[artifact]]
-name = "acc"
-kind = "wasm_text"
-folder = "wasm"
-sources = ["src/bridge_wasm.wat"]
 
 [[artifact]]
 name = "adopt"
@@ -1628,3 +1629,88 @@ kind = "wasm_text"
 test = true
 folder = "wasm"
 sources = ["tests/modules/margin.wat"]
+
+[[artifact]]
+name = "reach"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/reach.wat"]
+
+[[artifact]]
+name = "reachown"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/reachown.wat"]
+
+[[artifact]]
+name = "bound"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/bound.wat"]
+
+[[artifact]]
+name = "boundexact"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/boundexact.wat"]
+
+[[artifact]]
+name = "datashared"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/datashared.wat"]
+
+[[artifact]]
+name = "dataown"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/dataown.wat"]
+
+[[artifact]]
+name = "exportsprivate"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/exportsprivate.wat"]
+
+[[artifact]]
+name = "exportsown"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/exportsown.wat"]
+
+[[artifact]]
+name = "memories"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/memories.wat"]
+
+[[artifact]]
+name = "kinds"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/kinds.wat"]
+flags = ["--enable-reference-types"]
+
+[[artifact]]
+name = "fillshared"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/fillshared.wat"]
+
+[[artifact]]
+name = "twice"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/twice.wat"]

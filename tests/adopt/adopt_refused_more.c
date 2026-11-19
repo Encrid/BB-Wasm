@@ -8,8 +8,8 @@
 static int refuse_memory(adopt_t *t)
 {
     backend_err_t err = {};
-    backend_memory_import_t imports[2] = {{ "bridge", "shared", t->memory },
-        { "bridge", "shared", t->memory }};
+    backend_memory_import_t imports[2] = {{ "bridge", "block", t->memory },
+        { "bridge", "block", t->memory }};
     backend_instance_t *i = t->api.instance_create(t->module, imports, 2,
         &err);
 

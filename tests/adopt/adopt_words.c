@@ -18,7 +18,7 @@ typedef struct {
 static const adopt_in_t ADOPT_IN = {
     .block_len = 2 * ADOPT_PAGE, .guard = 64 << 20,
     .params = { BACKEND_I32, BACKEND_I64 }, .param_count = 2,
-    .module = "bridge", .field = "ping", .store_field = "shared",
+    .module = "bridge", .field = "ping", .store_field = "block",
     .store_imports = 1, .stray = "stray", .timed = "init", .cleared = 0
 };
 

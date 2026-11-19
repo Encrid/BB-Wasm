@@ -6,16 +6,21 @@
 #include <stdlib.h>
 
 #include "wasm_inside.h"
+#include "wasm_scan.h"
 
 static wasmtime_module_t *compile(wasm_engine_t *engine,
     const backend_source_t *source, backend_err_t *err)
 {
     const char *what = "this backend compiles a module from its bytes, and "
         "was handed none";
+    char why[SCAN_WHY + 32] = "";
     wasmtime_module_t *module = nullptr;
     wasmtime_error_t *error = nullptr;
+    bool given = source->bytes && source->len;
 
-    if (source->bytes && source->len) {
+    if (given)
+        what = scan_refused(source->bytes, source->len, why, sizeof(why));
+    if (given && !what) {
         what = "not a module this backend can compile";
         error = wasmtime_module_new(engine, source->bytes, source->len,
             &module);

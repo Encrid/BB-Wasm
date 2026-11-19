@@ -2,6 +2,7 @@
 
 `wasm_guard.py` refuses a compiled module that imports a memory, a global or a tag.
 The wasm_module build runs it between the compile and the merge. It does not run alone.
+It is an early check of the build. The backend checks each module again at load: `docs/intern/wasm_scan_check.c.md`.
 
 ## Functions
 
