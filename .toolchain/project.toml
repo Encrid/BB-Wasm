@@ -5,4 +5,5 @@ targets = ["x86_64-windows-gnu", "x86_64-linux-gnu", "aarch64-macos", "aarch64-l
 [test]
 timeout = 120
 copies = 6
+tables = true
 writers = ["snprintf"]

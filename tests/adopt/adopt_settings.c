@@ -3,6 +3,7 @@
 **
 ** Under the GNU Affero General Public License, version 3 only: see license.
 */
+#include <stdlib.h>
 #include <string.h>
 
 #include "adopt.h"
@@ -26,4 +27,17 @@ backend_t *adopt_start_backend(const adopt_t *t, int64_t stack,
     settings[1].v.i = t->in.guard;
     settings[2].v.i = stack;
     return (t->api.backend_create(settings, ADOPT_SETTING_COUNT, err));
+}
+
+backend_module_t *adopt_compile(adopt_t *t, const char *path,
+    enum backend_capability demands, backend_err_t *err)
+{
+    backend_source_t source = { .demands = demands };
+    void *bytes = adopt_read_file(path, &source.len);
+    backend_module_t *module;
+
+    source.bytes = bytes;
+    module = t->api.module_compile(t->be, &source, err);
+    free(bytes);
+    return (module);
 }

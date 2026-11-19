@@ -24,11 +24,9 @@ static backend_instance_t *make_host(adopt_t *t, backend_module_t **host,
         .result_count = 1 };
     backend_entry_t entry = { t->in.module, t->in.field, ping, nullptr,
         &sig };
-    backend_source_t source = { .demands = demands };
     backend_instance_t *i = nullptr;
 
-    source.bytes = adopt_read_file(MODULE_DIR "/host.wasm", &source.len);
-    *host = t->api.module_compile(t->be, &source, &t->err);
+    *host = adopt_compile(t, MODULE_DIR "/host.wasm", demands, &t->err);
     if (*host)
         i = t->api.instance_create(*host, nullptr, 0, &t->err);
     if (i && t->api.define_func(i, &entry, &t->err))

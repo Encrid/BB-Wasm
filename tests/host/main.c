@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "cases.h"
+#include "rows.h"
 
 static const host_case_t TEST_CASES[] = {
     { "bridge_value_t-a-value-of-each-kind",
@@ -735,6 +736,126 @@ static const host_case_t TEST_CASES[] = {
         test_load_named, "importsdestroy", test_set_small },
     { "bridge_load-memory-import-bridge-lends",
         test_load_named, "importsshared", test_set_small },
+    { "scan_refused-an-own-function-that-reaches-shared-refused",
+        test_load_named, "reach", test_set_small },
+    { "scan_refused-an-own-function-on-its-own-memory-loaded",
+        test_load_named, "reachown", test_set_small },
+    { "scan_refused-an-accessor-with-one-bound-changed-refused",
+        test_load_named, "bound", test_set_small },
+    { "scan_refused-an-exact-copy-of-an-accessor-loaded",
+        test_load_named, "boundexact", test_set_small },
+    { "scan_refused-a-data-segment-on-shared-refused",
+        test_load_named, "datashared", test_set_small },
+    { "scan_refused-a-data-segment-on-its-own-memory-loaded",
+        test_load_named, "dataown", test_set_small },
+    { "scan_refused-an-export-of-private-refused",
+        test_load_named, "exportsprivate", test_set_small },
+    { "scan_refused-an-export-of-its-own-memory-loaded",
+        test_load_named, "exportsown", test_set_small },
+    { "scan_refused-a-module-the-check-cannot-read-refused",
+        test_load_named, "memories", test_set_small },
+    { "scan_walk-each-kind-of-instruction-loaded",
+        test_load_named, "kinds", test_set_small },
+    { "scan_memory-a-fill-of-shared-refused",
+        test_load_named, "fillshared", test_set_small },
+    { "scan_refuse-the-first-of-two-reasons-refused",
+        test_load_named, "twice", test_set_small },
+    { "scan_read-4-bytes-refused",
+        test_load_hex, "0061736d", test_set_small },
+    { "scan_read-a-version-2-refused",
+        test_load_hex, "0061736d02000000", test_set_small },
+    { "scan_read-a-section-past-the-end-refused",
+        test_load_hex, "0061736d01000000010500", test_set_small },
+    { "scan_u64-a-number-past-the-end-refused",
+        test_load_hex, "0061736d010000000180", test_set_small },
+    { "scan_u64-a-number-of-11-bytes-refused",
+        test_load_hex, "0061736d01000000008080808080808080808000", test_set_small },
+    { "scan_u32-a-number-past-32-bits-refused",
+        test_load_hex, "0061736d0100000000ffffffff7f", test_set_small },
+    { "scan_functions-a-section-with-no-count-refused",
+        test_load_hex, "0061736d010000000300", test_set_small },
+    { "scan_functions-more-than-65536-functions-refused",
+        test_load_hex, "0061736d010000000303818004", test_set_small },
+    { "scan_functions-a-second-function-section-refused",
+        test_load_hex, "0061736d01000000030100030100", test_set_small },
+    { "scan_functions-a-section-short-of-its-types-refused",
+        test_load_hex, "0061736d0100000003020300", test_set_small },
+    { "scan_codes-a-section-with-no-count-refused",
+        test_load_hex, "0061736d010000000a00", test_set_small },
+    { "scan_codes-a-count-unlike-the-functions-refused",
+        test_load_hex, "0061736d01000000030201000a0100", test_set_small },
+    { "scan_codes-a-section-short-of-its-bodies-refused",
+        test_load_hex, "0061736d010000000304030000000a040302000b", test_set_small },
+    { "scan_exports-a-section-short-of-its-exports-refused",
+        test_load_hex, "0061736d0100000007050301610000", test_set_small },
+    { "scan_byte-an-export-with-no-kind-refused",
+        test_load_hex, "0061736d010000000703010161", test_set_small },
+    { "scan_is_bridge-an-export-of-a-memory-that-is-not-there-refused",
+        test_load_hex, "0061736d01000000070501016d0205", test_set_small },
+    { "scan_datas-an-offset-of-i64-on-shared-refused",
+        test_load_hex, "0061736d0100000002120106627269646765067368617265640200010b06010042000b00", test_set_small },
+    { "scan_datas-an-offset-of-a-global-refused",
+        test_load_hex, "0061736d0100000005030100010b06010023000b00", test_set_small },
+    { "scan_datas-an-offset-of-another-instruction-refused",
+        test_load_hex, "0061736d0100000005030100010b050100440b00", test_set_small },
+    { "scan_datas-an-offset-with-no-end-refused",
+        test_load_hex, "0061736d0100000005030100010b080100410041000b00", test_set_small },
+    { "scan_datas-a-mode-past-2-refused",
+        test_load_hex, "0061736d0100000005030100010b03010300", test_set_small },
+    { "scan_datas-a-section-short-of-its-segments-refused",
+        test_load_hex, "0061736d0100000005030100010b03030100", test_set_small },
+    { "scan_imports-a-section-short-of-its-imports-refused",
+        test_load_hex, "0061736d010000000209030165017401700001", test_set_small },
+    { "scan_imports-an-import-of-a-tag-refused",
+        test_load_hex, "0061736d01000000020b01046d61696e0178040000", test_set_small },
+    { "scan_memories-a-section-short-of-its-memories-refused",
+        test_load_hex, "0061736d010000000503030001", test_set_small },
+    { "scan_walk-an-opcode-it-does-not-know-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a05010300060b", test_set_small },
+    { "scan_walk-locals-past-the-body-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a05010303017f", test_set_small },
+    { "scan_walk-a-body-with-no-end-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a0401020001", test_set_small },
+    { "scan_walk-bytes-after-the-last-end-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a0701050041000b01", test_set_small },
+    { "scan_call-a-call-with-no-function-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a0401020010", test_set_small },
+    { "scan_matched-a-call-past-the-functions-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a08010600100541000b", test_set_small },
+    { "scan_prefix-a-prefix-with-no-opcode-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a04010200fc", test_set_small },
+    { "scan_kind_of_fc-an-opcode-past-17-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a06010400fc120b", test_set_small },
+    { "scan_kind_of_fd-an-opcode-past-255-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a07010500fd80020b", test_set_small },
+    { "scan_memarg-a-load-on-a-memory-that-is-not-there-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a0d010b004100284203001a41000b", test_set_small },
+    { "scan_memarg-a-load-with-no-offset-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a0701050041002802", test_set_small },
+    { "scan_memarg-a-lane-load-with-no-lane-refused",
+        test_load_hex, "0061736d010000000105016000017f0302010005030100010a07010500fd540000", test_set_small },
+    { "scan_memory-a-size-with-no-memory-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a040102003f", test_set_small },
+    { "scan_memory-a-size-of-a-memory-that-is-not-there-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a060104003f050b", test_set_small },
+    { "scan_copy-a-copy-with-no-memories-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a06010400fc0a00", test_set_small },
+    { "scan_copy-a-copy-to-a-memory-that-is-not-there-refused",
+        test_load_hex, "0061736d010000000105016000017f0302010005030100010a07010500fc0a0500", test_set_small },
+    { "scan_copy-a-copy-from-a-memory-that-is-not-there-refused",
+        test_load_hex, "0061736d010000000105016000017f0302010005030100010a07010500fc0a0005", test_set_small },
+    { "scan_init-an-init-with-no-memory-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a06010400fc0800", test_set_small },
+    { "scan_init-an-init-on-a-memory-that-is-not-there-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a07010500fc080005", test_set_small },
+    { "scan_raw-a-float-short-of-its-bytes-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a06010400430000", test_set_small },
+    { "scan_labels-a-table-short-of-its-labels-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a060104000e0300", test_set_small },
+    { "scan_types-a-select-short-of-its-types-refused",
+        test_load_hex, "0061736d010000000105016000017f030201000a060104001c037f", test_set_small },
+    { "scan_s64-a-number-of-10-bytes-loaded",
+        test_load_hex, "0061736d010000000105016000017f030403000000071c0304696e697400000873687574646f776e00010672656c6f616400020a1c03100042808080808080808080001a41000b040041000b040041000b", test_set_small },
     { "artifact.len-fewer-bytes-refused",
         test_load_short, "1", test_set_small },
     { "declare-valid-loaded",
@@ -1002,14 +1123,23 @@ static void fill_kept(test_kept_t *kept)
     memcpy(kept->noted.settings, TEST_SETTINGS, sizeof(TEST_SETTINGS));
 }
 
-int main(int argc, char **argv)
+static int run(int argc, char **argv)
 {
     constexpr size_t count = sizeof(TEST_CASES) / sizeof(*TEST_CASES);
     test_kept_t kept;
     host_t h;
+    int status;
 
     host_init(&h, argc, argv);
     fill_kept(&kept);
     h.kept = &kept;
-    return (host_run(&h, TEST_CASES, count));
+    status = host_run(&h, TEST_CASES, count);
+    host_free_modules();
+    return (status);
+}
+
+int main(int argc, char **argv)
+{
+    setvbuf(stdout, nullptr, _IONBF, 0);
+    return (argc > 1 ? run(argc, argv) : rows_run(run));
 }

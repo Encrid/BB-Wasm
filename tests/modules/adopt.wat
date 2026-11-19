@@ -2,7 +2,7 @@
 ;;
 ;; Under the GNU Affero General Public License, version 3 only: see license.
 (module
-  (import "bridge" "shared" (memory 2 2))
+  (import "bridge" "block" (memory 2 2))
 
   (func (export "write") (result i32)
     (i32.store (i32.const 16) (i32.const 0x600DF00D))

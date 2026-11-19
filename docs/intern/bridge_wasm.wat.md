@@ -42,7 +42,9 @@ Each accessor below builds on `$resolve` or reads the header the same way:
 
 ## The build
 
-The module build merges this file into the compiled module as `acc`, inlines every accessor into its callers, and strips the exports.
+The module build optimizes the compiled module, then merges this file into it as `acc`, and strips the exports.
+No pass of the optimizer runs after the merge. So each accessor stays a function, with the body that this file gives it.
+The check at load needs that body: `docs/intern/wasm_scan_check.c.md`.
 Before the merge, `tools/wasm_guard.py` checks the imports of the compiled module: `docs/tools/wasm_guard.py.md`.
 
 The compile takes the setting `simd` of `.toolchain/config/variables.toml`, which is `-msimd128`, and then the `flags` of the module.
