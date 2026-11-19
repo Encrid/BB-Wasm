@@ -1,0 +1,25 @@
+[variables]
+wasm_simd = "-msimd128"
+wasm_features = ["--enable-multimemory", "--enable-bulk-memory", "--enable-sign-ext", "--enable-nontrapping-float-to-int", "--enable-mutable-globals", "--enable-simd"]
+
+[tools]
+wasm_as = "{binaryen}/bin/wasm-as"
+wasm_merge = "{binaryen}/bin/wasm-merge"
+wasm_opt = "{binaryen}/bin/wasm-opt"
+wasm_dis = "{binaryen}/bin/wasm-dis"
+
+[kinds.wasm_text]
+output = "{name}.wasm"
+steps = [
+    { run = ["{wasm_as}", "{sources}", "{wasm_features}", "{flags}", "-o", "{output}"] },
+]
+
+[kinds.wasm_module]
+output = "{name}.wasm"
+steps = [
+    { run = ["{zig}", "cc", "-target", "wasm32-freestanding", "{language}", "-Wno-missing-field-initializers", "-O2", "{wasm_simd}", "{flags}", "-nostdlib", "{defines}", "{include}", "-Wl,--no-entry", "-o", "{work}.raw.wasm", "{sources}"] },
+    { run = ["{python}", "{toolchain}/tools/wasm_guard.py", "{work}.raw.wasm"] },
+    { run = ["{wasm_opt}", "{work}.raw.wasm", "{wasm_features}", "-O3", "-o", "{work}.own.wasm"] },
+    { run = ["{wasm_merge}", "{work}.own.wasm", "main", "{link}", "acc", "{wasm_features}", "-o", "{work}.merged.wasm"] },
+    { run = ["{wasm_opt}", "{work}.merged.wasm", "{wasm_features}", "--remove-exports=acc_*", "--remove-unused-module-elements", "-o", "{output}"] },
+]

@@ -45,8 +45,9 @@ Each accessor below builds on `$resolve` or reads the header the same way:
 The module build optimizes the compiled module, then merges this file into it as `acc`, and strips the exports.
 No pass of the optimizer runs after the merge. So each accessor stays a function, with the body that this file gives it.
 The check at load needs that body: `docs/intern/wasm_scan_check.c.md`.
-Before the merge, `tools/wasm_guard.py` checks the imports of the compiled module: `docs/tools/wasm_guard.py.md`.
+Before the merge, `.toolchain/tools/wasm_guard.py` checks the imports of the compiled module: `.toolchain/docs/wasm_guard.py.md`.
+The steps are the kind `wasm_module` of the preset `wasm_module` of mc23t, in `.toolchain/config/wasm_kinds.toml`: `.toolchain/docs/presets.md`, *wasm_module*.
 
-The compile takes the setting `simd` of `.toolchain/config/variables.toml`, which is `-msimd128`, and then the `flags` of the module.
-So `-mno-simd128`, as the setting or in the `flags` of one module, turns SIMD off.
-The merge and the optimizer take `--enable-simd` in `features`, so binaryen keeps the SIMD instructions that the compile made.
+The compile takes the variable `wasm_simd`, which is `-msimd128`, and then the `flags` of the module.
+So `-mno-simd128` in the `flags` of one module turns SIMD off.
+The merge and the optimizer take `--enable-simd` in `wasm_features`, so binaryen keeps the SIMD instructions that the compile made.

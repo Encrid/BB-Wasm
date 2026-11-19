@@ -17,6 +17,7 @@ import branches
 import build
 import fail
 import leaks
+import locks
 import rewrite
 import scope
 import shared
@@ -301,32 +302,70 @@ def verdict(config, values, outputs, group, index, case, broken, copies, counted
     return ok, how + (' in %d of %d copies' % (len(bad), count) if count > 1 else ''), ends
 
 
+USE = re.compile(r'[A-Za-z0-9_-]+')
+
+
+def uses_of(config, values, running):
+    table = config.get('test', {}).get('uses', {})
+    if not table:
+        return {}
+    if not isinstance(table, dict):
+        die('[test] uses: write a table of the uses')
+    root = Path(values['root'])
+    paths = files(root, [top + '**/*' for top in scope.CODE + scope.BUILT]) + files(root, list(scope.FILES))
+    found, named = scope.groups(config, root), {}
+    run = [group for group in found if group['name'] in running]
+    for name, patterns in sorted(table.items()):
+        if not USE.fullmatch(name):
+            die('[test] uses: %s is not a name of letters, digits, _ and -' % name)
+        if not (isinstance(patterns, list) and all(isinstance(pattern, str) for pattern in patterns)):
+            die('[test] uses: %s is a list of patterns' % name)
+        if not patterns:
+            die('[test] uses: %s has no pattern' % name)
+        for pattern in patterns:
+            if not any(fnmatch.fnmatch(path, pattern) for path in paths):
+                die('[test] uses: %s matches no file' % pattern)
+        mine = [path for path in paths if any(fnmatch.fnmatch(path, pattern) for pattern in patterns)]
+        for group in run:
+            whole = group['whole'] and group['code'] is None
+            if whole or any(scope.tests(config, root, found, group, path) for path in mine):
+                named.setdefault(group['name'], []).append(name)
+    return named
+
+
 def test(config, values, outputs, groups, broken, said, copies, counted=False, failing=None):
-    wrong, texts = [], []
+    wrong, texts, uses = [], [], uses_of(config, values, {group for group, _ in groups})
     for group, cases in groups:
-        right, count = 0, 0
-        for index, case in enumerate(cases):
-            if 'rows' in case:
-                found, ends = tabled(config, values, outputs, group, index, case, broken, copies, counted, failing)
-                named = [(row['name'], ok, how) for row, (ok, how) in zip(case['rows'], found)]
-            else:
-                ok, how, ends = verdict(config, values, outputs, group, index, case, broken, copies, counted, failing)
-                named = [(case['name'], ok, how)]
-            texts += [said for _, said in ends]
-            for name, ok, how in named:
-                print('%s%s: %s' % (name, ', made false' if broken else '', how))
-            right += sum(ok for _, ok, _ in named)
-            count += len(named)
-            wrong += [name for name, ok, _ in named if not ok]
-            if not all(ok for _, ok, _ in named):
-                for whose, (code, said) in zip(('', 'the helper '), ends):
-                    print('  %sended with %s, and printed:\n%s' % (whose, 'no status' if code is None else status(code),
-                                                                  said.rstrip()))
+        with locks.held(uses.get(group, []), group):
+            right, count, wrong, texts = tested(config, values, outputs, group, cases, broken, copies, counted,
+                                                failing, wrong, texts)
         print('%s: %d claims made false: %d cases failed' % (group, count, right) if broken else
               '%s: %d cases: %d as written' % (group, count, right))
     if said:
         (Path(values['out']) / 'said.txt').write_text('\n'.join(texts), encoding='utf-8', newline='\n')
     return wrong
+
+
+def tested(config, values, outputs, group, cases, broken, copies, counted, failing, wrong, texts):
+    right, count = 0, 0
+    for index, case in enumerate(cases):
+        if 'rows' in case:
+            found, ends = tabled(config, values, outputs, group, index, case, broken, copies, counted, failing)
+            named = [(row['name'], ok, how) for row, (ok, how) in zip(case['rows'], found)]
+        else:
+            ok, how, ends = verdict(config, values, outputs, group, index, case, broken, copies, counted, failing)
+            named = [(case['name'], ok, how)]
+        texts += [said for _, said in ends]
+        for name, ok, how in named:
+            print('%s%s: %s' % (name, ', made false' if broken else '', how))
+        right += sum(ok for _, ok, _ in named)
+        count += len(named)
+        wrong += [name for name, ok, _ in named if not ok]
+        if not all(ok for _, ok, _ in named):
+            for whose, (code, said) in zip(('', 'the helper '), ends):
+                print('  %sended with %s, and printed:\n%s' % (whose, 'no status' if code is None else status(code),
+                                                              said.rstrip()))
+    return right, count, wrong, texts
 
 
 def rowed(case, path):

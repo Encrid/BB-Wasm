@@ -1,8 +1,8 @@
-# tools/wasm_guard.py
+# .toolchain/tools/wasm_guard.py
 
-`wasm_guard.py` refuses a compiled module that imports a memory, a global or a tag.
-The wasm_module build runs it between the compile and the merge. It does not run alone.
-It is an early check of the build. The backend checks each module again at load: `docs/intern/wasm_scan_check.c.md`.
+`wasm_guard.py` refuses a compiled wasm module that imports a memory, a global or a tag.
+The kind `wasm_module` of the preset `wasm_module` runs it between the compile and the merge: `.toolchain/docs/presets.md`, *wasm_module*.
+It takes the path of 1 file, and does not run alone.
 
 ## Functions
 
@@ -15,8 +15,8 @@ It is an early check of the build. The backend checks each module again at load:
 
 ## The guard
 
-A module reaches the shared data only through the accessors, which the merge adds: `docs/intern/bridge_wasm.wat.md`.
-So a compiled module of its own must import no memory, no global and no tag.
+A module reaches the memories of Bridge only through the accessors, which the merge adds.
+So a compiled module of its own imports no memory, no global and no tag.
 `guard` reads the import section of the wasm file, and checks each import:
 
 1. If the file has no wasm magic, it stops: `<path> is refused: it is not a wasm module`.
@@ -27,3 +27,4 @@ So a compiled module of its own must import no memory, no global and no tag.
 6. For a tag, it stops: `<path> is refused: it imports the tag '<module>.<field>'; a module imports no tag`.
 
 A file with no import section passes, since it imports nothing of its own.
+The guard is an early check of the build. BB-Wasm checks each module again when it loads it.

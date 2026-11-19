@@ -33,7 +33,9 @@
 | `raced(config, values, outputs, group, where, case, broken, count, counted, failing, order)` | Runs `count` copies of a table at the same time, with the rows in `order`. It gives the verdict of each row, and the output of the first copy that failed. |
 | `tabled(config, values, outputs, group, index, case, broken, copies, counted, failing)` | Runs the copies of a table in its order, and then the table in the reverse order. It gives the verdict of each row, and the output of the run that failed. |
 | `verdict(config, values, outputs, group, index, case, broken, copies, counted, failing)` | Runs the copies of one case at the same time, and gives their verdict. |
-| `test(config, values, outputs, groups, broken, said, copies, counted, failing)` | Runs all the groups, and writes each verdict. With `said`, it writes `said.txt`. It gives the names of the cases that failed. |
+| `uses_of(config, values, running)` | Gives the uses of each group of `running`, as *The uses* tells. It stops for each fault of *The uses*. |
+| `test(config, values, outputs, groups, broken, said, copies, counted, failing)` | Runs all the groups, each with the locks of its uses, and writes each verdict. With `said`, it writes `said.txt`. It gives the names of the cases that failed. |
+| `tested(config, values, outputs, group, cases, broken, copies, counted, failing, wrong, texts)` | Runs the cases of one group, and writes the verdict of each case. It gives the count of the cases that passed, the count of the cases, the names that failed, and the outputs. |
 | `narrowed(case, text)` | Gives a case whose name contains `text`, or a table with only its rows whose name contains it, or nothing. |
 | `chosen(groups, text)` | Gives only the cases and the rows whose name contains `text`. It stops if no case has it: `no case has <text> in its name`. |
 | `owner(config, group)` | Gives the part of a group from `part_of` of `shared.py`, with a space before and after it, or `False`. |
@@ -250,3 +252,23 @@ The message of step 1 is `--branches runs each case one time: it takes no --brea
 With `--part`, step 5 reads only the exemptions whose `case` matches a case of the run, with `scoped`. Thus an exemption of a different part is no fault.
 The message of step 1 is `--leaks runs each case one time: it takes no --break, --toolchain, --copies, --rounds or --branches`.
 `.toolchain/docs/leaks.py.md` tells what the run counts, and what the report contains.
+
+## The uses
+
+A use is a resource of the machine that 2 runs must not share at the same time, for example the GPU or the display.
+`[test] uses` of `.toolchain/project.toml` maps the name of each use to patterns of paths of the code.
+A group has a use when it tests a file that a pattern of the use matches.
+A group of the whole with no `code` has each use.
+The rule of a tested file is the rule of `tests` of `scope.py`: `.toolchain/docs/scope.py.md`, *The code of a group*.
+
+Before the cases of a group, `test` takes the lock of each use of the group, in the order of the names. It gives them back after the group. `locks.py` holds the locks: `.toolchain/docs/locks.py.md`.
+Thus the runs of 2 clones on 1 machine go on at the same time, and only the groups that share a use take turns.
+While a group waits, `test` writes `<group>: waits for the use <name>, which another run holds`.
+
+`test` stops for each of these faults of `[test] uses`:
+
+- `[test] uses: write a table of the uses`: `uses` is not a table.
+- `[test] uses: <name> is not a name of letters, digits, _ and -`: the name of a use is also the name of its file.
+- `[test] uses: <name> is a list of patterns`: the value of a use is not a list of texts.
+- `[test] uses: <name> has no pattern`: the list is empty.
+- `[test] uses: <pattern> matches no file`: no file of the code, of `.toolchain/config`, `.toolchain/tools` or `.toolchain/runtime`, and no file of the project, such as `.toolchain/project.toml`, matches the pattern.
