@@ -41,7 +41,7 @@ void *adopt_read_file(const char *path, size_t *len)
 backend_instance_t *adopt_make_instance(adopt_t *t)
 {
     backend_err_t err = {};
-    backend_memory_import_t imports[1] = {{ "bridge", "shared", t->memory }};
+    backend_memory_import_t imports[1] = {{ "bridge", "block", t->memory }};
     backend_instance_t *i = t->api.instance_create(t->module, imports, 1,
         &err);
 

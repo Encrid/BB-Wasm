@@ -84,7 +84,7 @@ static backend_instance_t *edge_open_module(adopt_t *t, const char *path,
     backend_module_t **module)
 {
     backend_err_t err = {};
-    backend_memory_import_t imports[1] = {{ "bridge", "shared", t->memory }};
+    backend_memory_import_t imports[1] = {{ "bridge", "block", t->memory }};
 
     *module = adopt_compile(t, path, 0, &err);
     if (!*module)
@@ -167,8 +167,8 @@ static int edge_trap_silent(adopt_t *t)
 static int edge_three(adopt_t *t)
 {
     backend_err_t err = {};
-    backend_memory_import_t three[3] = {{ "bridge", "shared", t->memory },
-        { "bridge", "shared", t->memory }, { "bridge", "spare", t->memory }};
+    backend_memory_import_t three[3] = {{ "bridge", "block", t->memory },
+        { "bridge", "block", t->memory }, { "bridge", "spare", t->memory }};
     backend_instance_t *i = t->api.instance_create(t->module, three, 3, &err);
 
     if (i)

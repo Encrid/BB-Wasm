@@ -9,6 +9,11 @@ It compiles the bytes of a module into a wasm instance, and reaches each export 
 The backend does not trust its modules. It confines a module to the cells and the arena that it declared, and traps it if it reaches further.
 So a module cannot read or write the memory of the world or of another module.
 
+Only the accessors of `acc.wasm` reach the memories of Bridge, and the backend checks that at each load.
+It refuses a module whose own code loads from or stores to `bridge.shared` or `bridge.private`, writes them with a data segment, or exports them.
+A function of the module that reaches them must be an accessor of `acc.wasm`, with its body unchanged.
+So a module made by another tool than this build also stays inside its cells: `docs/intern/wasm_scan_check.c.md`.
+
 A module compiles against the SDK of this repository for wasm32: `docs/extern/bridge_wasm.h.md` tells how to write one.
 The SDK includes `bridge_abi.h` and `bridge_schema.h`, thus a module also compiles with the headers of a release of Bridge.
 The build of a module merges `acc.wasm`, the accessors of the SDK, into the module: `docs/intern/bridge_wasm.wat.md`, *The build*.
@@ -91,7 +96,7 @@ Each tick moves 100 000 positions of 3 floats: 300 000 multiplications and addit
 
 ## Messages
 
-The backend writes one of these reasons when it refuses a setting, an export or a call. Angle brackets mark a part that changes:
+The backend writes one of these reasons when it refuses a setting, a module, an export or a call. Angle brackets mark a part that changes:
 
 - `it knows no setting '<key>'`
 - `<key> is unset`
@@ -99,6 +104,13 @@ The backend writes one of these reasons when it refuses a setting, an export or 
 - `<key> is <number> bytes, and it must be <least> or more`
 - `opt_level is '<text>', and it can be none, speed or speed_and_size`
 - `did not run: the thread has <number> bytes of stack left, and max_wasm_stack and stack_margin need <number>`
+- `out of memory in the check of the module`
+- `the module is refused: the check cannot read it`
+- `the module is refused: <reason>`, where `<reason>` is one of the reasons below
+- `its function <index> reaches a memory of Bridge outside the accessors`
+- `its function <index> holds code that the check cannot read`
+- `its data segment <index> writes a memory of Bridge`
+- `it exports the memory <index> of Bridge`
 - `its export '<name>' is not () -> i32`
 - `no exported function '<name>'`
 

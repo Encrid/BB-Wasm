@@ -10,6 +10,8 @@ A work limit asks for a metered engine, and a timeout asks for an interruptible 
 It compiles the bytes with that engine, and keeps the import list and the export list.
 Empty bytes, or bytes wasmtime cannot compile, are refused with a reason in `err`.
 An image that it cannot allocate gives `out of memory`.
+Before it compiles, it checks the bytes with `scan_refused`, and refuses a module that the check refuses: `docs/intern/wasm_scan_check.c.md`.
+
 `module_list_imports` writes each import's namespace, field and kind, and gives the total count.
 
 ## Functions
