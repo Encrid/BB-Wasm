@@ -24,5 +24,6 @@ The command takes the locks of the uses in the folder, and writes `held <uses>`.
 | `took(handle)` | Takes the lock of an open file, and gives true. It gives false at once if another run holds it. It raises each other error of the system. |
 | `gave(handle)` | Gives back the lock of an open file, and closes it. |
 | `opened(name)` | Makes the folder and the file of a use if they are not there, with the modes for each user, and opens the file. |
-| `held(names, group)` | Takes the lock of each use, in the order of the names, and gives them back at the end. While it waits, it writes the line of a wait: `.toolchain/docs/test.py.md`, *The uses*. |
+| `mine(name)` | Gives the lock of a use for the threads of this run. |
+| `held(names, group)` | Takes the lock of each use, in the order of the names, and gives them back at the end. For each use, it first takes the lock of `mine`, so that only 1 thread of a run waits for the file of the use. While it waits for the file, it writes the line of a wait: `.toolchain/docs/test.py.md`, *The uses*. |
 | `main()` | Reads the folder, the seconds and the uses, and holds them until its input ends or the seconds pass. |
