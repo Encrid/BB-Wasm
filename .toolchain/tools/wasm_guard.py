@@ -4,6 +4,8 @@
 import sys
 from pathlib import Path
 
+TRUNCATED = 'ends inside a section'
+
 
 def leb(data, at):
     result = 0
@@ -31,12 +33,21 @@ def guard(path):
     data = Path(path).read_bytes()
     if data[:4] != b'\x00asm':
         refuse(path, 'is not a wasm module')
+    try:
+        guard_imports(path, data)
+    except IndexError:
+        refuse(path, TRUNCATED)
+
+
+def guard_imports(path, data):
     at = 8
     while at < len(data):
         section = data[at]
         size, at = leb(data, at + 1)
         if section != 2:
             at += size
+            if at > len(data):
+                refuse(path, TRUNCATED)
             continue
         count, at = leb(data, at)
         for _ in range(count):
@@ -61,7 +72,6 @@ def guard(path):
                 refuse(path, "imports the tag '%s.%s'; a module imports no tag"
                     % (module, field))
         return
-    return
 
 
 if __name__ == '__main__':

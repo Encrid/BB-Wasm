@@ -56,11 +56,22 @@ def opened(name):
     return handle
 
 
+MINE, GUARD = {}, threading.Lock()
+
+
+def mine(name):
+    with GUARD:
+        return MINE.setdefault(name, threading.Lock())
+
+
 @contextlib.contextmanager
 def held(names, group):
-    handles = []
+    taken = []
     try:
         for name in sorted(names):
+            inner = mine(name)
+            inner.acquire()
+            taken.append((inner, None))
             handle = opened(name)
             try:
                 if not took(handle):
@@ -70,11 +81,13 @@ def held(names, group):
             except BaseException:
                 os.close(handle)
                 raise
-            handles.append(handle)
+            taken[-1] = (inner, handle)
         yield
     finally:
-        for handle in reversed(handles):
-            gave(handle)
+        for inner, handle in reversed(taken):
+            if handle is not None:
+                gave(handle)
+            inner.release()
 
 
 def main():
