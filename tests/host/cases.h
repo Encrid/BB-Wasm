@@ -173,7 +173,6 @@ void test_use_up_types(host_t *h);
 void test_use_up_systems(host_t *h);
 void test_use_up_terms(host_t *h);
 void test_use_up_columns(host_t *h);
-void test_bench(host_t *h);
 void test_state_no_bytes(host_t *h);
 void test_order(host_t *h);
 void test_order_own(host_t *h);
