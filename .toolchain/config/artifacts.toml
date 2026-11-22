@@ -34,7 +34,7 @@ sources = ["tests/adopt/*.c"]
 include = ["{bridge}/include", "{bridge_os}/include", "tests/adopt", "{toolchain}/runtime"]
 defines = ['BACKEND_PATH="{out}/backends/bridge_wasm{library}"', 'MODULE_DIR="{out}/wasm"']
 flags = ["{quiet}", "{system_defines}", "{system_libraries}"]
-link = ["{bridge_os}/os.a"]
+link = ["{bridge}/bridge.a", "{bridge_os}/os.a"]
 
 [[artifact]]
 name = "adopt"

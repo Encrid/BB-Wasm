@@ -6,7 +6,7 @@
 #ifndef TEST_ADOPT_H
     #define TEST_ADOPT_H
 
-    #include "backend.h"
+    #include "bridge_backend.h"
     #include "os.h"
 
 constexpr uint32_t ADOPT_PAGE = 65'536;
