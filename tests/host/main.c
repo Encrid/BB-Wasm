@@ -824,6 +824,8 @@ static const host_case_t TEST_CASES[] = {
         test_load_hex, "0061736d010000000105016000017f030201000a0701050041000b01", test_set_small },
     { "scan_call-a-call-with-no-function-refused",
         test_load_hex, "0061736d010000000105016000017f030201000a0401020010", test_set_small },
+    { "scan_matched-a-chain-of-65536-calls-loaded",
+        test_load_chain, "", test_set_small },
     { "scan_matched-a-call-past-the-functions-refused",
         test_load_hex, "0061736d010000000105016000017f030201000a08010600100541000b", test_set_small },
     { "scan_prefix-a-prefix-with-no-opcode-refused",
