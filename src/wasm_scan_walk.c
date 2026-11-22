@@ -55,11 +55,13 @@ static bool read_locals(scan_walk_t *w, scan_t *s)
     return (!s->bad);
 }
 
-bool scan_begin(scan_frame_t *f, const scan_body_t *body)
+enum scan_step scan_begin(scan_frame_t *f, const scan_body_t *body)
 {
     f->s = (scan_t){ body->at, body->at + body->len, false };
     f->depth = 1;
-    return (read_locals(&f->w, &f->s));
+    if (!read_locals(&f->w, &f->s))
+        return (SCAN_FAILED);
+    return (scan_resume(f));
 }
 
 enum scan_step scan_resume(scan_frame_t *f)

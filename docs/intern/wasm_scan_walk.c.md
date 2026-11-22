@@ -13,5 +13,5 @@ So when it goes on, it reads the call again, now with its callee matched.
 | Function | Result |
 | --- | --- |
 | `scan_immediate` | Reads the immediates of 1 kind with its handler. |
-| `scan_begin` | Starts the walk of a body in a frame, and reads its locals. |
+| `scan_begin` | Starts the walk of a body in a frame, reads its locals, and walks it as `scan_resume` does. |
 | `scan_resume` | Walks a body to its last `end`: `SCAN_DONE`, or `SCAN_FAILED` if it cannot read it. It gives `SCAN_WAITS` before a call whose callee is not matched yet. |

@@ -20,8 +20,7 @@ static bool make_canons(scan_job_t *job)
     while (a < job->acc.defined) {
         f.w = (scan_walk_t){ &same, &job->acc, &job->canons[a], false,
             SCAN_NO_WAIT };
-        if (!scan_begin(&f, &job->acc.bodies[a])
-            || scan_resume(&f) != SCAN_DONE) {
+        if (scan_begin(&f, &job->acc.bodies[a]) != SCAN_DONE) {
             job->no_memory = job->canons[a].bad;
             return (false);
         }

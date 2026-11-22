@@ -29,9 +29,7 @@ static enum scan_step start(scan_job_t *job, scan_frame_t *f,
     *f = (scan_frame_t){ .function = function };
     f->w = (scan_walk_t){ job, &job->m, &f->out, false, SCAN_NO_WAIT };
     job->match[function] = SCAN_BUSY;
-    if (!scan_begin(f, &job->m.bodies[function]))
-        return (SCAN_FAILED);
-    return (scan_resume(f));
+    return (scan_begin(f, &job->m.bodies[function]));
 }
 
 static void close_frame(scan_job_t *job, scan_frame_t *f, bool walked)
@@ -52,18 +50,17 @@ void scan_match_from(scan_job_t *job, uint32_t root)
     enum scan_step step = start(job, f, root);
     uint32_t callee = 0;
 
-    while (true) {
+    while (step == SCAN_WAITS || f != job->frames) {
         if (step == SCAN_WAITS) {
             callee = f->w.wait;
             f->w.wait = SCAN_NO_WAIT;
             f++;
             step = start(job, f, callee);
-            continue;
+        } else {
+            close_frame(job, f, step == SCAN_DONE);
+            f--;
+            step = scan_resume(f);
         }
-        close_frame(job, f, step == SCAN_DONE);
-        if (f == job->frames)
-            return;
-        f--;
-        step = scan_resume(f);
     }
+    close_frame(job, f, step == SCAN_DONE);
 }

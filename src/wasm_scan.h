@@ -157,7 +157,7 @@ enum scan_kind scan_kind_of_fc(uint32_t op);
 enum scan_kind scan_kind_of_fd(uint32_t op);
 
 bool scan_immediate(scan_walk_t *w, scan_t *s, enum scan_kind kind);
-bool scan_begin(scan_frame_t *f, const scan_body_t *body);
+enum scan_step scan_begin(scan_frame_t *f, const scan_body_t *body);
 enum scan_step scan_resume(scan_frame_t *f);
 
 bool scan_none(scan_walk_t *w, scan_t *s, enum scan_kind kind);
