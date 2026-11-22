@@ -43,7 +43,9 @@ Each accessor below builds on `$resolve` or reads the header the same way:
 ## The build
 
 The module build optimizes the compiled module, then merges this file into it as `acc`, and strips the exports.
-No pass of the optimizer runs after the merge. So each accessor stays a function, with the body that this file gives it.
+After the merge, `wasm-opt` runs only `--remove-exports=acc_*` and `--remove-unused-module-elements`: `.toolchain/config/wasm_kinds.toml`.
+These 2 passes remove the exports of the accessors and the elements that nothing uses, and change no body. So each accessor that the module uses stays a function, with the body that this file gives it.
+
 The check at load needs that body: `docs/intern/wasm_scan_check.c.md`.
 Before the merge, `.toolchain/tools/wasm_guard.py` checks the imports of the compiled module: `.toolchain/docs/wasm_guard.py.md`.
 The steps are the kind `wasm_module` of the preset `wasm_module` of mc23t, in `.toolchain/config/wasm_kinds.toml`: `.toolchain/docs/presets.md`, *wasm_module*.
