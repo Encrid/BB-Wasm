@@ -20,7 +20,7 @@ A call ends with the lock, when it disarms. So the next call sets its deadline a
 
 `wasm_start_watch` makes the wake event and the lock, then starts the thread on a stack of `watchdog_stack` bytes.
 If one of the three fails, it frees the event and the lock that it made.
-Then it gives -1, with `the operating system gave no event, mutex or thread to the watchdog` in `err`.
+Then it gives -1, with the reason of the watchdog in `err`: `readme.md`, *Messages*.
 
 ## Functions
 

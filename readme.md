@@ -113,6 +113,30 @@ The backend writes one of these reasons when it refuses a setting, a module, an 
 - `it exports the memory <index> of Bridge`
 - `its export '<name>' is not () -> i32`
 - `no exported function '<name>'`
+- `out of memory`
+- `this backend compiles a module from its bytes, and was handed none`
+- `not a module this backend can compile`
+- `made no instance`
+- `trapped`
+- `define_func: after the first call of the module, or too wide`
+- `cannot define a function`
+- `cannot give a module the memory it imports`
+- `the holder module exports no memory`
+- `an adopted block must be a whole number of 64 KiB pages`
+- `the operating system gave no event, mutex or thread to the watchdog`
+
+When wasmtime gives a reason too, the backend writes it after the reason of the backend, as `<reason>: <reason of wasmtime>`.
+
+The backend gives these reasons to wasmtime, when wasmtime makes or grows a memory for a module. A record holds one only where wasmtime gives it back inside its own reason:
+
+- `an adopted memory does not grow`
+- `wasmtime asked for more address space than memory_get_shape states`
+- `an adopted block is not the size its import declares`
+- `out of address space for a module's own memory`
+- `no room for a module's own memory: it starts past the reservation, or the address space is full`
+
+At an entry of Bridge that refuses, the backend stops the module with the trap `refused by Bridge`.
+Bridge then writes its own reason for the refusal, and not this one.
 
 Bridge puts each reason into a record, after the name of the backend or of the module.
 
