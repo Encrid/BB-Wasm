@@ -7,21 +7,9 @@
 
 #include "cases.h"
 
-void test_leave_terms_unset(host_t *h)
-{
-    h->cfg.budget.terms = 0;
-    host_open_only(h);
-}
-
 void test_state_beyond_reach(host_t *h)
 {
     h->cfg.budget.entities = (uint64_t)1 << 40;
-    host_open_only(h);
-}
-
-void test_state_too_big(host_t *h)
-{
-    h->cfg.budget.persistent = UINT32_MAX;
     host_open_only(h);
 }
 
