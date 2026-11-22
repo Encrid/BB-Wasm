@@ -17,6 +17,6 @@ A walk that fails marks the job `broken`. A form that finds no memory marks the 
 | Function | Result |
 | --- | --- |
 | `find_acc` | Gives the accessor whose form equals a form, or -1. |
-| `start` | Starts the frame of a function, marks it busy, and walks its body up to its first unknown callee. |
+| `start` | Starts the frame of a function, marks it busy, and walks its body up to its first unknown callee, with `scan_begin`. |
 | `close_frame` | Keeps the match of a function and whether it touches a memory of Bridge, and frees its form. |
 | `scan_match_from` | Matches a function and each callee that it reaches. |
