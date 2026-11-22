@@ -24,12 +24,14 @@ static inline uint32_t bridge_get_trigger(uint32_t observer, uint32_t i)
 
 static inline uint64_t bridge_get_trigger_id(uint32_t trigger)
 {
-    return (acc_get_own_64(trigger));
+    return (acc_get_own_64(trigger
+        + (uint32_t)offsetof(bridge_trigger_t, id)));
 }
 
 static inline uint32_t bridge_get_trigger_events(uint32_t trigger)
 {
-    return (acc_get_own_32(trigger + 8u));
+    return (acc_get_own_32(trigger
+        + (uint32_t)offsetof(bridge_trigger_t, events)));
 }
 
 #endif

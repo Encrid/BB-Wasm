@@ -9,6 +9,8 @@ A module adds a line into its private ring when the line's level is kept.
 `bridge_log` drops a line whose level is above the kept level.
 It advances the ring head; a full ring loses the line, and the head still advances past it, counting the loss.
 It stages the text in the scratch arena, then fills the record with the place, the system, the observer, the level, and two numbers.
+`BRIDGE_RECORD` gives the offset of a field of `bridge_log_record_t`, so the layout of the record is only in `bridge_abi.h` of Bridge.
+The word at `observer` holds the observer in its low byte, and the level in the next byte.
 
 ## Functions
 
