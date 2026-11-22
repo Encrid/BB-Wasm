@@ -49,7 +49,7 @@ static int run(int argc, char **argv)
     say_release(&t);
     t.api.backend_destroy(t.be);
     os_release(t.block, t.reserved);
-    os_lib_close(t.lib);
+    backend_close(t.lib);
     return (failed);
 }
 
