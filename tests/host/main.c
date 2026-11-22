@@ -1050,6 +1050,8 @@ static const host_case_t TEST_CASES[] = {
         test_spawn_past_entities, "1000", test_set_small },
     { "module_config.on_error-skip-twice-stops-nothing",
         test_stop, "2", test_set_small },
+    { "memory_adopt-a-block-of-256-pages-adopted",
+        test_use_up_columns, "16777216", test_set_wasm },
     { "budget.columns-room-for-the-changes-applied",
         test_use_up_columns, "1048576", test_set_wasm },
     { "observe-a-free-name-loaded",
