@@ -132,6 +132,8 @@ A change runs only the groups that test a changed file: `.toolchain/docs/scope.p
 | `folders` | The folders that `test` makes before the command starts. The key is the path. The value is a list of artifacts or files to place into the folder. A file of the build folder is linked, and each other file is copied. A file of the list with `*` is a pattern of the project. `test` places each file that the pattern matches, and stops if it matches none. |
 | `sweep` | The functions whose calls the command refuses one after the other: *A sweep*. |
 | `fail` | The calls that fail in the command. The key is a function, and the value is the number of its call that fails: *Failed calls*. |
+| `fail_parts` | The parts whose calls `fail` refuses, in place of the part of the case. Use it when a program links a library of another part. |
+| `hold` | A call that waits for the calls of another thread: *A hold*. |
 | `claims` | The claims about the command. A case must make one claim or more. |
 | `false` | The false variant of the case. Each case must have one. |
 | `rows` | The rows of a table: *Tables*. A case with `rows` has no `false`, no `stdin` and no `script`. |
@@ -324,6 +326,24 @@ do {
 
 Use a sweep for the calls that fail for one reason, such as no memory. Use `fail` for one call whose failure is a behavior of its own.
 `.toolchain/docs/sweep.h.md` tells how a sweep works.
+
+## A hold
+
+A case can give 2 threads the same order in each run. Then a race between them fails in each run, and not by chance.
+The key `hold` makes call `at` of `call` in `file` wait until `until` has run `times` times, in any file:
+
+```toml
+[[case]]
+name = "the worker writes after main"
+run = ["{out}/held{exe}"]
+hold = { file = "src/worker.c", call = "wait_turn", at = 1, until = "done", times = 1 }
+claims = { status = 0, matches = ["main\\s+worker"] }
+false = { hold = { file = "src/held.c", call = "wait_turn", at = 1, until = "done", times = 1 } }
+```
+
+`[fail.calls]` lists `call` and `until`. A function with no result has the empty text as its value, so a case can hold it, and no case can make it fail.
+Put the hold before the lock of the thread that waits. Else the other thread can wait for the lock, and the case ends only at its timeout.
+`.toolchain/docs/fail.py.md`, *The hold*, tells how a call waits.
 
 ## Run the tests
 
