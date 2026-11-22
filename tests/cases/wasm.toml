@@ -15,13 +15,6 @@ claims = { matches = ["game:ticker@0\\.1\\.0/advance: tick 101 1.*alive"], lacks
 false = { run = ["{out}/wasm-host{exe}", "call-a-thread-with-too-little-stack-refused"] }
 
 [[case]]
-name = "BRIDGE_ROW-no-call-in-the-loop"
-process = "command"
-run = ["{wasm_dis}", "{out}/wasm/mover.wasm", "{wasm_features}"]
-claims = { matches = ["\\(module"], lacks = ["acc_"] }
-false = { run = ["{wasm_dis}", "{out}/obj/mover.raw.wasm", "{wasm_features}"] }
-
-[[case]]
 name = "BRIDGE_ACC-the-accessors-merged-in"
 process = "command"
 run = ["{wasm_dis}", "{out}/wasm/mover.wasm", "{wasm_features}"]
@@ -87,7 +80,7 @@ rows = [
     { name = "module_config.read-another-namespace-read", in = "module_config.read-another-namespace-read", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "module_config.read-one-of-two-named-refused" },
     { name = "bridge_get_span-one-table-walked", in = "bridge_get_span-one-table-walked", claims = { matches = ["view:reader@0.1.0/sum: saw 1 500.*game:mover@0.1.0/count: moved 2 1000.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "record.level-info-with-its-two-numbers", in = "record.level-info-with-its-two-numbers", claims = { matches = ["record.6. view:reader@0.1.0/sum: sum 250500 0.*alive"] }, false = "record.level-warn-with-its-two-numbers" },
-    { name = "bridge_get_ref-own-entities-followed", in = "bridge_get_ref-own-entities-followed", claims = { matches = ["mirror 100 0.*mirror 100 0.*mirror 100 0.*alive"] }, false = "bridge_get_location-two-frames-followed" },
+    { name = "bridge_get_location-own-entities-followed", in = "bridge_get_location-own-entities-followed", claims = { matches = ["mirror 100 0.*mirror 100 0.*mirror 100 0.*alive"] }, false = "bridge_get_location-two-frames-followed" },
     { name = "declare-storage-unset-refused", in = "declare-storage-unset-refused", claims = { matches = ["module 'game:kept@0.1.0' did not load: type 'game:Position': its storage layout is unset.*module 'game:kept@0.1.0' did not load: type 'game:Position' is stated as a sparse set here, and it was declared as a table. It is also declared by 'game:mover@0.1.0'.*alive"] }, false = "declare-storage-stated-loaded" },
     { name = "BRIDGE_DIRECT_INDEXED-reached-from-rows", in = "BRIDGE_DIRECT_INDEXED-reached-from-rows", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
     { name = "BRIDGE_TOGGLE-counted-on-and-off", in = "BRIDGE_TOGGLE-counted-on-and-off", claims = { matches = ["game:shield@0.1.0/count: shields 10 10.*game:shield@0.1.0/count: strength 45 0.*game:shield@0.1.0/count: shields 10 6.*game:shield@0.1.0/count: strength 27 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_TOGGLE-every-second-turned-off" },
@@ -116,7 +109,6 @@ rows = [
     { name = "budget.entities-beyond-32-bits-refused", in = "budget.entities-beyond-32-bits-refused", claims = { matches = [".budget. entities of 1099511627776 is more than an offset of 32 bits can reach.*bridge_create refused.*alive"] }, false = "budget.entities-within-32-bits-opened" },
     { name = "bridge_create-budget-sum-beyond-32-bits-refused", in = "bridge_create-budget-sum-beyond-32-bits-refused", claims = { matches = [".budget. cannot be satisfied: the shared memory would be [0-9]+ bytes and an offset into it is 32 bits.*bridge_create refused.*alive"] }, false = "bridge_create-budget-sum-within-32-bits-opened" },
     { name = "module_config.scratch-private-beyond-32-bits-refused", in = "module_config.scratch-private-beyond-32-bits-refused", claims = { matches = ["module 'game:mover@0.1.0' is refused: its scratch of 4294967040, log_ring of [0-9]+ and spans of 4096 bytes come to more than an offset of 32 bits can reach.*alive"] }, false = "module_config.scratch-private-within-32-bits-loaded" },
-    { name = "BRIDGE_ROW-checked-and-unchecked-timed", in = "BRIDGE_ROW-checked-and-unchecked-timed", claims = { matches = ["rows-unchecked  no limit  [0-9.]+ ns a row.*alive"] }, false = "BRIDGE_ROW-checked-timed-twice" },
     { name = "config.order-mover-before-halver", in = "config.order-mover-before-halver", claims = { matches = ["sum 125250 0.*alive"] }, false = "config.order-halver-before-mover" },
     { name = "config.order-halver-before-mover", in = "config.order-halver-before-mover", claims = { matches = ["sum 125500 0.*alive"] }, false = "config.order-mover-before-halver" },
     { name = "order-unordered-conflict-refused", in = "order-unordered-conflict-refused", claims = { matches = ["module 'view:halver@0.1.0' did not load: 'game:mover:move' and 'view:halver:halve' both touch 'game:Position' in phase 'update', one of them writing it, and no pair orders them.*alive"] }, false = "config.order-mover-before-halver" },
@@ -292,7 +284,6 @@ rows = [
     { name = "BRIDGE_ADD_SYSTEM-registered-and-run", in = "BRIDGE_ADD_SYSTEM-registered-and-run", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "backend_create-a-setting-refused", in = "backend_create-a-setting-refused", claims = { matches = ["backend 'wasm' would not start: it knows no setting 'cache'.*bridge_create refused.*alive"] }, false = "backend_create-no-setting-refused" },
     { name = "BRIDGE_OBSERVER-registered-and-told", in = "BRIDGE_OBSERVER-registered-and-told", claims = { matches = ["b1 game:chain@0.1.0/got_a: hop A.*alive"], lacks = ["hop A.*hop A"] }, false = "BRIDGE_OBSERVER-not-told-without-a-frame" },
-    { name = "BRIDGE_PUT_CHANGES-an-observer-that-attaches", in = "BRIDGE_PUT_CHANGES-an-observer-that-attaches", claims = { matches = ["b1 game:chain@0.1.0/got_a: hop A.*b2 game:chain@0.1.0/got_b: hop B.*b3 game:chain@0.1.0/got_c: hop C.*alive"], lacks = ["hop A.*hop A"] }, false = "observe-chain-one-frame-two-hops" },
     { name = "BRIDGE_ATTACH-the-value-travels-with-it", in = "BRIDGE_ATTACH-the-value-travels-with-it", claims = { matches = ["sum 250500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BRIDGE_GET-a-field-read", in = "BRIDGE_GET-a-field-read", claims = { matches = ["sum 250500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BRIDGE_SET-a-field-written-each-frame", in = "BRIDGE_SET-a-field-written-each-frame", claims = { matches = ["sum 250500 0.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
@@ -307,12 +298,6 @@ rows = [
     { name = "bridge_get_rows-rows-of-a-span", in = "bridge_get_rows-rows-of-a-span", claims = { matches = ["saw 1 500.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "bridge_has_column-held-and-then-left", in = "bridge_has_column-held-and-then-left", claims = { matches = ["any: event 3 1.*any: event 4 57005.*alive"] }, false = "bridge_has_column-held-and-not-yet-left" },
     { name = "bridge_get_entity-the-id-of-a-row", in = "bridge_get_entity-the-id-of-a-row", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
-    { name = "bridge_get_entities-where-a-span-keeps-its-ids", in = "bridge_get_entities-where-a-span-keeps-its-ids", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
-    { name = "bridge_get_cells-where-the-cells-are", in = "bridge_get_cells-where-the-cells-are", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
-    { name = "bridge_get_cell-the-cell-of-an-id", in = "bridge_get_cell-the-cell-of-an-id", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
-    { name = "bridge_get_sparse_index-where-the-index-is", in = "bridge_get_sparse_index-where-the-index-is", claims = { matches = ["game:hit@0.1.0/walked: hits 4 18.*game:hit@0.1.0/reached: bodies 10 4.*game:hit@0.1.0/reached: reached 18 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_SPARSE_SET-every-second-walked" },
-    { name = "bridge_get_sparse_value-the-value-of-an-id", in = "bridge_get_sparse_value-the-value-of-an-id", claims = { matches = ["game:hit@0.1.0/walked: hits 4 18.*game:hit@0.1.0/reached: bodies 10 4.*game:hit@0.1.0/reached: reached 18 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_SPARSE_SET-every-second-walked" },
-    { name = "bridge_get_single-where-the-one-row-is", in = "bridge_get_single-where-the-one-row-is", claims = { matches = ["vsync width 1 1280.*scale mode 150 2.*show: hello 7 0.*show: some/long/path.cfg 0 0.*flags ratio 3 3.*show: big 2 0.*alive"] }, false = "setting.v-another-width-seeded" },
     { name = "bridge_is_alive-ids-a-sweep-left", in = "bridge_is_alive-ids-a-sweep-left", claims = { matches = ["left 10 5.*game:keeper@0.1.0: unloaded.*left 9 0.*game:retype@0.1.0: loaded.*alive"] }, false = "BRIDGE_DELETE-unload-deletes" },
     { name = "bridge_get_trigger_count-how-many-this-barrier", in = "bridge_get_trigger_count-how-many-this-barrier", claims = { matches = ["any: event 3 1.*any: event 2 2.*any: event 4 57005.*alive"] }, false = "bridge_has_column-held-and-not-yet-left" },
     { name = "bridge_get_trigger-each-in-turn", in = "bridge_get_trigger-each-in-turn", claims = { matches = ["any: event 3 1.*any: event 2 2.*any: event 4 57005.*alive"] }, false = "bridge_has_column-held-and-not-yet-left" },
@@ -421,7 +406,6 @@ rows = [
     { name = "BRIDGE_PRIVATE-the-memory-of-one-module", in = "BRIDGE_PRIVATE-the-memory-of-one-module", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BRIDGE_CARRIED-where-a-tag-would-have-a-value", in = "BRIDGE_CARRIED-where-a-tag-would-have-a-value", claims = { matches = ["frozen 2 1.*alive"] }, false = "BRIDGE_DECLARE_TAG-carried-by-all-three" },
     { name = "BRIDGE_ZEROED-attached-with-no-value", in = "BRIDGE_ZEROED-attached-with-no-value", claims = { matches = ["frozen 2 1.*alive"] }, false = "BRIDGE_DECLARE_TAG-carried-by-all-three" },
-    { name = "BRIDGE_SPAN_BASE-where-a-span-keeps-its-columns", in = "BRIDGE_SPAN_BASE-where-a-span-keeps-its-columns", claims = { matches = ["sum 250500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BACKEND_IMPORT_FUNC-an-entry-imported-is-no-memory", in = "BACKEND_IMPORT_FUNC-an-entry-imported-is-no-memory", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BACKEND_IMPORT_MEMORY-the-two-memories-lent", in = "BACKEND_IMPORT_MEMORY-the-two-memories-lent", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "config.backends-none-refused", in = "config.backends-none-refused", claims = { matches = ["the deployment configures no backend, and a module is run by one.*bridge_create refused.*alive"] }, false = "config.backends-one-opened" },

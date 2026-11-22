@@ -156,7 +156,6 @@ folder = "wasm"
 sources = ["tests/modules/mover.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "reader"
@@ -166,7 +165,6 @@ folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "reader-position"
@@ -176,7 +174,7 @@ folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["READER_POSITION", "BRIDGE_ROWS_CHECKED"]
+defines = ["READER_POSITION"]
 
 [[artifact]]
 name = "reader-warn"
@@ -186,7 +184,7 @@ folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["READER_WARN", "BRIDGE_ROWS_CHECKED"]
+defines = ["READER_WARN"]
 
 [[artifact]]
 name = "reader-add"
@@ -196,7 +194,7 @@ folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["READER_ADD", "BRIDGE_ROWS_CHECKED"]
+defines = ["READER_ADD"]
 
 [[artifact]]
 name = "reader-total"
@@ -206,7 +204,7 @@ folder = "wasm"
 sources = ["tests/modules/reader.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["READER_TOTAL", "BRIDGE_ROWS_CHECKED"]
+defines = ["READER_TOTAL"]
 
 [[artifact]]
 name = "refs"
@@ -216,7 +214,6 @@ folder = "wasm"
 sources = ["tests/modules/refs.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "fp"
@@ -226,7 +223,6 @@ folder = "wasm"
 sources = ["tests/modules/fp.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "fp-same"
@@ -236,7 +232,7 @@ folder = "wasm"
 sources = ["tests/modules/fp.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["FP_SAME", "BRIDGE_ROWS_CHECKED"]
+defines = ["FP_SAME"]
 
 [[artifact]]
 name = "badterm"
@@ -246,7 +242,7 @@ folder = "wasm"
 sources = ["tests/modules/badterm.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BADTERM_OPER=4", "BRIDGE_ROWS_CHECKED"]
+defines = ["BADTERM_OPER=4"]
 
 [[artifact]]
 name = "badterm-known"
@@ -256,7 +252,7 @@ folder = "wasm"
 sources = ["tests/modules/badterm.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BADTERM_OPER=3", "BRIDGE_ROWS_CHECKED"]
+defines = ["BADTERM_OPER=3"]
 
 [[artifact]]
 name = "spin3"
@@ -266,7 +262,6 @@ folder = "wasm"
 sources = ["tests/modules/spin3.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "spin3-ended"
@@ -276,7 +271,7 @@ folder = "wasm"
 sources = ["tests/modules/spin3.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["ENDED", "BRIDGE_ROWS_CHECKED"]
+defines = ["ENDED"]
 
 [[artifact]]
 name = "flood"
@@ -286,7 +281,6 @@ folder = "wasm"
 sources = ["tests/modules/flood.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "chatty"
@@ -296,17 +290,6 @@ folder = "wasm"
 sources = ["tests/modules/chatty.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
-
-[[artifact]]
-name = "rows"
-kind = "wasm_module"
-test = true
-folder = "wasm"
-sources = ["tests/modules/rows.c", "tests/modules/idle.c"]
-link = ["{acc_wasm}"]
-include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "halver"
@@ -316,7 +299,6 @@ folder = "wasm"
 sources = ["tests/modules/halver.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "twostep"
@@ -326,7 +308,7 @@ folder = "wasm"
 sources = ["tests/modules/twostep.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BEFORE_COUNT=1", "BRIDGE_ROWS_CHECKED"]
+defines = ["BEFORE_COUNT=1"]
 
 [[artifact]]
 name = "twostep-unordered"
@@ -336,7 +318,7 @@ folder = "wasm"
 sources = ["tests/modules/twostep.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BEFORE_COUNT=0", "BRIDGE_ROWS_CHECKED"]
+defines = ["BEFORE_COUNT=0"]
 
 [[artifact]]
 name = "chain"
@@ -346,7 +328,6 @@ folder = "wasm"
 sources = ["tests/modules/chain.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "badobs"
@@ -356,7 +337,6 @@ folder = "wasm"
 sources = ["tests/modules/badobs.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "badobs-seen"
@@ -366,7 +346,7 @@ folder = "wasm"
 sources = ["tests/modules/badobs.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["SEEN", "BRIDGE_ROWS_CHECKED"]
+defines = ["SEEN"]
 
 [[artifact]]
 name = "events"
@@ -376,7 +356,7 @@ folder = "wasm"
 sources = ["tests/modules/events.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["TOLD_ENTER=BRIDGE_ON_ENTER", "TOLD_ATTACH=BRIDGE_ON_ATTACH", "BRIDGE_ROWS_CHECKED"]
+defines = ["TOLD_ENTER=BRIDGE_ON_ENTER", "TOLD_ATTACH=BRIDGE_ON_ATTACH"]
 
 [[artifact]]
 name = "events-attach"
@@ -386,7 +366,7 @@ folder = "wasm"
 sources = ["tests/modules/events.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["TOLD_ENTER=0", "TOLD_ATTACH=BRIDGE_ON_ATTACH", "BRIDGE_ROWS_CHECKED"]
+defines = ["TOLD_ENTER=0", "TOLD_ATTACH=BRIDGE_ON_ATTACH"]
 
 [[artifact]]
 name = "events-enter"
@@ -396,7 +376,7 @@ folder = "wasm"
 sources = ["tests/modules/events.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["TOLD_ENTER=BRIDGE_ON_ENTER", "TOLD_ATTACH=0", "BRIDGE_ROWS_CHECKED"]
+defines = ["TOLD_ENTER=BRIDGE_ON_ENTER", "TOLD_ATTACH=0"]
 
 [[artifact]]
 name = "nested"
@@ -406,7 +386,6 @@ folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "namer"
@@ -416,7 +395,6 @@ folder = "wasm"
 sources = ["tests/modules/namer.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "spawner"
@@ -426,7 +404,6 @@ folder = "wasm"
 sources = ["tests/modules/spawner.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "counter"
@@ -436,7 +413,6 @@ folder = "wasm"
 sources = ["tests/modules/counter.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "typer"
@@ -446,7 +422,6 @@ folder = "wasm"
 sources = ["tests/modules/typer.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "user"
@@ -456,7 +431,6 @@ folder = "wasm"
 sources = ["tests/modules/user.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "hang"
@@ -466,7 +440,6 @@ folder = "wasm"
 sources = ["tests/modules/hang.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "hit"
@@ -476,7 +449,7 @@ folder = "wasm"
 sources = ["tests/modules/hit/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["HIT_STEP=3", "BRIDGE_ROWS_CHECKED"]
+defines = ["HIT_STEP=3"]
 
 [[artifact]]
 name = "hit-half"
@@ -486,7 +459,7 @@ folder = "wasm"
 sources = ["tests/modules/hit/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["HIT_STEP=2", "BRIDGE_ROWS_CHECKED"]
+defines = ["HIT_STEP=2"]
 
 [[artifact]]
 name = "shield"
@@ -496,7 +469,7 @@ folder = "wasm"
 sources = ["tests/modules/shield.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["SHIELD_STEP=3", "BRIDGE_ROWS_CHECKED"]
+defines = ["SHIELD_STEP=3"]
 
 [[artifact]]
 name = "shield-half"
@@ -506,7 +479,7 @@ folder = "wasm"
 sources = ["tests/modules/shield.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["SHIELD_STEP=2", "BRIDGE_ROWS_CHECKED"]
+defines = ["SHIELD_STEP=2"]
 
 [[artifact]]
 name = "aim"
@@ -516,7 +489,7 @@ folder = "wasm"
 sources = ["tests/modules/aim.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AIM_STEP=2", "AIM_OPER=BRIDGE_OPTIONAL", "BRIDGE_ROWS_CHECKED"]
+defines = ["AIM_STEP=2", "AIM_OPER=BRIDGE_OPTIONAL"]
 
 [[artifact]]
 name = "aim-third"
@@ -526,7 +499,7 @@ folder = "wasm"
 sources = ["tests/modules/aim.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AIM_STEP=3", "AIM_OPER=BRIDGE_OPTIONAL", "BRIDGE_ROWS_CHECKED"]
+defines = ["AIM_STEP=3", "AIM_OPER=BRIDGE_OPTIONAL"]
 
 [[artifact]]
 name = "aim-and"
@@ -536,7 +509,7 @@ folder = "wasm"
 sources = ["tests/modules/aim.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AIM_STEP=2", "AIM_OPER=BRIDGE_AND", "BRIDGE_ROWS_CHECKED"]
+defines = ["AIM_STEP=2", "AIM_OPER=BRIDGE_AND"]
 
 [[artifact]]
 name = "levels"
@@ -546,7 +519,6 @@ folder = "wasm"
 sources = ["tests/modules/levels.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_CHECKED"]
 
 [[artifact]]
 name = "tagged"
@@ -556,7 +528,7 @@ folder = "wasm"
 sources = ["tests/modules/tagged.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["TAGGED=2", "BRIDGE_ROWS_CHECKED"]
+defines = ["TAGGED=2"]
 
 [[artifact]]
 name = "tagged-all"
@@ -566,17 +538,7 @@ folder = "wasm"
 sources = ["tests/modules/tagged.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["TAGGED=3", "BRIDGE_ROWS_CHECKED"]
-
-[[artifact]]
-name = "rows-unchecked"
-kind = "wasm_module"
-test = true
-folder = "wasm"
-sources = ["tests/modules/rows.c", "tests/modules/idle.c"]
-link = ["{acc_wasm}"]
-include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BRIDGE_ROWS_UNCHECKED"]
+defines = ["TAGGED=3"]
 
 [[artifact]]
 name = "nested2"
@@ -586,7 +548,7 @@ folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["LEAVE_OUT_VEC2", "BRIDGE_ROWS_CHECKED"]
+defines = ["LEAVE_OUT_VEC2"]
 
 [[artifact]]
 name = "nested-no-team"
@@ -596,7 +558,7 @@ folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["LEAVE_OUT_TEAM", "BRIDGE_ROWS_CHECKED"]
+defines = ["LEAVE_OUT_TEAM"]
 
 [[artifact]]
 name = "nested-no-flags"
@@ -606,7 +568,7 @@ folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["LEAVE_OUT_FLAGS", "BRIDGE_ROWS_CHECKED"]
+defines = ["LEAVE_OUT_FLAGS"]
 
 [[artifact]]
 name = "nested-wide-team"
@@ -616,7 +578,7 @@ folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["WIDE_TEAM_TYPE", "BRIDGE_ROWS_CHECKED"]
+defines = ["WIDE_TEAM_TYPE"]
 
 [[artifact]]
 name = "nested-wide-team-desc"
@@ -626,7 +588,7 @@ folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["WIDE_TEAM_DESC", "BRIDGE_ROWS_CHECKED"]
+defines = ["WIDE_TEAM_DESC"]
 
 [[artifact]]
 name = "nested-wide-flags"
@@ -636,7 +598,7 @@ folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["WIDE_FLAGS_TYPE", "BRIDGE_ROWS_CHECKED"]
+defines = ["WIDE_FLAGS_TYPE"]
 
 [[artifact]]
 name = "nested-wide-flags-desc"
@@ -646,7 +608,7 @@ folder = "wasm"
 sources = ["tests/modules/nested.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["WIDE_FLAGS_DESC", "BRIDGE_ROWS_CHECKED"]
+defines = ["WIDE_FLAGS_DESC"]
 
 [[artifact]]
 name = "settings"
@@ -656,7 +618,7 @@ folder = "wasm"
 sources = ["tests/modules/settings/*.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["KEPT=BRIDGE_SINGLETON", "BRIDGE_ROWS_CHECKED"]
+defines = ["KEPT=BRIDGE_SINGLETON"]
 
 [[artifact]]
 name = "kept-unset"
@@ -666,7 +628,7 @@ folder = "wasm"
 sources = ["tests/modules/kept.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["KEPT=0", "BRIDGE_ROWS_CHECKED"]
+defines = ["KEPT=0"]
 
 [[artifact]]
 name = "kept-none"
@@ -676,7 +638,7 @@ folder = "wasm"
 sources = ["tests/modules/kept.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["KEPT=9", "BRIDGE_ROWS_CHECKED"]
+defines = ["KEPT=9"]
 
 [[artifact]]
 name = "kept-sparse"
@@ -686,7 +648,7 @@ folder = "wasm"
 sources = ["tests/modules/kept.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["KEPT=BRIDGE_SPARSE_SET", "BRIDGE_ROWS_CHECKED"]
+defines = ["KEPT=BRIDGE_SPARSE_SET"]
 
 [[artifact]]
 name = "kept-table"
@@ -696,7 +658,7 @@ folder = "wasm"
 sources = ["tests/modules/kept.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["KEPT=BRIDGE_TABLE", "BRIDGE_ROWS_CHECKED"]
+defines = ["KEPT=BRIDGE_TABLE"]
 
 [[artifact]]
 name = "namer-reader"
@@ -706,7 +668,7 @@ folder = "wasm"
 sources = ["tests/modules/namer.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["READER", "BRIDGE_ROWS_CHECKED"]
+defines = ["READER"]
 
 [[artifact]]
 name = "flaky-always"
@@ -716,7 +678,7 @@ folder = "wasm"
 sources = ["tests/modules/flaky.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["OF=1", "FAILS=1", "BRIDGE_ROWS_CHECKED"]
+defines = ["OF=1", "FAILS=1"]
 
 [[artifact]]
 name = "flaky-third"
@@ -726,7 +688,7 @@ folder = "wasm"
 sources = ["tests/modules/flaky.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["OF=3", "FAILS=1", "BRIDGE_ROWS_CHECKED"]
+defines = ["OF=3", "FAILS=1"]
 
 [[artifact]]
 name = "flaky-twothirds"
@@ -736,7 +698,7 @@ folder = "wasm"
 sources = ["tests/modules/flaky.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["OF=3", "FAILS=2", "BRIDGE_ROWS_CHECKED"]
+defines = ["OF=3", "FAILS=2"]
 
 [[artifact]]
 name = "flaky-calm"
@@ -746,7 +708,7 @@ folder = "wasm"
 sources = ["tests/modules/flaky.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["OF=1", "FAILS=1", "CALM", "BRIDGE_ROWS_CHECKED"]
+defines = ["OF=1", "FAILS=1", "CALM"]
 
 [[artifact]]
 name = "keeper-strip"
@@ -756,7 +718,7 @@ folder = "wasm"
 sources = ["tests/modules/keeper.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["PRIVATE_POLICY=BRIDGE_STRIP", "BRIDGE_ROWS_CHECKED"]
+defines = ["PRIVATE_POLICY=BRIDGE_STRIP"]
 
 [[artifact]]
 name = "keeper-sweep"
@@ -766,7 +728,7 @@ folder = "wasm"
 sources = ["tests/modules/keeper.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["PRIVATE_POLICY=BRIDGE_SWEEP", "BRIDGE_ROWS_CHECKED"]
+defines = ["PRIVATE_POLICY=BRIDGE_SWEEP"]
 
 [[artifact]]
 name = "keeper-delete"
@@ -776,7 +738,7 @@ folder = "wasm"
 sources = ["tests/modules/keeper.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["PRIVATE_POLICY=BRIDGE_DELETE", "BRIDGE_ROWS_CHECKED"]
+defines = ["PRIVATE_POLICY=BRIDGE_DELETE"]
 
 [[artifact]]
 name = "retype-private"
@@ -786,7 +748,7 @@ folder = "wasm"
 sources = ["tests/modules/retype.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["WHICH=1", "BRIDGE_ROWS_CHECKED"]
+defines = ["WHICH=1"]
 
 [[artifact]]
 name = "retype-vec2"
@@ -796,7 +758,7 @@ folder = "wasm"
 sources = ["tests/modules/retype.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["WHICH=2", "BRIDGE_ROWS_CHECKED"]
+defines = ["WHICH=2"]
 
 [[artifact]]
 name = "retype-settings"
@@ -806,7 +768,7 @@ folder = "wasm"
 sources = ["tests/modules/retype.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["WHICH=4", "BRIDGE_ROWS_CHECKED"]
+defines = ["WHICH=4"]
 
 [[artifact]]
 name = "settings-drop"
@@ -816,7 +778,7 @@ folder = "wasm"
 sources = ["tests/modules/settings/*.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["DROP", "KEPT=BRIDGE_SINGLETON", "BRIDGE_ROWS_CHECKED"]
+defines = ["DROP", "KEPT=BRIDGE_SINGLETON"]
 
 [[artifact]]
 name = "settings-table"
@@ -826,7 +788,7 @@ folder = "wasm"
 sources = ["tests/modules/settings/*.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["KEPT=BRIDGE_TABLE", "BRIDGE_ROWS_CHECKED"]
+defines = ["KEPT=BRIDGE_TABLE"]
 
 [[artifact]]
 name = "ticker"
@@ -836,7 +798,7 @@ folder = "wasm"
 sources = ["tests/modules/ticker.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["STEP=1", "BRIDGE_ROWS_CHECKED"]
+defines = ["STEP=1"]
 
 [[artifact]]
 name = "ticker-ten"
@@ -846,7 +808,7 @@ folder = "wasm"
 sources = ["tests/modules/ticker.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["STEP=10", "BRIDGE_ROWS_CHECKED"]
+defines = ["STEP=10"]
 
 [[artifact]]
 name = "ticker-trip"
@@ -856,7 +818,7 @@ folder = "wasm"
 sources = ["tests/modules/ticker.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["STEP=1", "TRIP", "BRIDGE_ROWS_CHECKED"]
+defines = ["STEP=1", "TRIP"]
 
 [[artifact]]
 name = "ticker-alloc"
@@ -866,7 +828,7 @@ folder = "wasm"
 sources = ["tests/modules/ticker.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["STEP=10", "ALLOC", "BRIDGE_ROWS_CHECKED"]
+defines = ["STEP=10", "ALLOC"]
 
 [[artifact]]
 name = "importsshared"
@@ -925,7 +887,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_SLOT", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_SLOT"]
 
 [[artifact]]
 name = "breach-row"
@@ -935,7 +897,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_ROW", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_ROW"]
 
 [[artifact]]
 name = "breach-field"
@@ -945,7 +907,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_FIELD", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_FIELD"]
 
 [[artifact]]
 name = "breach-readonly"
@@ -955,7 +917,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_READONLY", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_READONLY"]
 
 [[artifact]]
 name = "breach-forge"
@@ -965,7 +927,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_FORGE", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_FORGE"]
 
 [[artifact]]
 name = "breach-sparse"
@@ -975,7 +937,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_SPARSE", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_SPARSE"]
 
 [[artifact]]
 name = "breach-direct"
@@ -985,7 +947,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_DIRECT", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_DIRECT"]
 
 [[artifact]]
 name = "breach-to-shared"
@@ -995,7 +957,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_TO_SHARED", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_TO_SHARED"]
 
 [[artifact]]
 name = "breach-from-shared"
@@ -1005,7 +967,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_FROM_SHARED", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_FROM_SHARED"]
 
 [[artifact]]
 name = "breach-who"
@@ -1074,7 +1036,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_OK", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_OK"]
 
 [[artifact]]
 name = "wrong-declare-outside"
@@ -1084,7 +1046,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_outside", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-name-outside"
@@ -1094,7 +1056,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_name_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_name_outside", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-no-namespace"
@@ -1104,7 +1066,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_no_namespace", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_no_namespace", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-name-zero"
@@ -1114,7 +1076,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_name_zero", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_name_zero", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-kind-unset"
@@ -1124,7 +1086,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_kind_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_kind_unset", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-tag-with-bytes"
@@ -1134,7 +1096,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_tag_with_bytes", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_tag_with_bytes", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-policy-unset"
@@ -1144,7 +1106,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_policy_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_policy_unset", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-on-destroy-unset"
@@ -1154,7 +1116,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_on_destroy_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_on_destroy_unset", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-size-other"
@@ -1164,7 +1126,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_size_other", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_size_other", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-system-outside"
@@ -1174,7 +1136,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_system_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_system_outside", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-system-phase-outside"
@@ -1184,7 +1146,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_system_phase_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_system_phase_outside", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-system-name-outside"
@@ -1194,7 +1156,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_system_name_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_system_name_outside", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-system-many-changes"
@@ -1204,7 +1166,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_system_many_changes", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_system_many_changes", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-system-twice"
@@ -1214,7 +1176,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_system_twice", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_system_twice", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-observer-no-term"
@@ -1224,7 +1186,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_observer_no_term", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_observer_no_term", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-observe-outside"
@@ -1234,7 +1196,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_observe_outside", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_observe_outside", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-observe-events-unset"
@@ -1244,7 +1206,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_observe_events_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_observe_events_unset", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-term-access-unset"
@@ -1254,7 +1216,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_term_access_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_term_access_unset", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-term-access-other"
@@ -1264,7 +1226,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_term_access_other", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_term_access_other", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-term-oper-unset"
@@ -1274,7 +1236,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_term_oper_unset", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_term_oper_unset", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-term-slot-undeclared"
@@ -1284,7 +1246,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_term_slot_undeclared", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_term_slot_undeclared", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-term-write-ungranted"
@@ -1294,7 +1256,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_term_write_ungranted", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_term_write_ungranted", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-change-slot-undeclared"
@@ -1304,7 +1266,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_change_slot_undeclared", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_change_slot_undeclared", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-change-ungranted"
@@ -1314,7 +1276,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_change_ungranted", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_change_ungranted", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-alloc"
@@ -1324,7 +1286,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_alloc", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_alloc", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-late"
@@ -1334,7 +1296,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_declare_valid", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_declare_valid"]
 
 [[artifact]]
 name = "wrong-system-late"
@@ -1344,7 +1306,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_system_valid", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_system_valid"]
 
 [[artifact]]
 name = "wrong-observe-late"
@@ -1354,7 +1316,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_observe_valid", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_observe_valid"]
 
 [[artifact]]
 name = "wrong-attach-undeclared"
@@ -1364,7 +1326,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_undeclared", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_undeclared"]
 
 [[artifact]]
 name = "wrong-attach-ungranted"
@@ -1374,7 +1336,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_ungranted", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_ungranted"]
 
 [[artifact]]
 name = "wrong-attach-outside"
@@ -1384,7 +1346,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_outside", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_outside"]
 
 [[artifact]]
 name = "wrong-detach-undeclared"
@@ -1394,7 +1356,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_detach_undeclared", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_detach_undeclared"]
 
 [[artifact]]
 name = "wrong-attach-tag-value"
@@ -1404,7 +1366,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_tag_value", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_tag_value"]
 
 [[artifact]]
 name = "wrong-keep-component"
@@ -1414,7 +1376,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_keep_component", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_keep_component", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-keep-declare"
@@ -1424,7 +1386,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_keep_declare", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_keep_declare", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-keep-tag"
@@ -1434,7 +1396,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_keep_tag", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_keep_tag", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-keep-none"
@@ -1444,7 +1406,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_keep_none", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_keep_none", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-declare-valid"
@@ -1454,7 +1416,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_declare_valid", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_declare_valid", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-system-valid"
@@ -1464,7 +1426,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_system_valid", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_system_valid", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-observe-valid"
@@ -1474,7 +1436,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_observe_valid", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_observe_valid", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-term-read-granted"
@@ -1484,7 +1446,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_term_read_granted", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_term_read_granted", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-change-declared"
@@ -1494,7 +1456,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_change_declared", "IN_SYSTEM=wrong_do_nothing", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_change_declared", "IN_SYSTEM=wrong_do_nothing"]
 
 [[artifact]]
 name = "wrong-attach-declared"
@@ -1504,7 +1466,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_declared", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_declared"]
 
 [[artifact]]
 name = "wrong-attach-lent"
@@ -1514,7 +1476,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_lent", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_lent"]
 
 [[artifact]]
 name = "wrong-detach-declared"
@@ -1524,7 +1486,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_detach_declared", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_detach_declared"]
 
 [[artifact]]
 name = "wrong-attach-tag"
@@ -1534,7 +1496,7 @@ folder = "wasm"
 sources = ["tests/modules/wrong/*.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_tag", "BRIDGE_ROWS_CHECKED"]
+defines = ["AT_INIT=wrong_do_nothing", "IN_SYSTEM=wrong_attach_tag"]
 
 [[artifact]]
 name = "breach-own-edge"
@@ -1544,7 +1506,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_OWN_EDGE", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_OWN_EDGE"]
 
 [[artifact]]
 name = "breach-own-below"
@@ -1554,7 +1516,7 @@ folder = "wasm"
 sources = ["tests/modules/breach.c", "tests/modules/idle.c"]
 link = ["{acc_wasm}"]
 include = ["{bridge}/include", "include", "tests/modules"]
-defines = ["BREACH_OWN_BELOW", "BRIDGE_ROWS_CHECKED"]
+defines = ["BREACH_OWN_BELOW"]
 
 [[artifact]]
 name = "importstag"

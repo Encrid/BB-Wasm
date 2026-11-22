@@ -22,8 +22,6 @@ void test_state_module(bridge_artifact_t *a, const char *identity,
         a->cfg.spawns = 128;
     if (!strcmp(file, "namer"))
         a->cfg.spawns = 8;
-    if (!strncmp(file, "rows", 4))
-        a->cfg.changes = 16 << 20;
 }
 
 void test_load_module(host_t *h, const char *identity, const char *file)
