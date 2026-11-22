@@ -66,7 +66,6 @@ struct backend {
 typedef struct {
     uint64_t active;
     uint64_t until;
-    wasm_engine_t *engine;
     int quit;
 } wasm_armed_t;
 
