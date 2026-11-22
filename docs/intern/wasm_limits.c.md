@@ -13,7 +13,7 @@ This file sets the limits of an instance: its work, its time, its memories and i
 | --- | --- |
 | The bytes of each memory | `memory_limit`, or no bound. |
 | The elements of each table | `element_limit`, or no bound. |
-| The instances | The bound of wasmtime, 10000. The backend makes each instance of the store itself. |
+| The instances | The bound of wasmtime, 10000: `wasmtime/store.h` of wasmtime 48.0.5, line 96, "This value defaults to 10,000.". The backend makes each instance of the store itself. |
 | The tables | `WASM_OWN`: 1. |
 | The memories | The lent memories, and `WASM_OWN`. |
 
