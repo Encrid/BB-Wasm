@@ -84,7 +84,7 @@ The backend keeps each limit that Bridge sets:
 
 A work limit and a timeout each slow every call of a module, and not only the call that they bound.
 A work limit makes wasmtime count fuel in each loop. A timeout of `init`, `reload` or `shutdown` makes it check an epoch in each loop.
-For the full speed, a host gives a module no work limit and no timeout. A deployment of Bridge-Host states `none` for each.
+For the full speed, a host gives a module no work limit and no timeout.
 
 The table gives the price on a Ryzen 5 7640U, measured on 2026-10-30.
 Each tick moves 100 000 positions of 3 floats: 300 000 multiplications and additions over the memory of the module.
