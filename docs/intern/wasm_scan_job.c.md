@@ -8,5 +8,5 @@ The accessors come from the copy of `acc.wasm` that the backend holds: `docs/int
 
 | Function | Result |
 | --- | --- |
-| `scan_load` | Reads the accessors and makes their forms, then reads the module and makes its memos. |
-| `scan_free_job` | Frees each form, each memo and each list of bodies. |
+| `scan_load` | Reads the accessors and makes their forms, then reads the module and makes its memos and the room of its frames. |
+| `scan_free_job` | Frees each form, each memo, the frames and each list of bodies. |

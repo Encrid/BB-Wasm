@@ -10,7 +10,7 @@
 static bool make_canons(scan_job_t *job)
 {
     scan_job_t same = { .acc = job->acc, .m = job->acc };
-    scan_walk_t w = { &same, &job->acc, nullptr, false };
+    scan_frame_t f = { };
     uint32_t a = 0;
 
     job->canons = calloc(job->acc.defined + 1, sizeof(*job->canons));
@@ -18,8 +18,10 @@ static bool make_canons(scan_job_t *job)
     if (!job->canons)
         return (false);
     while (a < job->acc.defined) {
-        w.out = &job->canons[a];
-        if (!scan_walk(&w, &job->acc.bodies[a])) {
+        f.w = (scan_walk_t){ &same, &job->acc, &job->canons[a], false,
+            SCAN_NO_WAIT };
+        if (!scan_begin(&f, &job->acc.bodies[a])
+            || scan_resume(&f) != SCAN_DONE) {
             job->no_memory = job->canons[a].bad;
             return (false);
         }
@@ -35,7 +37,8 @@ static bool make_memos(scan_job_t *job)
 
     job->match = malloc(count * sizeof(*job->match));
     job->touched = calloc(count, sizeof(*job->touched));
-    job->no_memory = !job->match || !job->touched;
+    job->frames = calloc(count, sizeof(*job->frames));
+    job->no_memory = !job->match || !job->touched || !job->frames;
     if (job->no_memory)
         return (false);
     while (i < count) {
@@ -69,6 +72,7 @@ void scan_free_job(scan_job_t *job)
     free(job->canons);
     free(job->match);
     free(job->touched);
+    free(job->frames);
     scan_free(&job->acc);
     scan_free(&job->m);
     *job = (scan_job_t){ };
