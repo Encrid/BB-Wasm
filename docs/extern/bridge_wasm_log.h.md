@@ -2,7 +2,7 @@
 
 `bridge_line_t` is one line of the log, and `BRIDGE_LOG` builds it for `bridge_log` to write.
 A module adds a line into its private ring when the line's level is kept.
-`bridge_line_t` holds the record `size`, the `text` and its `len`, and the arguments `a0` and `a1`.
+`bridge_line_t` holds the `text` and its `len`, and the arguments `a0` and `a1`. The record that `bridge_log` fills is a `bridge_log_record_t` of Bridge, of `size` bytes.
 
 ## Writing a line
 
