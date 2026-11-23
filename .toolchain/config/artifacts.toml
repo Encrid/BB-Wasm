@@ -870,7 +870,7 @@ name = "spinfirst"
 kind = "wasm_text"
 test = true
 folder = "wasm"
-sources = ["tests/modules/spinlong.wat"]
+sources = ["tests/modules/spinfirst.wat"]
 
 [[artifact]]
 name = "growsmall"

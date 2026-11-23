@@ -4,7 +4,7 @@
 (module
   (func (export "init") (result i32)
     (local $left i64)
-    (local.set $left (i64.const 9000000000))
+    (local.set $left (i64.const 900000000))
     (loop $again
       (local.set $left (i64.sub (local.get $left) (i64.const 1)))
       (br_if $again (i64.ne (local.get $left) (i64.const 0))))

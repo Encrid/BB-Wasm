@@ -19,8 +19,8 @@ A call ends with the lock, when it disarms. So the next call sets its deadline a
 ## The case of a late raise
 
 The case `instance_set_timeout-the-call-after-a-late-deadline-not-interrupted` of `tests/cases/wasm.toml` checks this rule.
-It loads the module `spinfirst` with an init timeout of 1 ns. Then it loads `spinlong`, with an init timeout of 20 s.
-Both are `tests/modules/spinlong.wat`, whose init loops for about 2 s.
+It loads the module `spinfirst` with an init timeout of 1 ns, and its init loops for about 2 s.
+Then it loads `spinlong`, with an init timeout of 90 s, and its init loops for about 200 ms.
 
 Its `hold` keeps the 1st `os_get_now` of this file, in `wait_until`, until 4 calls of `wasmtime_context_set_epoch_deadline`.
 The 4th call is the deadline of the init of `spinlong`. So the watchdog reads the time of `spinfirst` only after the next call is armed.
@@ -31,11 +31,14 @@ The old watchdog raised, and the init of `spinlong` trapped with `interrupt`, bu
 The old code fails only when 2 windows hold, and each of them is a bound of time.
 
 - The watchdog must read the time of `spinfirst` while it is armed, or the hold keeps a later read. So it must wake within the 2 s of `spinfirst`.
-- After the release, the old watchdog must raise before `spinlong` ends. So it must run within the 2 s of `spinlong`.
+- After the release, the old watchdog must raise before `spinlong` ends. So it must run within the 200 ms of `spinlong`.
 
 No hold can close the 2nd window, since the loop of `spinlong` runs in wasm, where the layer sees no call.
 The measures on the old code: with a loop of about 90 ms, 1 of 120 copies passed. With `spinlong` at 2 s and a short 1st init, 2 of 120 passed, by the 1st window.
 With both inits at about 2 s, 0 of 120 passed, and the fix passed 20 of 20 rounds.
+
+But on a loaded runner of CI, a `spinlong` of 2 s ran past its init timeout of 20 s, and the fix failed. So `spinlong` loops for 200 ms, and its init timeout is 90 s, under the 120 s of a case.
+With that, 0 of 120 copies passed on the old code, and the fix passed 20 of 20 rounds.
 
 ## Starting the watchdog
 
