@@ -127,6 +127,7 @@ void test_load_named(host_t *h);
 void test_load_short(host_t *h);
 void test_load_hex(host_t *h);
 void test_load_chain(host_t *h);
+void test_time_after_a_late_deadline(host_t *h);
 void test_run_named(host_t *h);
 void test_create_no_sink(host_t *h);
 void test_stop(host_t *h);

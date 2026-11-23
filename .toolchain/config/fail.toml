@@ -1,2 +1,6 @@
 [fail]
 with = ["{bridge_os}/fail.toml"]
+
+[fail.calls]
+os_get_now = "0"
+wasmtime_context_set_epoch_deadline = ""

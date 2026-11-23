@@ -8,6 +8,14 @@ claims = { matches = ["game:ticker@0\\.1\\.0/advance: system 'advance' failed: d
 false = { run = ["{out}/wasm-host{exe}", "call-a-thread-with-enough-stack-runs"] }
 
 [[case]]
+name = "instance_set_timeout-the-call-after-a-late-deadline-not-interrupted"
+process = "command"
+run = ["{out}/wasm-host{exe}", "instance_set_timeout-the-call-after-a-late-deadline-not-interrupted"]
+hold = { file = "src/wasm_engine.c", call = "os_get_now", at = 1, until = "wasmtime_context_set_epoch_deadline", times = 4 }
+claims = { matches = ["test:spinlong@0\\.1\\.0: loaded.*alive"], lacks = ["module 'test:spinlong@0.1.0' did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "instance_set_timeout-the-call-after-a-late-deadline-at-its-own-interrupted"] }
+
+[[case]]
 name = "call-a-thread-with-enough-stack-runs"
 process = "state"
 run = ["{out}/wasm-host{exe}", "call-a-thread-with-enough-stack-runs"]
