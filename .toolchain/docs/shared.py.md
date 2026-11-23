@@ -48,6 +48,7 @@ A tool that reads the output of a tool reads it as UTF-8.
 | `project_name(config)` | Gives `[project] name`, as the section *The name of the project* tells. |
 | `document(path)` | Gives the document of a file, as the section *The documents* tells. |
 | `repository(root)` | Tells if the root is the top folder of a git repository. |
+| `base(root, branch)` | Gives the base of `HEAD` against a branch, as the section *The files of the project* tells. |
 | `ours(root, tests)` | Gives the files of the project, as the section *The files of the project* tells. |
 | `report(faults, count, items)` | Writes the faults of a check, and ends the check, as the section *The report of a check* tells. |
 
@@ -156,6 +157,9 @@ With `tests=True`, `ours` keeps the files of `tests`, and leaves out only `.tool
 `repository` asks `git -C <root> rev-parse --show-toplevel` for the top folder of the repository of the root.
 Thus a project in a folder of a different repository, for example a case in `build`, is not a repository.
 The check of the commits also uses `repository`.
+
+`base(root, branch)` gives the last commit that `HEAD` shares with `origin/<branch>`, or with `<branch>` if git gives no such commit.
+It gives `None` if git gives neither. The check of the commits and the scope use it.
 
 ## The report of a check
 
