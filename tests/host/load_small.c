@@ -19,9 +19,9 @@ void test_state_small(bridge_artifact_t *a, char *identity, const char *name)
     host_state_wasm(a, identity, name);
     a->cfg.work_limit = 1'000'000;
     a->cfg.memory_limit = 1 << 20;
-    a->cfg.init_timeout = 200 * HOST_MS;
-    a->cfg.reload_timeout = 200 * HOST_MS;
-    a->cfg.shutdown_timeout = 200 * HOST_MS;
+    a->cfg.init_timeout = TEST_DEADLINE;
+    a->cfg.reload_timeout = TEST_DEADLINE;
+    a->cfg.shutdown_timeout = TEST_DEADLINE;
     a->cfg.scratch = 4096;
     a->cfg.log_ring = 240;
     a->cfg.spans = 4096;
