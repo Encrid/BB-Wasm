@@ -859,6 +859,20 @@ folder = "wasm"
 sources = ["tests/modules/spinshort.wat"]
 
 [[artifact]]
+name = "spinlong"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/spinlong.wat"]
+
+[[artifact]]
+name = "spinfirst"
+kind = "wasm_text"
+test = true
+folder = "wasm"
+sources = ["tests/modules/spinlong.wat"]
+
+[[artifact]]
 name = "growsmall"
 kind = "wasm_text"
 test = true
