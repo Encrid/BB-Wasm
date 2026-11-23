@@ -7,7 +7,8 @@ An engine either wraps a block Bridge adopted or hands the module a fresh own me
 
 `make_engine` configures one engine for a kind: fuel on when metered, epoch interruption on when timed.
 It takes the reservation, the guard, `max_wasm_stack`, `opt_level` and `parallel_compilation` of the settings.
-It sets the async stack of wasmtime to `max_wasm_stack` too: `validate` of wasmtime 48.0.5 refuses a `max_wasm_stack` above it, and its default is 2 MiB.
+It sets the async stack of wasmtime to `max_wasm_stack` too: `validate` of wasmtime 48.0.5 refuses a `max_wasm_stack` above it.
+The default of the async stack is 2 MiB: `wasmtime/async.h` of wasmtime 48.0.5, line 63, "By default this option is 2 MiB.".
 The backend runs no async call, so the async stack has no other use.
 
 It turns on multiple memories, since a module imports the two memories of Bridge beside its own one.

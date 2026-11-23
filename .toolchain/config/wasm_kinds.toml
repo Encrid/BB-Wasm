@@ -1,0 +1,37 @@
+[variables]
+wasm_simd = "-msimd128"
+wasm_compile = ["-target", "wasm32-freestanding", "{language}", "-Wno-missing-field-initializers", "-O2", "{debug_info}", "{float}", "{wasm_simd}", "-nostdlib"]
+wasm_features = ["--enable-multimemory", "--enable-bulk-memory", "--enable-sign-ext", "--enable-nontrapping-float-to-int", "--enable-mutable-globals", "--enable-simd"]
+
+[tools]
+wasm_as = "{binaryen}/bin/wasm-as"
+wasm_merge = "{binaryen}/bin/wasm-merge"
+wasm_opt = "{binaryen}/bin/wasm-opt"
+wasm_dis = "{binaryen}/bin/wasm-dis"
+
+[kinds.wasm_text]
+output = "{name}.wasm"
+steps = [
+    { run = ["{wasm_as}", "{sources}", "{wasm_features}", "{flags}", "-o", "{output}"] },
+]
+
+[kinds.wasm_module]
+output = "{name}.wasm"
+dump = ["{zig}", "cc", "{wasm_compile}", "-Wno-unused-command-line-argument", "{flags}", "{defines}", "{include}", "-fsyntax-only", "-Xclang", "-ast-dump=json", "-o", "{work}.dump", "{source}"]
+probed = ["-Wl,--export=c23b_outcomes", "{tree}/c23b_area.c"]
+steps = [
+    { run = ["{zig}", "cc", "{wasm_compile}", "{flags}", "{defines}", "{include}", "-Wl,--no-entry", "-o", "{work}.raw.wasm", "{sources}", "{archives}"] },
+    { run = ["{python}", "{toolchain}/tools/wasm_guard.py", "{work}.raw.wasm"] },
+    { run = ["{wasm_opt}", "{work}.raw.wasm", "{wasm_features}", "-O3", "-o", "{work}.own.wasm"] },
+    { run = ["{wasm_merge}", "{work}.own.wasm", "main", "{link}", "acc", "{wasm_features}", "-o", "{work}.merged.wasm"] },
+    { run = ["{wasm_opt}", "{work}.merged.wasm", "{wasm_features}", "--remove-exports=acc_*", "--remove-unused-module-elements", "-o", "{output}"] },
+    { section = "bridge:manifest", text = "{manifest:\u0000}\u0000" },
+]
+
+[kinds.wasm_library]
+output = "{name}.a"
+dump = ["{zig}", "cc", "{wasm_compile}", "-Wno-unused-command-line-argument", "{flags}", "{defines}", "{include}", "-fsyntax-only", "-Xclang", "-ast-dump=json", "-o", "{work}.dump", "{source}"]
+each = { run = ["{zig}", "cc", "-c", "{wasm_compile}", "{flags}", "{defines}", "{include}", "{source}", "-MD", "-MF", "{deps}", "-o", "{object}"] }
+steps = [
+    { run = ["{zig}", "build-lib", "-static", "-target", "wasm32-freestanding", "{strip}", "-femit-bin={output}", "{objects}"] },
+]

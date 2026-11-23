@@ -63,7 +63,7 @@ void test_level(host_t *h)
     host_close(h);
 }
 
-void test_set_and_load(host_t *h)
+void test_set_and_load_timed(host_t *h, int64_t init_timeout)
 {
     const char *value = strchr(h->arg, '=') + 1;
     char identity[64];
@@ -77,6 +77,12 @@ void test_set_and_load(host_t *h)
         return;
     test_state_small(&a, identity, strchr(value, ' ') + 1);
     a.cfg.memory_limit = BRIDGE_NO_LIMIT;
+    a.cfg.init_timeout = init_timeout;
     host_load(h, &a);
     host_close(h);
+}
+
+void test_set_and_load(host_t *h)
+{
+    test_set_and_load_timed(h, TEST_DEADLINE);
 }

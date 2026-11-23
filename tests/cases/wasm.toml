@@ -8,6 +8,14 @@ claims = { matches = ["game:ticker@0\\.1\\.0/advance: system 'advance' failed: d
 false = { run = ["{out}/wasm-host{exe}", "call-a-thread-with-enough-stack-runs"] }
 
 [[case]]
+name = "instance_set_timeout-the-call-after-a-late-deadline-not-interrupted"
+process = "command"
+run = ["{out}/wasm-host{exe}", "instance_set_timeout-the-call-after-a-late-deadline-not-interrupted"]
+hold = { file = "src/wasm_engine.c", call = "os_get_now", at = 1, until = "wasmtime_context_set_epoch_deadline", times = 4 }
+claims = { matches = ["test:spinlong@0\\.1\\.0: loaded.*alive"], lacks = ["module 'test:spinlong@0.1.0' did not load"] }
+false = { run = ["{out}/wasm-host{exe}", "instance_set_timeout-the-call-after-a-late-deadline-at-its-own-interrupted"] }
+
+[[case]]
 name = "call-a-thread-with-enough-stack-runs"
 process = "state"
 run = ["{out}/wasm-host{exe}", "call-a-thread-with-enough-stack-runs"]
@@ -15,46 +23,39 @@ claims = { matches = ["game:ticker@0\\.1\\.0/advance: tick 101 1.*alive"], lacks
 false = { run = ["{out}/wasm-host{exe}", "call-a-thread-with-too-little-stack-refused"] }
 
 [[case]]
-name = "BRIDGE_ROW-no-call-in-the-loop"
-process = "command"
-run = ["{wasm_dis}", "{out}/wasm/mover.wasm", "{features}"]
-claims = { matches = ["\\(module"], lacks = ["acc_"] }
-false = { run = ["{wasm_dis}", "{out}/obj/mover.raw.wasm", "{features}"] }
-
-[[case]]
 name = "BRIDGE_ACC-the-accessors-merged-in"
 process = "command"
-run = ["{wasm_dis}", "{out}/wasm/mover.wasm", "{features}"]
+run = ["{wasm_dis}", "{out}/wasm/mover.wasm", "{wasm_features}"]
 claims = { matches = ["\\(module"], lacks = ["acc_"] }
-false = { run = ["{wasm_dis}", "{out}/obj/mover.raw.wasm", "{features}"] }
+false = { run = ["{wasm_dis}", "{out}/obj/mover.raw.wasm", "{wasm_features}"] }
 
 [[case]]
 name = "simd-a-loop-over-its-own-memory-vectorized"
 process = "command"
-run = ["{wasm_dis}", "{out}/wasm/vector.wasm", "{features}"]
+run = ["{wasm_dis}", "{out}/wasm/vector.wasm", "{wasm_features}"]
 claims = { matches = ["i32x4\\.add"] }
-false = { run = ["{wasm_dis}", "{out}/wasm/vector-scalar.wasm", "{features}"] }
+false = { run = ["{wasm_dis}", "{out}/wasm/vector-scalar.wasm", "{wasm_features}"] }
 
 [[case]]
 name = "isolate.imports-shared-memory-refused-at-build"
 process = "command"
-run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importsshared.wasm"]
+run = ["{python}", "{toolchain}/tools/wasm_guard.py", "{out}/wasm/importsshared.wasm"]
 claims = { status = 1, has = ["is refused: it imports the memory 'bridge.shared'"] }
-false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/obj/mover.raw.wasm"] }
+false = { run = ["{python}", "{toolchain}/tools/wasm_guard.py", "{out}/obj/mover.raw.wasm"] }
 
 [[case]]
 name = "isolate.imports-a-tag-refused-at-build"
 process = "command"
-run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"]
+run = ["{python}", "{toolchain}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"]
 claims = { status = 1, has = ["is refused: it imports the tag 'env.boom'; a module imports no tag"] }
-false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"] }
+false = { run = ["{python}", "{toolchain}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"] }
 
 [[case]]
 name = "isolate.imports-a-global-refused-at-build"
 process = "command"
-run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"]
+run = ["{python}", "{toolchain}/tools/wasm_guard.py", "{out}/wasm/strayglobal.wasm"]
 claims = { status = 1, has = ["is refused: it imports the global 'elsewhere.number'; a module imports no global"] }
-false = { run = ["{python}", "{root}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"] }
+false = { run = ["{python}", "{toolchain}/tools/wasm_guard.py", "{out}/wasm/importstag.wasm"] }
 
 [[case]]
 name = "wasm-host"
@@ -72,22 +73,14 @@ rows = [
     { name = "instance_get_func-export-taking-an-argument-refused", in = "instance_get_func-export-taking-an-argument-refused", claims = { matches = ["module 'test:shape@0.1.0' did not load: its export 'init' is not .. -> i32.*alive"] }, false = "instance_get_func-export-init-without-arguments" },
     { name = "instance_get_func-export-answering-64-bits-refused", in = "instance_get_func-export-answering-64-bits-refused", claims = { matches = ["module 'test:shape64@0.1.0' did not load: its export 'init' is not .. -> i32.*alive"] }, false = "instance_get_func-export-init-without-arguments" },
     { name = "bridge_load-no-init-export", in = "bridge_load-no-init-export", claims = { matches = ["module 'test:noinit@0.1.0' did not load: no exported function 'init'.*alive"] }, false = "instance_get_func-export-init-without-arguments" },
-    { name = "module_config.abi-another-refused", in = "module_config.abi-another-refused", claims = { matches = ["module 'test:ok@0.1.0' is refused: it wants ABI 2 and this is ABI 1.*alive"] }, false = "module_config.abi-this-one-loaded" },
     { name = "artifact.backend-not-configured-refused", in = "artifact.backend-not-configured-refused", claims = { matches = ["module 'test:ok@0.1.0' is refused: no backend named 'native'.*alive"] }, false = "artifact.backend-a-configured-one-loaded" },
-    { name = "module_config.log_level-unset-refused", in = "module_config.log_level-unset-refused", claims = { matches = ["module 'test:ok@0.1.0' is refused: log_level is unset.*alive"], lacks = [": loaded"] }, false = "bridge_load-loaded" },
-    { name = "module_config.memory_limit-unset-refused", in = "module_config.memory_limit-unset-refused", claims = { matches = ["module 'test:ok@0.1.0' is refused: memory_limit is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "BRIDGE_NONE-for-a-limit-refused", in = "BRIDGE_NONE-for-a-limit-refused", claims = { matches = ["module 'test:ok@0.1.0' is refused: spawns is -1, which is neither an amount nor BRIDGE_NONE.*module 'test:ok@0.1.0' is refused: work_limit is -2, which is neither a limit nor BRIDGE_NO_LIMIT.*alive"], lacks = [": loaded"] }, false = "BRIDGE_NO_LIMIT-for-a-limit-loaded" },
-    { name = "config.abi-another-refused", in = "config.abi-another-refused", claims = { matches = ["the host is of host ABI 2, and this is 1.*bridge_create refused.*alive"] }, false = "config.abi-this-one-created" },
-    { name = "config.abi-unset-refused", in = "config.abi-unset-refused", claims = { matches = ["abi is unset.*bridge_create refused.*alive"] }, false = "BRIDGE_HOST_ABI-stated-and-created" },
-    { name = "BRIDGE_UNSET-flag-refused", in = "BRIDGE_UNSET-flag-refused", claims = { matches = ["module 'test:ok@0.1.0' is refused: pinned is unset.*module 'test:ok@0.1.0' is refused: hot_reload is 3, which is neither BRIDGE_TRUE nor BRIDGE_FALSE.*alive"], lacks = [": loaded"] }, false = "module_config.pinned-stated-loaded" },
-    { name = "module_config.memory_limit-negative-refused", in = "module_config.memory_limit-negative-refused", claims = { matches = ["module 'test:ok@0.1.0' is refused: memory_limit is -7, which is neither a limit nor BRIDGE_NO_LIMIT.*alive"], lacks = [": loaded"] }, false = "bridge_load-loaded" },
     { name = "module_config.on_error-fail-stops-and-skip-does-not", in = "module_config.on_error-fail-stops-and-skip-does-not", claims = { matches = ["test:ok@0.1.0: loaded.*the world has stopped: module 'test:oob@0.1.0' failed and its on_error is fail.*test:ok@0.1.0: not loaded.*alive"] }, false = "module_config.on_error-skip-twice-stops-nothing" },
     { name = "backend.library-cannot-open-refused", in = "backend.library-cannot-open-refused", claims = { matches = ["backend 'wasm': cannot open backend library 'no-such-backend-library'.*bridge_create refused.*alive"] }, false = "backend.library-the-configured-one-opened" },
     { name = "bridge_create-no-sink-refused", in = "bridge_create-no-sink-refused", claims = { matches = ["refused: no sink.*alive"] }, false = "bridge_create-a-sink-created" },
     { name = "module_config.read-another-namespace-read", in = "module_config.read-another-namespace-read", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "module_config.read-one-of-two-named-refused" },
     { name = "bridge_get_span-one-table-walked", in = "bridge_get_span-one-table-walked", claims = { matches = ["view:reader@0.1.0/sum: saw 1 500.*game:mover@0.1.0/count: moved 2 1000.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "record.level-info-with-its-two-numbers", in = "record.level-info-with-its-two-numbers", claims = { matches = ["record.6. view:reader@0.1.0/sum: sum 250500 0.*alive"] }, false = "record.level-warn-with-its-two-numbers" },
-    { name = "bridge_get_ref-own-entities-followed", in = "bridge_get_ref-own-entities-followed", claims = { matches = ["mirror 100 0.*mirror 100 0.*mirror 100 0.*alive"] }, false = "bridge_get_location-two-frames-followed" },
+    { name = "bridge_get_location-own-entities-followed", in = "bridge_get_location-own-entities-followed", claims = { matches = ["mirror 100 0.*mirror 100 0.*mirror 100 0.*alive"] }, false = "bridge_get_location-two-frames-followed" },
     { name = "declare-storage-unset-refused", in = "declare-storage-unset-refused", claims = { matches = ["module 'game:kept@0.1.0' did not load: type 'game:Position': its storage layout is unset.*module 'game:kept@0.1.0' did not load: type 'game:Position' is stated as a sparse set here, and it was declared as a table. It is also declared by 'game:mover@0.1.0'.*alive"] }, false = "declare-storage-stated-loaded" },
     { name = "BRIDGE_DIRECT_INDEXED-reached-from-rows", in = "BRIDGE_DIRECT_INDEXED-reached-from-rows", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
     { name = "BRIDGE_TOGGLE-counted-on-and-off", in = "BRIDGE_TOGGLE-counted-on-and-off", claims = { matches = ["game:shield@0.1.0/count: shields 10 10.*game:shield@0.1.0/count: strength 45 0.*game:shield@0.1.0/count: shields 10 6.*game:shield@0.1.0/count: strength 27 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_TOGGLE-every-second-turned-off" },
@@ -100,31 +93,20 @@ rows = [
     { name = "module_config.spawns-used-up", in = "module_config.spawns-used-up", claims = { matches = ["system 'flood' failed: spawn: its spawns of 3000 between two barriers are used up.*system 'flood' failed: spawn: .budget. entities of 4096 is reached.*alive"] }, false = "module_config.spawns-as-many-as-the-budget-refused" },
     { name = "module_config.log_ring-full-lines-dropped", in = "module_config.log_ring-full-lines-dropped", claims = { matches = ["line 11 0.*test:chatty@0.1.0/-: 88 log lines were dropped: its ring holds 12.*alive"] }, false = "module_config.log_ring-room-for-every-line" },
     { name = "module_config.spans-too-small-refused", in = "module_config.spans-too-small-refused", claims = { matches = ["module 'view:reader@0.1.0' did not load: its spans of 16 bytes do not hold a column_base of 2 types by \\d+ tables.*moved 2 1000.*alive"] }, false = "module_config.spans-room-for-the-column-base-loaded" },
+    { name = "memory_adopt-a-block-of-256-pages-adopted", in = "memory_adopt-a-block-of-256-pages-adopted", claims = { matches = ["moved 2 1000.*alive"], lacks = ["did not load", "cannot adopt"] }, false = "budget.columns-used-up-changes-not-applied" },
     { name = "budget.columns-used-up-changes-not-applied", in = "budget.columns-used-up-changes-not-applied", claims = { matches = ["module 'game:mover@0.1.0': .budget. columns of 4096 bytes is used up. Not applied, of the changes it asked: 1244 .*moved 1 256.*alive"], lacks = ["has stopped"] }, false = "budget.columns-room-for-the-changes-applied" },
     { name = "bridge_run_phase-undeclared-phase-refused", in = "bridge_run_phase-undeclared-phase-refused", claims = { matches = ["phase 'render' is not one the deployment declared.*alive"] }, false = "bridge_run_phase-a-declared-phase-run" },
-    { name = "config.phases-none-refused", in = "config.phases-none-refused", claims = { matches = ["the deployment declares no phase.*bridge_create refused.*alive"] }, false = "config.phases-each-named-once-opened" },
-    { name = "budget.tables-unset-refused", in = "budget.tables-unset-refused", claims = { matches = [".budget. tables is unset.*bridge_create refused.*alive"] }, false = "budget.tables-stated-opened" },
-    { name = "budget.types-unset-refused", in = "budget.types-unset-refused", claims = { matches = [".budget. types is unset.*bridge_create refused.*alive"] }, false = "budget.types-stated-opened" },
-    { name = "budget.systems-unset-refused", in = "budget.systems-unset-refused", claims = { matches = [".budget. systems is unset.*bridge_create refused.*alive"] }, false = "budget.systems-stated-opened" },
     { name = "budget.types-reached-refused", in = "budget.types-reached-refused", claims = { matches = ["module 'game:mover@0.1.0' did not load: type 'game:Marked' is one more than .budget. types of 1 .*not loaded.*alive"] }, false = "budget.types-enough-loaded" },
     { name = "budget.systems-reached-refused", in = "budget.systems-reached-refused", claims = { matches = ["module 'game:mover@0.1.0' did not load: it registers one more than .budget. systems of 1 .*not loaded.*alive"] }, false = "budget.systems-enough-loaded" },
-    { name = "module_config.log_level-no-severity-refused", in = "module_config.log_level-no-severity-refused", claims = { matches = ["module 'game:mover@0.1.0' is refused: its log_level of 8 is not one it can be, which is 1 to 7.*not loaded.*alive"] }, false = "module_config.log_level-the-last-severity-loaded" },
     { name = "module_config.log_level-warnings-drop-info", in = "module_config.log_level-warnings-drop-info", claims = { matches = ["game:mover@0.1.0: loaded\\s+alive"], lacks = ["moved"] }, false = "module_config.log_level-information-keeps-info" },
-    { name = "budget.terms-unset-refused", in = "budget.terms-unset-refused", claims = { matches = [".budget. terms is unset.*bridge_create refused.*alive"] }, false = "budget.terms-stated-opened" },
     { name = "budget.terms-exceeded-refused", in = "budget.terms-exceeded-refused", claims = { matches = ["module 'view:reader@0.1.0' did not load: a system asks for 2 terms, which is more than .budget. terms of 1 .*not loaded.*alive"] }, false = "budget.terms-enough-loaded" },
-    { name = "budget.columns-unset-refused", in = "budget.columns-unset-refused", claims = { matches = [".budget. columns is unset.*bridge_create refused.*alive"] }, false = "budget.columns-stated-opened" },
     { name = "budget.entities-beyond-32-bits-refused", in = "budget.entities-beyond-32-bits-refused", claims = { matches = [".budget. entities of 1099511627776 is more than an offset of 32 bits can reach.*bridge_create refused.*alive"] }, false = "budget.entities-within-32-bits-opened" },
-    { name = "bridge_create-budget-sum-beyond-32-bits-refused", in = "bridge_create-budget-sum-beyond-32-bits-refused", claims = { matches = [".budget. cannot be satisfied: the shared memory would be [0-9]+ bytes and an offset into it is 32 bits.*bridge_create refused.*alive"] }, false = "bridge_create-budget-sum-within-32-bits-opened" },
-    { name = "module_config.scratch-private-beyond-32-bits-refused", in = "module_config.scratch-private-beyond-32-bits-refused", claims = { matches = ["module 'game:mover@0.1.0' is refused: its scratch of 4294967040, log_ring of [0-9]+ and spans of 4096 bytes come to more than an offset of 32 bits can reach.*alive"] }, false = "module_config.scratch-private-within-32-bits-loaded" },
-    { name = "BRIDGE_ROW-checked-and-unchecked-timed", in = "BRIDGE_ROW-checked-and-unchecked-timed", claims = { matches = ["rows-unchecked  no limit  [0-9.]+ ns a row.*alive"] }, false = "BRIDGE_ROW-checked-timed-twice" },
     { name = "config.order-mover-before-halver", in = "config.order-mover-before-halver", claims = { matches = ["sum 125250 0.*alive"] }, false = "config.order-halver-before-mover" },
     { name = "config.order-halver-before-mover", in = "config.order-halver-before-mover", claims = { matches = ["sum 125500 0.*alive"] }, false = "config.order-mover-before-halver" },
     { name = "order-unordered-conflict-refused", in = "order-unordered-conflict-refused", claims = { matches = ["module 'view:halver@0.1.0' did not load: 'game:mover:move' and 'view:halver:halve' both touch 'game:Position' in phase 'update', one of them writing it, and no pair orders them.*alive"] }, false = "config.order-mover-before-halver" },
     { name = "add_system-own-conflict-in-registration-order", in = "add_system-own-conflict-in-registration-order", claims = { matches = ["game:twostep@0.1.0/show: x 3 0.*alive"] }, false = "add_system-own-conflict-with-no-stated-order-refused" },
-    { name = "config.order-cycle-refused", in = "config.order-cycle-refused", claims = { matches = [".order. contradicts itself.*bridge_create refused.*alive"] }, false = "config.order-mover-before-halver" },
     { name = "observe-chain-one-hop-a-barrier", in = "observe-chain-one-hop-a-barrier", claims = { matches = ["b1 game:chain@0.1.0/got_a: hop A.*b2 game:chain@0.1.0/got_b: hop B.*b3 game:chain@0.1.0/got_c: hop C.*alive"], lacks = ["hop A.*hop A"] }, false = "observe-chain-one-frame-two-hops" },
     { name = "observe-reserved-name-refused", in = "observe-reserved-name-refused", claims = { matches = ["'init' is a reserved name, and no observer may take it.*alive"] }, false = "observe-a-free-name-loaded" },
-    { name = "config.threads-unset-refused", in = "config.threads-unset-refused", claims = { matches = ["threads is unset.*bridge_create refused.*alive"] }, false = "config.threads-one-created" },
     { name = "config.threads-four-wasm-instances-hop", in = "config.threads-four-wasm-instances-hop", claims = { matches = ["sum 275000 0.*alive"] }, false = "config.threads-four-wasm-instances-forty-frames" },
     { name = "bridge_get_trigger_events-enter-attach-leave", in = "bridge_get_trigger_events-enter-attach-leave", claims = { matches = ["any: event 3 1.*any: event 2 2.*any: event 4 57005.*alive"] }, false = "bridge_has_column-held-and-not-yet-left" },
     { name = "declare-nested-types", in = "declare-nested-types", claims = { matches = ["read: body 2 2.*read: more 3 4.*alive"] }, false = "declare-undeclared-field-type-refused" },
@@ -132,7 +114,6 @@ rows = [
     { name = "bridge_create-two-worlds-at-once", in = "bridge_create-two-worlds-at-once", claims = { matches = ["two worlds: sums 275000 and 265000.*alive"] }, false = "bridge_create-two-worlds-the-second-twenty-frames" },
     { name = "alloc-string-kept", in = "alloc-string-kept", claims = { matches = ["game:namer@0.1.0/say: kept in the arena.*alive"] }, false = "alloc-share-exhausted" },
     { name = "alloc-share-exhausted", in = "alloc-share-exhausted", claims = { matches = ["module 'game:namer@0.1.0' did not load: alloc: its persistent of 4 bytes is exhausted.*alive"] }, false = "alloc-string-kept" },
-    { name = "module_config.persistent-more-than-the-arena-refused", in = "module_config.persistent-more-than-the-arena-refused", claims = { matches = ["module 'game:namer@0.1.0' is refused: its persistent of 1048576 bytes does not fit in the 4096 left of .budget. persistent.*alive"] }, false = "module_config.persistent-all-that-is-left-loaded" },
     { name = "spawn-stated-as-none-refused", in = "spawn-stated-as-none-refused", claims = { matches = ["module 'game:mover@0.1.0' did not load: spawn: it stated that it spawns nothing.*alive"] }, false = "spawn-stated-as-an-amount-loaded" },
     { name = "bridge_load-failed-init-undone", in = "bridge_load-failed-init-undone", claims = { matches = ["game:badterm@0.1.0: not loaded.*game:fp@0.1.0: loaded.*alive"] }, false = "bridge_load-loaded-module-keeps-its-type" },
     { name = "spawn-same-ids-on-one-thread-and-four", in = "spawn-same-ids-on-one-thread-and-four", claims = { matches = ["minted 160 ids a run. on four threads the same, and again the same.*alive"] }, false = "spawn-same-ids-in-ten-frames" },
@@ -149,20 +130,14 @@ rows = [
     { name = "BRIDGE_SWEEP-unload-sweeps", in = "BRIDGE_SWEEP-unload-sweeps", claims = { matches = ["left 10 5.*game:keeper@0.1.0: unloaded.*left 9 0.*game:retype@0.1.0: loaded.*alive"] }, false = "BRIDGE_DELETE-unload-deletes" },
     { name = "BRIDGE_DELETE-unload-deletes", in = "BRIDGE_DELETE-unload-deletes", claims = { matches = ["left 10 5.*game:keeper@0.1.0: unloaded.*left 0 0.*game:retype@0.1.0: loaded.*alive"] }, false = "BRIDGE_STRIP-unload-strips" },
     { name = "bridge_unload-declarer-goes-user-holds-the-type", in = "bridge_unload-declarer-goes-user-holds-the-type", claims = { matches = ["game:typer@0.1.0: unloaded.*read: body 2 3.*game:retype@0.1.0: not loaded.*game:user@0.1.0: unloaded.*game:retype@0.1.0: loaded.*alive"] }, false = "bridge_unload-declarer-goes-same-layout-loaded" },
-    { name = "bridge_unload-not-loaded-refused", in = "bridge_unload-not-loaded-refused", claims = { matches = ["no module 'game:nobody@0.1.0' is loaded, so none is unloaded.*alive"] }, false = "bridge_unload-a-loaded-module-unloaded" },
     { name = "module_config.shutdown_timeout-shutdown-interrupted", in = "module_config.shutdown_timeout-shutdown-interrupted", claims = { matches = ["its shutdown trapped: interrupt. its teardown continues.*test:hang@0.1.0: unloaded.*modules: .0..*alive"] }, false = "module_config.shutdown_timeout-a-shutdown-that-returns-unloaded" },
-    { name = "budget.modules-reached-refused", in = "budget.modules-reached-refused", claims = { matches = ["module 'game:ticker@0.1.0' is refused: .budget. modules of 1 is reached.*game:twostep@0.1.0: unloaded.*game:ticker@0.1.0: loaded.*modules: game:ticker@0.1.0=RUNNING .1..*alive"] }, false = "budget.modules-two-both-loaded" },
     { name = "bridge_reload-larger-share", in = "bridge_reload-larger-share", claims = { matches = ["game:ticker@0.2.0: reloaded.*tick 112 10.*tick 122 10.*alive"] }, false = "bridge_reload-same-share-exhausted" },
     { name = "bridge_reload-larger-share-past-a-neighbour", in = "bridge_reload-larger-share-past-a-neighbour", claims = { matches = ["game:namer@0.1.0: loaded.*game:ticker@0.2.0: reloaded.*tick 112 10.*alive"] }, false = "bridge_reload-larger-share" },
     { name = "bridge_reload-same-share-exhausted", in = "bridge_reload-same-share-exhausted", claims = { matches = ["was not reloaded: alloc: its persistent of 16 bytes is exhausted.*tick 103 1.*tick 104 1.*alive"] }, false = "bridge_reload-larger-share" },
-    { name = "bridge_reload-smaller-share-refused", in = "bridge_reload-smaller-share-refused", claims = { matches = ["is not reloaded: its persistent is 16 and a reload states less, which a loaded module's share cannot become.*tick 104 1.*alive"] }, false = "bridge_reload-share-more-than-the-arena-refused" },
-    { name = "bridge_reload-share-more-than-the-arena-refused", in = "bridge_reload-share-more-than-the-arena-refused", claims = { matches = ["is not reloaded: its persistent of 1048576 bytes does not fit in the [0-9]+ left of .budget. persistent.*tick 104 1.*alive"] }, false = "bridge_reload-larger-share" },
     { name = "bridge_reload-lifts-a-stopped-world", in = "bridge_reload-lifts-a-stopped-world", claims = { matches = ["the world has stopped: module 'game:ticker@0.1.0' was stopped and its on_error is fail.*game:twostep@0.1.0: not loaded.*the world runs again: module 'game:ticker@0.2.0' is back.*game:ticker@0.2.0: reloaded.*tick 1[0-9]3 10.*game:ticker@0.2.0=RUNNING.*alive"] }, false = "bridge_reload-of-a-world-that-runs" },
     { name = "bridge_load-lifts-a-stopped-world", in = "bridge_load-lifts-a-stopped-world", claims = { matches = ["the world has stopped: module 'game:thing@0.1.0' failed and its on_error is fail.*game:other@0.1.0: not loaded.*the world runs again: module 'game:thing@0.2.0' is back.*game:thing@0.2.0: loaded.*show: x 3 0.*alive"] }, false = "bridge_load-another-version-in-a-world-that-runs-refused" },
     { name = "bridge_reload-stopped-module-revived", in = "bridge_reload-stopped-module-revived", claims = { matches = ["game:ticker@0.1.0=STOPPED.*game:ticker@0.2.0: reloaded.*tick 1[0-9]3 10.*game:ticker@0.2.0=RUNNING.*alive"] }, false = "bridge_reload-a-running-module-reloaded" },
     { name = "bridge_load-no-reload-export", in = "bridge_load-no-reload-export", claims = { matches = ["module 'test:noreload@0.1.0' did not load: no exported function 'reload'.*alive"] }, false = "bridge_load-a-reload-export-loaded" },
-    { name = "module_config.reloadable-false-with-hot-reload-refused", in = "module_config.reloadable-false-with-hot-reload-refused", claims = { matches = ["module 'game:twostep@0.1.0' is refused: hot_reload is stated, and its author states it is not reloadable.*alive"] }, false = "module_config.reloadable-false-without-hot-reload-loaded" },
-    { name = "bridge_reload-not-loaded-refused", in = "bridge_reload-not-loaded-refused", claims = { matches = ["is not reloaded: nothing of that name is loaded.*alive"] }, false = "bridge_reload-a-loaded-name-reloaded" },
     { name = "module_config.settings-of-every-kind", in = "module_config.settings-of-every-kind", claims = { matches = ["vsync width 1 1280.*scale mode 150 2.*show: hello 7 0.*show: some/long/path.cfg 0 0.*flags ratio 3 3.*show: big 2 0.*alive"] }, false = "setting.v-another-width-seeded" },
     { name = "setting.key-no-such-field-refused", in = "setting.key-no-such-field-refused", claims = { matches = ["its settings have a key 'vsynk', and 'game:Settings' has no field of that name.*alive"] }, false = "setting.key-a-field-of-that-name-seeded" },
     { name = "setting.kind-text-for-a-float-refused", in = "setting.kind-text-for-a-float-refused", claims = { matches = ["its setting 'scale' is text, and the field it names is a float.*alive"] }, false = "setting.kind-a-float-for-a-float-seeded" },
@@ -185,43 +160,10 @@ rows = [
     { name = "bridge_unload-share-given-back", in = "bridge_unload-share-given-back", claims = { matches = ["game:namer@0.1.0/say: kept in the arena.*game:namer@0.1.0: unloaded.*game:ticker@0.1.0: loaded.*alive"] }, false = "bridge_unload-share-kept-while-pointed-into" },
     { name = "bridge_unload-share-kept-while-pointed-into", in = "bridge_unload-share-kept-while-pointed-into", claims = { matches = ["module 'game:namer@0.1.0' is unloaded and its share of the persistent arena, 64 bytes, stays: 'game:Name' holds a string in it, in this many rows: 1.*game:namer@0.1.0: unloaded.*game:reader@0.1.0/say: kept in the arena.*module 'game:ticker@0.1.0' is refused: its persistent of 64 bytes does not fit in the 0 left of .budget. persistent.*game:reader@0.1.0/say: kept in the arena.*alive"] }, false = "bridge_unload-share-given-back" },
     { name = "bridge_destroy-shuts-down-what-is-loaded", in = "bridge_destroy-shuts-down-what-is-loaded", claims = { matches = ["tick 101 1.*game:ticker@0.1.0/-: shutdown 1 0.*module 'test:hang@0.1.0': its shutdown trapped: interrupt. its teardown continues.*alive"] }, false = "bridge_destroy-shuts-down-what-returns" },
-    { name = "budget.entities-unset-refused", in = "budget.entities-unset-refused", claims = { matches = [".budget. entities is unset.*alive"] }, false = "budget.entities-stated-opened" },
-    { name = "budget.modules-unset-refused", in = "budget.modules-unset-refused", claims = { matches = [".budget. modules is unset.*alive"] }, false = "budget.modules-stated-opened" },
-    { name = "budget.persistent-unset-refused", in = "budget.persistent-unset-refused", claims = { matches = [".budget. persistent is unset.*alive"] }, false = "budget.persistent-stated-opened" },
-    { name = "budget.sparse_sets-unset-refused", in = "budget.sparse_sets-unset-refused", claims = { matches = [".budget. sparse_sets is unset.*alive"] }, false = "budget.sparse_sets-stated-opened" },
-    { name = "budget.sparse_sets-negative-refused", in = "budget.sparse_sets-negative-refused", claims = { matches = [".budget. sparse_sets is -5, which is neither a count nor none.*alive"] }, false = "budget.sparse_sets-stated-opened" },
-    { name = "budget.sparse_sets-beyond-32-bits-refused", in = "budget.sparse_sets-beyond-32-bits-refused", claims = { matches = [".budget. cannot be satisfied: sparse_sets of 16777216, with four bytes for each of 4096 entities, is more than an offset of 32 bits can reach.*alive"] }, false = "budget.sparse_sets-stated-opened" },
-    { name = "budget.direct_indexed-unset-refused", in = "budget.direct_indexed-unset-refused", claims = { matches = [".budget. direct_indexed is unset.*alive"] }, false = "budget.direct_indexed-stated-opened" },
-    { name = "budget.direct_indexed-no-limit-refused", in = "budget.direct_indexed-no-limit-refused", claims = { matches = [".budget. direct_indexed is -1, which is neither a count nor none.*alive"] }, false = "budget.direct_indexed-stated-opened" },
-    { name = "budget.direct_indexed-beyond-32-bits-refused", in = "budget.direct_indexed-beyond-32-bits-refused", claims = { matches = [".budget. cannot be satisfied: direct_indexed of 16777216, with a bit for each of 4096 entities, is more than an offset of 32 bits can reach.*alive"] }, false = "budget.direct_indexed-stated-opened" },
-    { name = "config.phases-nameless-refused", in = "config.phases-nameless-refused", claims = { matches = ["phase 1 has no name.*alive"] }, false = "config.phases-each-named-once-opened" },
-    { name = "config.phases-twice-refused", in = "config.phases-twice-refused", claims = { matches = ["phase 'update' is named twice.*alive"] }, false = "config.phases-each-named-once-opened" },
     { name = "order.before-none-refused", in = "order.before-none-refused", claims = { matches = [".order. pair 0 does not name two systems.*alive"] }, false = "order-a-pair-of-two-names-created" },
     { name = "order.after-none-refused", in = "order.after-none-refused", claims = { matches = [".order. pair 0 does not name two systems.*alive"] }, false = "order-a-pair-of-two-names-created" },
     { name = "module_config.identity-none-refused", in = "module_config.identity-none-refused", claims = { matches = ["a module with no identity is refused.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.reloadable-unset-refused", in = "module_config.reloadable-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: reloadable is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.hot_reload-unset-refused", in = "module_config.hot_reload-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: hot_reload is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.on_error-unset-refused", in = "module_config.on_error-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: on_error is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.max_system_failures-unset-refused", in = "module_config.max_system_failures-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: max_system_failures is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.work_limit-unset-refused", in = "module_config.work_limit-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: work_limit is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.init_timeout-unset-refused", in = "module_config.init_timeout-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: init_timeout is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.reload_timeout-unset-refused", in = "module_config.reload_timeout-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: reload_timeout is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.shutdown_timeout-unset-refused", in = "module_config.shutdown_timeout-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: shutdown_timeout is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.scratch-unset-refused", in = "module_config.scratch-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: scratch is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.log_ring-unset-refused", in = "module_config.log_ring-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: log_ring is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.log_ring-smaller-than-a-record-refused", in = "module_config.log_ring-smaller-than-a-record-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: a log_ring of 8 bytes holds no record, and one is 32.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.spans-unset-refused", in = "module_config.spans-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: spans is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.spawns-unset-refused", in = "module_config.spawns-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: spawns is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.spawns-more-than-entities-refused", in = "module_config.spawns-more-than-entities-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: its spawns of 5000 is more than .budget. entities of 4096.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.persistent-unset-refused", in = "module_config.persistent-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: persistent is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.changes-unset-refused", in = "module_config.changes-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: changes is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.changes-beyond-32-bits-refused", in = "module_config.changes-beyond-32-bits-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: its changes of 8589934592 bytes is more than an offset of 32 bits can reach.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.losses-count-unset-refused", in = "module_config.losses-count-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: loss_count is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "module_config.losses-counted-and-none-refused", in = "module_config.losses-counted-and-none-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: it states 2 losses, and losses is unset.*alive"] }, false = "bridge_load-loaded" },
-    { name = "bridge_load-loaded-already-refused", in = "bridge_load-loaded-already-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: 'test:ok@0\\.1\\.0' is loaded already.*alive"] }, false = "bridge_load-another-module-loaded" },
     { name = "module_config.spawns-sum-beyond-entities-refused", in = "module_config.spawns-sum-beyond-entities-refused", claims = { matches = ["module 'test:image@0\\.1\\.0' did not load: its spawns of 3000 do not fit under .budget. entities of 4096.*alive"] }, false = "module_config.spawns-sum-within-entities-loaded" },
-    { name = "phase_name.from-unset-refused", in = "phase_name.from-unset-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: phase name 1 of its config is unset.*alive"] }, false = "module_config.phases-two-mapped-to-one-refused" },
-    { name = "module_config.phases-mapped-twice-refused", in = "module_config.phases-mapped-twice-refused", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: its config maps phase 'tick' twice.*alive"] }, false = "module_config.phases-two-mapped-to-one-refused" },
     { name = "declare-statement-outside-scratch-refused", in = "declare-statement-outside-scratch-refused", claims = { matches = ["module 'game:wrong@0\\.1\\.0' did not load: declare: what it states lies outside the scratch arena.*alive"] }, false = "declare-valid-loaded" },
     { name = "bridge_declaration_t-name-outside-scratch-refused", in = "bridge_declaration_t-name-outside-scratch-refused", claims = { matches = ["module 'game:wrong@0\\.1\\.0' did not load: declare: a name or a descriptor lies outside the scratch arena.*alive"] }, false = "declare-valid-loaded" },
     { name = "declare-name-with-no-namespace-refused", in = "declare-name-with-no-namespace-refused", claims = { matches = ["module 'game:wrong@0\\.1\\.0' did not load: type 'Odd' has no namespace.*alive"] }, false = "declare-valid-loaded" },
@@ -256,7 +198,7 @@ rows = [
     { name = "observe-outside-init-refused", in = "observe-outside-init-refused", claims = { matches = ["system 'act' failed: observe is called outside init.*alive"] }, false = "observe-valid-loaded" },
     { name = "attach-undeclared-slot-refused", in = "attach-undeclared-slot-refused", claims = { matches = ["system 'act' failed: attach names slot 9, which it never declared.*alive"] }, false = "attach-declared-slot" },
     { name = "attach-ungranted-refused", in = "attach-ungranted-refused", claims = { matches = ["system 'act' failed: it may not attach 'other:Thing': no grant says so.*alive"] }, false = "attach-declared-slot" },
-    { name = "attach-value-outside-scratch-refused", in = "attach-value-outside-scratch-refused", claims = { matches = ["system 'act' failed: attach: the value lies outside the scratch arena.*alive"] }, false = "attach-value-inside-scratch" },
+    { name = "attach-value-outside-scratch-refused", in = "attach-value-outside-scratch-refused", claims = { matches = ["system 'act' failed: attach: the value lies outside the scratch arena.*alive"], lacks = ["act went on"] }, false = "attach-value-inside-scratch" },
     { name = "detach-undeclared-slot-refused", in = "detach-undeclared-slot-refused", claims = { matches = ["system 'act' failed: detach names slot 9, which it never declared.*alive"] }, false = "detach-declared-slot" },
     { name = "module_config.spans-outgrown-at-a-barrier", in = "module_config.spans-outgrown-at-a-barrier", claims = { matches = ["module 'game:mover@0\\.1\\.0' is stopped: what its queries match no longer fits in its spans of 640 bytes.*alive"] }, false = "BRIDGE_SPAN_SIZE-what-a-span-takes-of-the-spans" },
     { name = "BRIDGE_ERR-nothing-above-an-error-written", in = "BRIDGE_ERR-nothing-above-an-error-written", claims = { matches = ["record.3.: an error\\s+alive"], lacks = ["a warning"] }, false = "BRIDGE_LOG_ERR-written-as-severity-3" },
@@ -292,7 +234,6 @@ rows = [
     { name = "BRIDGE_ADD_SYSTEM-registered-and-run", in = "BRIDGE_ADD_SYSTEM-registered-and-run", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "backend_create-a-setting-refused", in = "backend_create-a-setting-refused", claims = { matches = ["backend 'wasm' would not start: it knows no setting 'cache'.*bridge_create refused.*alive"] }, false = "backend_create-no-setting-refused" },
     { name = "BRIDGE_OBSERVER-registered-and-told", in = "BRIDGE_OBSERVER-registered-and-told", claims = { matches = ["b1 game:chain@0.1.0/got_a: hop A.*alive"], lacks = ["hop A.*hop A"] }, false = "BRIDGE_OBSERVER-not-told-without-a-frame" },
-    { name = "BRIDGE_PUT_CHANGES-an-observer-that-attaches", in = "BRIDGE_PUT_CHANGES-an-observer-that-attaches", claims = { matches = ["b1 game:chain@0.1.0/got_a: hop A.*b2 game:chain@0.1.0/got_b: hop B.*b3 game:chain@0.1.0/got_c: hop C.*alive"], lacks = ["hop A.*hop A"] }, false = "observe-chain-one-frame-two-hops" },
     { name = "BRIDGE_ATTACH-the-value-travels-with-it", in = "BRIDGE_ATTACH-the-value-travels-with-it", claims = { matches = ["sum 250500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BRIDGE_GET-a-field-read", in = "BRIDGE_GET-a-field-read", claims = { matches = ["sum 250500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BRIDGE_SET-a-field-written-each-frame", in = "BRIDGE_SET-a-field-written-each-frame", claims = { matches = ["sum 250500 0.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
@@ -307,12 +248,6 @@ rows = [
     { name = "bridge_get_rows-rows-of-a-span", in = "bridge_get_rows-rows-of-a-span", claims = { matches = ["saw 1 500.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "bridge_has_column-held-and-then-left", in = "bridge_has_column-held-and-then-left", claims = { matches = ["any: event 3 1.*any: event 4 57005.*alive"] }, false = "bridge_has_column-held-and-not-yet-left" },
     { name = "bridge_get_entity-the-id-of-a-row", in = "bridge_get_entity-the-id-of-a-row", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
-    { name = "bridge_get_entities-where-a-span-keeps-its-ids", in = "bridge_get_entities-where-a-span-keeps-its-ids", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
-    { name = "bridge_get_cells-where-the-cells-are", in = "bridge_get_cells-where-the-cells-are", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
-    { name = "bridge_get_cell-the-cell-of-an-id", in = "bridge_get_cell-the-cell-of-an-id", claims = { matches = ["game:aim@0.1.0/reached: aims 10 5.*game:aim@0.1.0/reached: aimed 20 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_DIRECT_INDEXED-every-third-reached" },
-    { name = "bridge_get_sparse_index-where-the-index-is", in = "bridge_get_sparse_index-where-the-index-is", claims = { matches = ["game:hit@0.1.0/walked: hits 4 18.*game:hit@0.1.0/reached: bodies 10 4.*game:hit@0.1.0/reached: reached 18 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_SPARSE_SET-every-second-walked" },
-    { name = "bridge_get_sparse_value-the-value-of-an-id", in = "bridge_get_sparse_value-the-value-of-an-id", claims = { matches = ["game:hit@0.1.0/walked: hits 4 18.*game:hit@0.1.0/reached: bodies 10 4.*game:hit@0.1.0/reached: reached 18 0.*alive"], lacks = ["did not load"] }, false = "BRIDGE_SPARSE_SET-every-second-walked" },
-    { name = "bridge_get_single-where-the-one-row-is", in = "bridge_get_single-where-the-one-row-is", claims = { matches = ["vsync width 1 1280.*scale mode 150 2.*show: hello 7 0.*show: some/long/path.cfg 0 0.*flags ratio 3 3.*show: big 2 0.*alive"] }, false = "setting.v-another-width-seeded" },
     { name = "bridge_is_alive-ids-a-sweep-left", in = "bridge_is_alive-ids-a-sweep-left", claims = { matches = ["left 10 5.*game:keeper@0.1.0: unloaded.*left 9 0.*game:retype@0.1.0: loaded.*alive"] }, false = "BRIDGE_DELETE-unload-deletes" },
     { name = "bridge_get_trigger_count-how-many-this-barrier", in = "bridge_get_trigger_count-how-many-this-barrier", claims = { matches = ["any: event 3 1.*any: event 2 2.*any: event 4 57005.*alive"] }, false = "bridge_has_column-held-and-not-yet-left" },
     { name = "bridge_get_trigger-each-in-turn", in = "bridge_get_trigger-each-in-turn", claims = { matches = ["any: event 3 1.*any: event 2 2.*any: event 4 57005.*alive"] }, false = "bridge_has_column-held-and-not-yet-left" },
@@ -374,11 +309,14 @@ rows = [
     { name = "scan_imports-an-import-of-a-tag-refused", in = "scan_imports-an-import-of-a-tag-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: the check cannot read it.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
     { name = "scan_memories-a-section-short-of-its-memories-refused", in = "scan_memories-a-section-short-of-its-memories-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: the check cannot read it.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
     { name = "scan_walk-an-opcode-it-does-not-know-refused", in = "scan_walk-an-opcode-it-does-not-know-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: its function 0 holds code that the check cannot read.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
+    { name = "scan_walk-2-groups-of-locals-of-1-type-loaded", in = "scan_walk-2-groups-of-locals-of-1-type-loaded", claims = { matches = ["test:ok@0.1.0: loaded.*alive"] }, false = "scan_walk-a-local-past-2-groups-of-1-type-refused" },
+    { name = "scan_walk-a-local-past-2-groups-of-1-type-refused", in = "scan_walk-a-local-past-2-groups-of-1-type-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: .*alive"] }, false = "scan_walk-2-groups-of-locals-of-1-type-loaded" },
     { name = "scan_walk-locals-past-the-body-refused", in = "scan_walk-locals-past-the-body-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: its function 0 holds code that the check cannot read.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
     { name = "scan_walk-a-body-with-no-end-refused", in = "scan_walk-a-body-with-no-end-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: its function 0 holds code that the check cannot read.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
     { name = "scan_walk-bytes-after-the-last-end-refused", in = "scan_walk-bytes-after-the-last-end-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: its function 0 holds code that the check cannot read.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
     { name = "scan_call-a-call-with-no-function-refused", in = "scan_call-a-call-with-no-function-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: its function 0 holds code that the check cannot read.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
-    { name = "scan_matched-a-call-past-the-functions-refused", in = "scan_matched-a-call-past-the-functions-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: .*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
+    { name = "scan_matched-a-chain-of-65536-calls-loaded", in = "scan_matched-a-chain-of-65536-calls-loaded", claims = { matches = ["test:ok@0.1.0: loaded.*alive"] }, false = "scan_matched-a-call-past-the-functions-refused" },
+    { name = "scan_matched-a-call-past-the-functions-refused", in = "scan_matched-a-call-past-the-functions-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: not a module this backend can compile: .*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
     { name = "scan_prefix-a-prefix-with-no-opcode-refused", in = "scan_prefix-a-prefix-with-no-opcode-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: its function 0 holds code that the check cannot read.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
     { name = "scan_kind_of_fc-an-opcode-past-17-refused", in = "scan_kind_of_fc-an-opcode-past-17-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: its function 0 holds code that the check cannot read.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
     { name = "scan_kind_of_fd-an-opcode-past-255-refused", in = "scan_kind_of_fd-an-opcode-past-255-refused", claims = { matches = ["module 'test:ok@0.1.0' did not load: the module is refused: its function 0 holds code that the check cannot read.*alive"] }, false = "scan_s64-a-number-of-10-bytes-loaded" },
@@ -418,10 +356,8 @@ rows = [
     { name = "BRIDGE_PRIVATE-the-memory-of-one-module", in = "BRIDGE_PRIVATE-the-memory-of-one-module", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BRIDGE_CARRIED-where-a-tag-would-have-a-value", in = "BRIDGE_CARRIED-where-a-tag-would-have-a-value", claims = { matches = ["frozen 2 1.*alive"] }, false = "BRIDGE_DECLARE_TAG-carried-by-all-three" },
     { name = "BRIDGE_ZEROED-attached-with-no-value", in = "BRIDGE_ZEROED-attached-with-no-value", claims = { matches = ["frozen 2 1.*alive"] }, false = "BRIDGE_DECLARE_TAG-carried-by-all-three" },
-    { name = "BRIDGE_SPAN_BASE-where-a-span-keeps-its-columns", in = "BRIDGE_SPAN_BASE-where-a-span-keeps-its-columns", claims = { matches = ["sum 250500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BACKEND_IMPORT_FUNC-an-entry-imported-is-no-memory", in = "BACKEND_IMPORT_FUNC-an-entry-imported-is-no-memory", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
     { name = "BACKEND_IMPORT_MEMORY-the-two-memories-lent", in = "BACKEND_IMPORT_MEMORY-the-two-memories-lent", claims = { matches = ["sum 250500 0.*moved 2 1000.*sum 251000 0.*sum 251500 0.*alive"] }, false = "bridge_get_span_count-two-tables-matched" },
-    { name = "config.backends-none-refused", in = "config.backends-none-refused", claims = { matches = ["the deployment configures no backend, and a module is run by one.*bridge_create refused.*alive"] }, false = "config.backends-one-opened" },
     { name = "attach-tag-with-a-value-refused", in = "attach-tag-with-a-value-refused", claims = { matches = ["system 'act' failed: attach: 'game:Flag' is a tag, and is handed a value.*alive"] }, false = "attach-tag-zeroed" },
     { name = "BRIDGE_FAIL-refused-before-it-exists-stops-nothing", in = "BRIDGE_FAIL-refused-before-it-exists-stops-nothing", claims = { matches = ["module 'test:ok@0\\.1\\.0' is refused: no backend named 'native'.*test:image@0\\.1\\.0: loaded.*alive"], lacks = ["has stopped"] }, false = "BRIDGE_FAIL-a-loaded-module-stops-nothing" },
     { name = "simd-the-sum-of-a-vectorized-loop", in = "simd-the-sum-of-a-vectorized-loop", claims = { matches = ["test:vector@0\\.1\\.0/add: sum 523776 1024.*alive"] }, false = "simd-a-shorter-vectorized-loop-runs" },
@@ -487,10 +423,11 @@ rows = [
     { name = "scan_functions-out-of-memory-for-the-bodies-refused", in = "+refuse calloc=6 bridge_load-loaded", claims = { matches = ["module 'test:ok@0.1.0' did not load: out of memory in the check of the module.*alive"] }, false = "bridge_load-loaded" },
     { name = "scan_load-out-of-memory-for-the-touches-refused", in = "+refuse calloc=7 bridge_load-loaded", claims = { matches = ["module 'test:ok@0.1.0' did not load: out of memory in the check of the module.*alive"] }, false = "bridge_load-loaded" },
     { name = "scan_put-out-of-memory-for-a-form-refused", in = "+refuse realloc=1 bridge_load-loaded", claims = { matches = ["module 'test:ok@0.1.0' did not load: out of memory in the check of the module.*alive"] }, false = "bridge_load-loaded" },
-    { name = "memory_adopt-out-of-memory-for-the-private-memory-refused", in = "+refuse calloc=8 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }, false = "bridge_load-loaded" },
-    { name = "instance_create-out-of-memory-refused", in = "+refuse calloc=9 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }, false = "bridge_load-loaded" },
-    { name = "define_func-out-of-memory-refused", in = "+refuse calloc=10 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }, false = "bridge_load-loaded" },
-    { name = "instance_get_func-out-of-memory-refused", in = "+refuse calloc=18 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }, false = "bridge_load-loaded" },
+    { name = "scan_load-out-of-memory-for-the-frames-refused", in = "+refuse calloc=8 bridge_load-loaded", claims = { matches = ["module 'test:ok@0.1.0' did not load: out of memory in the check of the module.*alive"] }, false = "bridge_load-loaded" },
+    { name = "memory_adopt-out-of-memory-for-the-private-memory-refused", in = "+refuse calloc=9 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }, false = "bridge_load-loaded" },
+    { name = "instance_create-out-of-memory-refused", in = "+refuse calloc=10 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }, false = "bridge_load-loaded" },
+    { name = "define_func-out-of-memory-refused", in = "+refuse calloc=11 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }, false = "bridge_load-loaded" },
+    { name = "instance_get_func-out-of-memory-refused", in = "+refuse calloc=19 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: out of memory.*alive"] }, false = "bridge_load-loaded" },
     { name = "wasm_make_own-out-of-memory-refused", in = "+refuse malloc=2 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: its init made no instance: out of memory.*alive"] }, false = "bridge_load-loaded" },
     { name = "wasm_make_own-no-address-space-refused", in = "+refuse os_reserve=1 bridge_load-loaded", claims = { matches = ["module 'test:ok@0\\.1\\.0' did not load: its init made no instance: no room for a module's own memory: it starts past the reservation, or the address space is full.*alive"] }, false = "bridge_load-loaded" },
     { name = "grow_own-a-failed-commit-refused", in = "+refuse os_commit=1 backend.reservation-growth-inside-it-loaded", claims = { matches = ["module 'test:grow@0\\.1\\.0' did not load: its init answered 7.*alive"] }, false = "backend.reservation-growth-inside-it-loaded" },

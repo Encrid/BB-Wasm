@@ -26,8 +26,23 @@ bool scan_call(scan_walk_t *w, scan_t *s, [[maybe_unused]] enum scan_kind kind)
         return (true);
     }
     matched = scan_matched(w, function - w->m->imported);
+    if (matched == SCAN_UNKNOWN) {
+        w->wait = function - w->m->imported;
+        return (false);
+    }
     scan_put_u64(w->out, matched < 0 ? SCAN_UNMATCHED : (uint64_t)matched);
     return (true);
+}
+
+int32_t scan_matched(const scan_walk_t *w, uint32_t function)
+{
+    const scan_job_t *job = w->job;
+
+    if (!job->match)
+        return ((int32_t)function);
+    if (function >= job->m.defined || job->match[function] == SCAN_BUSY)
+        return (-1);
+    return (job->match[function]);
 }
 
 bool scan_two(scan_walk_t *w, scan_t *s, [[maybe_unused]] enum scan_kind kind)

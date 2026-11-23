@@ -10,7 +10,6 @@ static void read_armed(backend_t *b, wasm_armed_t *armed)
     os_mutex_lock(b->lock);
     armed->active = b->active;
     armed->until = b->until;
-    armed->engine = b->ticking;
     armed->quit = b->quit;
     os_mutex_unlock(b->lock);
 }
@@ -25,6 +24,15 @@ static bool wait_until(backend_t *b, uint64_t until)
     return (false);
 }
 
+static uint64_t interrupt(backend_t *b, uint64_t active)
+{
+    os_mutex_lock(b->lock);
+    if (b->active == active)
+        wasmtime_engine_increment_epoch(b->ticking);
+    os_mutex_unlock(b->lock);
+    return (active);
+}
+
 void wasm_watch(void *arg)
 {
     backend_t *b = arg;
@@ -36,8 +44,7 @@ void wasm_watch(void *arg)
         if (!armed.active || armed.active == interrupted) {
             os_event_wait(b->wake, OS_FOREVER);
         } else if (wait_until(b, armed.until)) {
-            wasmtime_engine_increment_epoch(armed.engine);
-            interrupted = armed.active;
+            interrupted = interrupt(b, armed.active);
         }
         read_armed(b, &armed);
     }

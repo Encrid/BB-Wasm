@@ -14,6 +14,7 @@ constexpr uint32_t SCAN_FUNCTIONS = 65'536;
 constexpr uint32_t SCAN_WHY = 200;
 constexpr int32_t SCAN_UNKNOWN = -2;
 constexpr int32_t SCAN_BUSY = -3;
+constexpr uint32_t SCAN_NO_WAIT = UINT32_MAX;
 
 enum scan_role : uint8_t {
     SCAN_OTHER = 0,
@@ -84,12 +85,21 @@ typedef struct {
     char why[SCAN_WHY];
 } scan_module_t;
 
+enum scan_step : uint8_t {
+    SCAN_FAILED = 0,
+    SCAN_DONE,
+    SCAN_WAITS
+};
+
+typedef struct scan_frame scan_frame_t;
+
 typedef struct {
     scan_module_t acc;
     scan_module_t m;
     scan_out_t *canons;
     int32_t *match;
     bool *touched;
+    scan_frame_t *frames;
     bool broken;
     bool no_memory;
 } scan_job_t;
@@ -99,7 +109,16 @@ typedef struct {
     const scan_module_t *m;
     scan_out_t *out;
     bool touches;
+    uint32_t wait;
 } scan_walk_t;
+
+struct scan_frame {
+    scan_walk_t w;
+    scan_out_t out;
+    scan_t s;
+    uint32_t depth;
+    uint32_t function;
+};
 
 typedef bool (*scan_handler_t)(scan_walk_t *w, scan_t *s,
     enum scan_kind kind);
@@ -138,7 +157,8 @@ enum scan_kind scan_kind_of_fc(uint32_t op);
 enum scan_kind scan_kind_of_fd(uint32_t op);
 
 bool scan_immediate(scan_walk_t *w, scan_t *s, enum scan_kind kind);
-bool scan_walk(scan_walk_t *w, const scan_body_t *body);
+enum scan_step scan_begin(scan_frame_t *f, const scan_body_t *body);
+enum scan_step scan_resume(scan_frame_t *f);
 
 bool scan_none(scan_walk_t *w, scan_t *s, enum scan_kind kind);
 bool scan_raw(scan_walk_t *w, scan_t *s, enum scan_kind kind);
@@ -160,7 +180,8 @@ bool scan_load(scan_job_t *job, const uint8_t *bytes, size_t len);
 void scan_free_job(scan_job_t *job);
 const uint8_t *scan_acc(size_t *len);
 
-int32_t scan_matched(scan_walk_t *w, uint32_t function);
+int32_t scan_matched(const scan_walk_t *w, uint32_t function);
+void scan_match_from(scan_job_t *job, uint32_t root);
 const char *scan_refused(const uint8_t *bytes, size_t len, char *why,
     size_t size);
 

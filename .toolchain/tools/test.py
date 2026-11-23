@@ -2,11 +2,13 @@
 #
 # Under the GNU Affero General Public License, version 3 only: see license.
 import concurrent.futures
+import copy
 import fnmatch
 import os
 import re
 import shutil
 import socket
+import stat
 import subprocess
 import threading
 import time
@@ -17,6 +19,7 @@ import branches
 import build
 import fail
 import leaks
+import locks
 import rewrite
 import scope
 import shared
@@ -152,15 +155,56 @@ def source_of(item, outputs, values):
     return outputs[name] if name in outputs else Path(values['root']) / name
 
 
+def cleared(folder):
+    if not folder.exists():
+        return
+    for path in folder.rglob('*'):
+        if os.name == 'nt' and path.is_file() and not os.access(path, os.W_OK):
+            os.chmod(path, stat.S_IWRITE)
+    shutil.rmtree(folder)
+
+
+def put(source, target, values):
+    target.unlink(missing_ok=True)
+    if Path(source).resolve().is_relative_to(Path(values['build'])):
+        try:
+            os.link(source, target)
+            return True
+        except OSError:
+            pass
+    shutil.copy(source, target)
+    return False
+
+
+def stamp(path):
+    try:
+        found = os.stat(path)
+    except OSError:
+        return None
+    return found.st_size, found.st_mtime_ns
+
+
+def sources_of(item, outputs, values):
+    name = expand(item, values)
+    if '*' not in name:
+        return [source_of(item, outputs, values)]
+    found = sorted(path for path in Path(values['root']).glob(name) if path.is_file())
+    return found or shared.die('%s: no file matches the pattern' % name)
+
+
 def placed(use, outputs, values):
+    linked = {}
     for folder, held in use.get('folders', {}).items():
         located(folder, values).mkdir(parents=True, exist_ok=True)
         for item in held:
-            source = source_of(item, outputs, values)
-            shutil.copy(source, located(folder, values) / source.name)
+            for source in sources_of(item, outputs, values):
+                if put(source, located(folder, values) / source.name, values):
+                    linked[Path(source)] = stamp(source)
     for path, text in use.get('files', {}).items():
         located(path, values).parent.mkdir(parents=True, exist_ok=True)
+        located(path, values).unlink(missing_ok=True)
         located(path, values).write_text(expand(text, values), encoding='utf-8', newline='\n')
+    return linked
 
 
 def scripted(running, script, outputs, values):
@@ -168,6 +212,7 @@ def scripted(running, script, outputs, values):
         if 'wait' in step and not waited(running, expand(step['wait'], values)):
             return
         for path, item in step.get('put', {}).items():
+            located(path, values).unlink(missing_ok=True)
             shutil.copy(source_of(item, outputs, values), located(path, values))
         for path in step.get('remove', []):
             located(path, values).unlink()
@@ -179,6 +224,24 @@ def scripted(running, script, outputs, values):
             signals.sent(running['proc'], step['signal'])
         if 'pause' in step:
             time.sleep(step['pause'])
+
+
+def held(hold):
+    return ' hold@%(file)s@%(call)s=%(at)d until@%(until)s=1 @times=%(times)d' % hold if hold else ''
+
+
+def hold_checked(hold, name, path, calls, root):
+    if not isinstance(hold, dict) or set(hold) != {'file', 'call', 'at', 'until', 'times'}:
+        die('%s: the case %s states hold, and a hold has exactly the keys file, call, at, until and times' % (path, name))
+    for key in ('call', 'until'):
+        if hold[key] not in calls:
+            die('%s: the case %s holds at %s %s, and [fail.calls] does not list it' % (path, name, key, hold[key]))
+    if not (isinstance(hold['file'], str) and hold['file'].endswith('.c') and ' ' not in hold['file']
+            and (root / hold['file']).is_file()):
+        die('%s: the case %s holds in %s, and the file of a hold is a C file of the project' % (path, name, hold['file']))
+    for key in ('at', 'times'):
+        if not (isinstance(hold[key], int) and not isinstance(hold[key], bool) and hold[key] >= 1):
+            die('%s: the case %s states the hold %s %s, and it is a count of 1 or more' % (path, name, key, hold[key]))
 
 
 def made_false(case):
@@ -195,16 +258,17 @@ def typed_rows(use, broken, order, values):
 
 def tried(config, values, outputs, where, case, broken, counted=False, failing=None, part=False, order=None):
     use = made_false(case) if broken else case
-    values, outputs = failing if failing and (use.get('fail') or use.get('sweep')) else (values, outputs)
+    values, outputs = failing if failing and (use.get('fail') or use.get('sweep') or use.get('hold')) else (values, outputs)
     folder = Path(values['out']) / 'cases' / where
-    shutil.rmtree(folder, ignore_errors=True)
+    cleared(folder)
     folder.mkdir(parents=True, exist_ok=True)
     mine = dict(values, case=folder.as_posix())
     if '{port}' in str(use):
         mine['port'] = free_port()
     counting = {'C23_LEAKS': folder.as_posix() + '.leaks'} if counted else {}
-    plan = ''.join(' %s=%s' % pair for pair in use.get('fail', {}).items()) or False
-    placed(use, outputs, mine)
+    plan = ''.join(' %s=%s' % pair for pair in use.get('fail', {}).items()) + held(use.get('hold')) or False
+    part = ''.join(' %s ' % name for name in use['fail_parts']) if 'fail_parts' in use else part
+    linked = placed(use, outputs, mine)
     root, timeout, helper = values['root'], config['test']['timeout'], use.get('helper')
     beside = started(expanded(helper['run'], mine), root, timeout, environment(counting, mine)) if helper else None
     if helper:
@@ -218,11 +282,14 @@ def tried(config, values, outputs, where, case, broken, counted=False, failing=N
     ends = [ended(running, typing, order is not None)]
     if helper:
         ends.append(ended(beside, expand(helper.get('stdin', ''), mine)))
+    mine[WROTE] = sorted(path.as_posix() for path, was in linked.items() if stamp(path) != was)
     return ends, [use.get('claims', {})] + ([helper.get('claims', {})] if helper else []), mine
 
 
 def judged(config, group, broken, run):
     ends, claims, mine = run
+    if mine[WROTE]:
+        return False, 'wrote into the build output %s' % ', '.join(mine[WROTE]), ends
     lacks = [rule['lacks'] for rule in config['test'].get('rule', []) if group not in rule.get('exempt', [])]
     if any(code is None for code, _ in ends):
         return False, 'did not end in %d seconds' % config['test']['timeout'], ends
@@ -235,6 +302,8 @@ def judged(config, group, broken, run):
 def answered(config, group, broken, run, rows, order):
     ends, claims, mine = run
     code, said = ends[0]
+    if mine[WROTE]:
+        return [(False, 'wrote into the build output %s' % ', '.join(mine[WROTE]))] * len(rows)
     lacks = [rule['lacks'] for rule in config['test'].get('rule', []) if group not in rule.get('exempt', [])]
     blocks = said.split('\n\n')[:-1]
     if any(end is None for end, _ in ends):
@@ -301,32 +370,104 @@ def verdict(config, values, outputs, group, index, case, broken, copies, counted
     return ok, how + (' in %d of %d copies' % (len(bad), count) if count > 1 else ''), ends
 
 
-def test(config, values, outputs, groups, broken, said, copies, counted=False, failing=None):
-    wrong, texts = [], []
-    for group, cases in groups:
-        right, count = 0, 0
-        for index, case in enumerate(cases):
-            if 'rows' in case:
-                found, ends = tabled(config, values, outputs, group, index, case, broken, copies, counted, failing)
-                named = [(row['name'], ok, how) for row, (ok, how) in zip(case['rows'], found)]
-            else:
-                ok, how, ends = verdict(config, values, outputs, group, index, case, broken, copies, counted, failing)
-                named = [(case['name'], ok, how)]
-            texts += [said for _, said in ends]
-            for name, ok, how in named:
-                print('%s%s: %s' % (name, ', made false' if broken else '', how))
-            right += sum(ok for _, ok, _ in named)
-            count += len(named)
-            wrong += [name for name, ok, _ in named if not ok]
-            if not all(ok for _, ok, _ in named):
-                for whose, (code, said) in zip(('', 'the helper '), ends):
-                    print('  %sended with %s, and printed:\n%s' % (whose, 'no status' if code is None else status(code),
-                                                                  said.rstrip()))
-        print('%s: %d claims made false: %d cases failed' % (group, count, right) if broken else
-              '%s: %d cases: %d as written' % (group, count, right))
+WROTE = 'the outputs that a case wrote'
+USE = re.compile(r'[A-Za-z0-9_-]+')
+
+
+def uses_of(config, values, running):
+    table = config.get('test', {}).get('uses', {})
+    if not table:
+        return {}
+    if not isinstance(table, dict):
+        die('[test] uses: write a table of the uses')
+    root = Path(values['root'])
+    paths = files(root, [top + '**/*' for top in scope.CODE + scope.BUILT]) + files(root, list(scope.FILES))
+    found, named = scope.groups(config, root), {}
+    run = [group for group in found if group['name'] in running]
+    for name, patterns in sorted(table.items()):
+        if not USE.fullmatch(name):
+            die('[test] uses: %s is not a name of letters, digits, _ and -' % name)
+        if not (isinstance(patterns, list) and all(isinstance(pattern, str) for pattern in patterns)):
+            die('[test] uses: %s is a list of patterns' % name)
+        if not patterns:
+            die('[test] uses: %s has no pattern' % name)
+        for pattern in patterns:
+            if not any(fnmatch.fnmatch(path, pattern) for path in paths):
+                die('[test] uses: %s matches no file' % pattern)
+        mine = [path for path in paths if any(fnmatch.fnmatch(path, pattern) for pattern in patterns)]
+        for group in run:
+            whole = group['whole'] and group['code'] is None
+            if whole or any(scope.tests(config, root, found, group, path) for path in mine):
+                named.setdefault(group['name'], []).append(name)
+    return named
+
+
+def test(config, values, outputs, groups, broken, said, copies, counted=False, failing=None, workers=1):
+    wrong, texts, uses = [], [], uses_of(config, values, {group for group, _ in groups})
+    jobs = [[(group, index, case, concurrent.futures.Future()) for index, case in enumerate(cases)]
+            for group, cases in groups]
+    lanes, stop, room = lanes_of(jobs, uses), threading.Event(), shared.Room(shared.floor_of(config))
+
+    def ran(lane):
+        for group, index, case, future in lane:
+            if stop.is_set():
+                return
+            try:
+                with room, locks.held(uses.get(group, []), group):
+                    future.set_result(one(config, values, outputs, group, index, case, broken, copies, counted,
+                                          failing))
+            except BaseException as error:
+                future.set_exception(error)
+
+    with concurrent.futures.ThreadPoolExecutor(workers) as pool:
+        for lane in lanes:
+            pool.submit(ran, lane)
+        try:
+            for (group, _), mine in zip(groups, jobs):
+                right, count = 0, 0
+                for *_, future in mine:
+                    named, ends = future.result()
+                    texts += [said for _, said in ends]
+                    told(named, ends, broken)
+                    right += sum(ok for _, ok, _ in named)
+                    count += len(named)
+                    wrong += [name for name, ok, _ in named if not ok]
+                print('%s: %d claims made false: %d cases failed' % (group, count, right) if broken else
+                      '%s: %d cases: %d as written' % (group, count, right))
+        except BaseException:
+            stop.set()
+            raise
     if said:
         (Path(values['out']) / 'said.txt').write_text('\n'.join(texts), encoding='utf-8', newline='\n')
     return wrong
+
+
+def lanes_of(jobs, uses):
+    shared, free = {}, []
+    for job in (job for mine in jobs for job in mine):
+        key = tuple(sorted(uses.get(job[0], [])))
+        if key:
+            shared.setdefault(key, []).append(job)
+        else:
+            free.append([job])
+    return list(shared.values()) + free
+
+
+def one(config, values, outputs, group, index, case, broken, copies, counted, failing):
+    if 'rows' in case:
+        found, ends = tabled(config, values, outputs, group, index, case, broken, copies, counted, failing)
+        return [(row['name'], ok, how) for row, (ok, how) in zip(case['rows'], found)], ends
+    ok, how, ends = verdict(config, values, outputs, group, index, case, broken, copies, counted, failing)
+    return [(case['name'], ok, how)], ends
+
+
+def told(named, ends, broken):
+    for name, ok, how in named:
+        print('%s%s: %s' % (name, ', made false' if broken else '', how))
+    if not all(ok for _, ok, _ in named):
+        for whose, (code, said) in zip(('', 'the helper '), ends):
+            print('  %sended with %s, and printed:\n%s' % (whose, 'no status' if code is None else status(code),
+                                                          said.rstrip()))
 
 
 def rowed(case, path):
@@ -385,9 +526,19 @@ def groups_of(config, values, folder):
                     % (path, case['name'], case['process'], ', '.join(PROCESS)))
             if case.get('process') == 'script' and 'script' not in case and 'stdin' not in case:
                 die('%s: the case %s states the process script, and it has no script and no stdin' % (path, case['name']))
+            for named in (case.get('fail_parts'), case.get('false', {}).get('fail_parts')):
+                if named is not None and (not named or any(name not in config.get('parts', {}) for name in named)):
+                    die('%s: the case %s states fail_parts %s, and each must name a part of the project'
+                        % (path, case['name'], ' '.join(named) or 'with no part'))
             for call in [*case.get('fail', {}), *case.get('false', {}).get('fail', {}), *case.get('sweep', [])]:
                 if call not in calls:
                     die('%s: the case %s makes %s fail, and [fail.calls] does not list it' % (path, case['name'], call))
+                if calls[call] == '':
+                    die('%s: the case %s makes %s fail, and %s gives no result, so no case can make it fail'
+                        % (path, case['name'], call, call))
+            for hold in (case.get('hold'), case.get('false', {}).get('hold')):
+                if hold is not None:
+                    hold_checked(hold, case['name'], path, calls, root)
         if config.get('test', {}).get('tables'):
             ruled(path, cases)
         found.append((Path(path).relative_to(folder).with_suffix('').as_posix(), cases))
@@ -453,11 +604,18 @@ def measured(args):
     hits = Path(values['out']) / 'hits.bin'
     hits.write_bytes(bytes(branches.parts(probes)[1]))
     os.environ['C23_BRANCHES'] = str(hits)
-    test(config, values, outputs, groups, False, False, 1)
+    test(config, values, outputs, groups, False, False, 1, workers=workers_of(args, config))
     excepted = scoped(args, config.get('branches', {}).get('exception', []), 'path', probes)
     if args.group:
         print('branches: measured the code of the groups %s' % ', '.join(args.group))
     branches.reported(probes, gaps, hits, excepted, values['system'], named)
+
+
+def workers_of(args, config):
+    count = args.workers if args.workers is not None else config.get('test', {}).get('workers', os.cpu_count() or 1)
+    if not (isinstance(count, int) and not isinstance(count, bool) and count > 0):
+        die('[test] workers and --workers are a count of 1 or more')
+    return count
 
 
 def tallied(args):
@@ -465,8 +623,8 @@ def tallied(args):
         die('--leaks runs each case one time: it takes no --break, --toolchain, --copies, --rounds or --branches')
     config, values, (files, kinds), outputs, groups = changed(args, 'leaks', leaks.counted)
     folder = Path(values['out']) / 'cases'
-    shutil.rmtree(folder, ignore_errors=True)
-    test(config, values, outputs, groups, False, False, 1, True)
+    cleared(folder)
+    test(config, values, outputs, groups, False, False, 1, True, workers=workers_of(args, config))
     cases = [(case['name'], folder / group / ('%d.leaks' % index)) for group, listed in groups
              for index, case in enumerate(listed)]
     excepted = scoped(args, config.get('leaks', {}).get('exception', []), 'case', [name for name, _ in cases])
@@ -474,8 +632,10 @@ def tallied(args):
 
 
 def main():
-    args = shared.arguments('-k', ('--copies', int), ('--rounds', int), broken='--break', toolchain='--toolchain',
-                            branches='--branches', leaks='--leaks')
+    args = shared.arguments('-k', ('--copies', int), ('--rounds', int), ('--workers', int), broken='--break', toolchain='--toolchain',
+                            branches='--branches', leaks='--leaks', built='--build')
+    if args.built and (args.toolchain or args.branches or args.leaks or args.broken):
+        die('--build builds each artifact and runs no case: it takes no --toolchain, --branches, --leaks or --break')
     if args.leaks:
         return tallied(args)
     if args.branches:
@@ -488,6 +648,8 @@ def main():
     unlinked = [name for name, paths in made if not paths]
     if unlinked:
         die('the cases need what is linked: ' + ' '.join(unlinked))
+    if args.built:
+        return print('built %d artifacts' % len(made))
     folder = '.toolchain/tests/cases' if args.toolchain else config.get('test', {}).get('cases', 'tests/cases')
     groups = groups_of(config, values, folder)
     if not groups:
@@ -497,15 +659,19 @@ def main():
     own = not (args.broken or args.toolchain or args.k or args.part or args.group)
     rounds = args.rounds or 1
     failing = None
-    if any(use.get('fail') or use.get('sweep') for use in ((made_false(case) if args.broken else case)
+    if any(use.get('fail') or use.get('sweep') or use.get('hold') for use in ((made_false(case) if args.broken else case)
                                                             for _, cases in groups for case in cases)):
-        _, mine, _, outputs, _ = changed(args, 'fail', fail.failed, (config, values))
+        wider = copy.copy(args)
+        if args.part:
+            wider.part = sorted(set(args.part) | {name for _, cases in groups for case in cases
+                                                  for use in (case, made_false(case)) for name in use.get('fail_parts', [])})
+        _, mine, _, outputs, _ = changed(wider, 'fail', fail.failed, (config, values))
         failing = mine, outputs
     for done in range(rounds):
         if rounds > 1:
             print('round %d of %d' % (done + 1, rounds))
         wrong = test(config, values, {name: paths[0] for name, paths in made}, groups, args.broken, own, copies,
-                     failing=failing)
+                     failing=failing, workers=workers_of(args, config))
         if wrong:
             die(('still as written with their claims made false: ' if args.broken else 'not as written: ')
                 + ', '.join(wrong))

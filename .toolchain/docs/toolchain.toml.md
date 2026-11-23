@@ -13,12 +13,20 @@ It is the same in each project, and a project does not change it.
 | `url` | The address of the archive. `fetch` puts the values in `{version}`, `{host}` and `{format}`. |
 | `archives.<target>` | For a machine of the target: the `host` and the `format` of the archive, and its `sha256` digest. |
 
+## [fetch]
+
+| Key | Value |
+| --- | --- |
+| `archives` | The folder of the archives that `fetch` downloads: `.toolchain/docs/fetch.py.md`, *The shared archives*. |
+| `timeout` | The seconds that a download waits for its next bytes. |
+
 ## [build]
 
 | Key | Value |
 | --- | --- |
 | `folder` | The default output folder, in the root. |
 | `cache` | The folder of the caches of zig, from the folder of `project.py`. |
+| `job_memory` | The memory of 1 job, in bytes: *The jobs*. The default is 1610612736, 1.5 GiB. |
 
 ## [variables] and [debug]
 
@@ -26,8 +34,38 @@ It is the same in each project, and a project does not change it.
 | --- | --- |
 | `language` | The flags of the language: C23, the pedantic errors, and each warning as an error. |
 | `optimize` | The flags of the optimization. `-s` tells the linker to drop the debug information, also of the objects that zig builds for the C library. Without it, a Linux program holds the folder of the project. `[debug] optimize` gives the flags of a debug build, with the sanitizer of undefined behaviour. |
-| `float` | The flags of the rules of floating point. |
+| `float` | The flags of the rules of floating point: `-ffp-contract=off`, `-fno-fast-math` and `-fno-rounding-math`. *The rules of floating point* tells why. |
 | `strip` | The flag of `zig build-lib` for the debug information. `-fstrip` drops it, as `-g0` does for the compiler. `[debug] strip` is `-fno-strip`, which keeps it. |
+| `debug_info` | The flag of the compiler for the debug information, for the kinds that do not take `optimize`, such as the kinds of wasm. It is `-g0`, so an object of a release holds no folder of the machine. `[debug] debug_info` is `-g`. |
+| `jobs` | The most jobs that a tool runs at the same time: *The jobs*. The default is 8. |
+
+## The jobs
+
+`jobs` limits the jobs that run at the same time: the steps of `zig build`, and the syntax trees of `rewrite.py`.
+`build.py` gives it to `zig build` as `-j<jobs>`: `.toolchain/docs/build.py.md`, *The runner zig*. `each` of `rewrite.py` runs that many trees at the same time.
+
+The tools use the least of 3 counts, and at least 1 job.
+The 3 counts are `jobs`, the processors of the machine, and the free memory divided by `[build] job_memory`.
+The free memory is `free_memory` of `.toolchain/docs/shared.py.md`, when the run starts. Thus a machine that runs other builds or test runs runs fewer jobs, and no setting changes.
+
+The default of `job_memory` is the largest compile that a run measured, 1.36 GB, rounded up to 1.5 GiB.
+With no measure of the memory, the tools use the least of `jobs` and of the count of processors.
+If `jobs` is not a whole number above 0, the tools stop: `[variables] jobs is <jobs>, and it must be a whole number above 0`.
+
+The default 8 is the limit that `rewrite.py` had before the setting, so a machine with 8 processors or fewer runs as before.
+Without `-j`, `zig build` runs a step on each processor. On a machine with more than 8 processors, the default runs fewer steps.
+The copies of a case are no jobs: `[test] copies` gives their count, since the copies must run at the same time.
+
+## The rules of floating point
+
+With `-ffp-contract=on`, the compiler can join a product and a sum into 1 fused multiply-add, with 1 rounding in place of 2.
+A processor with such an instruction then gives different bits than a processor with no such instruction.
+Thus `float` holds `-ffp-contract=off`, so that the same source gives the same results on each processor, as the need Deterministic of `docs/contributing/needs.md` asks.
+A function that needs a fused multiply-add calls `fma` of C23, which gives the same result on each machine.
+
+Each kind of `.toolchain/toolchain.toml` that compiles C passes `{flags}` after `{float}`. The kind `native_module` of the preset `native_module` does too, and so do the kinds `wasm_module` and `wasm_library` of the preset `wasm_module`, through `wasm_compile`.
+Thus an artifact can override the default with `-ffp-contract=on` in its `flags`.
+An artifact overrides the default only for a gain that a measure shows. The document of its sources states that measure as the reason.
 
 ## [targets.\<target\>]
 
@@ -62,6 +100,14 @@ There are six targets: three operating systems on two types of processor. Each p
 Each step `each` passes `-MD -MF {deps}`, so zig knows the headers of each source.
 It also passes `-Wno-unused-command-line-argument`, because `-c` uses no flag of the linker, for example `-s`.
 | `file` | `{name}` | It copies the one source to the output. |
+
+A kind can also have these keys:
+
+| Key | Value |
+| --- | --- |
+| `flags` | The flags that the kind adds to `{flags}` of each artifact of the kind. |
+| `dump` | The command that gives the syntax tree of one source of the kind. With no `dump`, the kind uses `[rewrite] dump`. |
+| `probed` | The flags that the kind adds to `{flags}` only when it builds the tree of a run of `rewrite.py`: `.toolchain/docs/rewrite.py.md`. They can name `{tree}`, the folder of that tree. The syntax tree does not get them. |
 
 ## [rewrite]
 

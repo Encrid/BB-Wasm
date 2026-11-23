@@ -55,21 +55,35 @@ static bool read_locals(scan_walk_t *w, scan_t *s)
     return (!s->bad);
 }
 
-bool scan_walk(scan_walk_t *w, const scan_body_t *body)
+enum scan_step scan_begin(scan_frame_t *f, const scan_body_t *body)
 {
-    scan_t s = { body->at, body->at + body->len, false };
-    uint32_t depth = 1;
+    f->s = (scan_t){ body->at, body->at + body->len, false };
+    f->depth = 1;
+    if (!read_locals(&f->w, &f->s))
+        return (SCAN_FAILED);
+    return (scan_resume(f));
+}
+
+enum scan_step scan_resume(scan_frame_t *f)
+{
+    scan_t back = f->s;
+    size_t len = f->w.out->len;
     uint8_t op;
 
-    if (!read_locals(w, &s))
-        return (false);
-    while (depth) {
-        op = scan_byte(&s);
-        scan_put(w->out, &op, 1);
-        depth += op >= 0x02 && op <= 0x04;
-        depth -= op == 0x0B;
-        if (!scan_immediate(w, &s, scan_kind_of(op)))
-            return (false);
+    while (f->depth) {
+        back = f->s;
+        len = f->w.out->len;
+        op = scan_byte(&f->s);
+        scan_put(f->w.out, &op, 1);
+        if (!scan_immediate(&f->w, &f->s, scan_kind_of(op)))
+            break;
+        f->depth += op >= 0x02 && op <= 0x04;
+        f->depth -= op == 0x0B;
     }
-    return (s.at == s.end && !w->out->bad);
+    if (!f->depth || f->w.wait == SCAN_NO_WAIT)
+        return (!f->depth && f->s.at == f->s.end && !f->w.out->bad
+            ? SCAN_DONE : SCAN_FAILED);
+    f->s = back;
+    f->w.out->len = len;
+    return (SCAN_WAITS);
 }

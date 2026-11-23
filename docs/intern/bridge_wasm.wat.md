@@ -36,17 +36,23 @@ Each accessor below builds on `$resolve` or reads the header the same way:
 - `acc_get_rows` gives the row count of a table. It traps when the id is past the tables of the header.
 - `acc_has` tells whether a sparse, direct-indexed, or singleton slot holds a value for an id.
 - `acc_is_on` and `acc_set_toggle` read and write the presence bit of a row of a toggle.
-- `acc_get_own_32`, `acc_get_own_64` and `acc_set_own_32` reach the private memory. `acc_set_own_32` writes 4 bytes, and traps unless all 4 stay below the published table and leave the header alone.
-- `acc_copy_to_private` copies into the scratch region, below the published table.
+- `acc_get_own_32`, `acc_get_own_64` and `acc_set_own_32` reach the private memory. `acc_set_own_32` writes 4 bytes, and traps unless all 4 stay below the published table.
+  It also traps below the scratch arena, except at the 2 fields that a module writes: `scratch_used` at offset 12 and `ring_head` at offset 24.
+- `acc_copy_to_private` copies into the scratch region: from the scratch arena, and below the published table.
+- Each of these accessors reads the start of the scratch arena from the field `scratch` of the header, at offset 4.
+  It reads the start of the published table from offset 32. So it holds no copy of the place that Bridge gives the arena.
 - `acc_copy_to_shared` copies into the shared memory, and stays inside one owned range. `acc_copy_from_shared` copies out, inside the arena bounds.
 
 ## The build
 
 The module build optimizes the compiled module, then merges this file into it as `acc`, and strips the exports.
-No pass of the optimizer runs after the merge. So each accessor stays a function, with the body that this file gives it.
-The check at load needs that body: `docs/intern/wasm_scan_check.c.md`.
-Before the merge, `tools/wasm_guard.py` checks the imports of the compiled module: `docs/tools/wasm_guard.py.md`.
+After the merge, `wasm-opt` runs only `--remove-exports=acc_*` and `--remove-unused-module-elements`: `.toolchain/config/wasm_kinds.toml`.
+These 2 passes remove the exports of the accessors and the elements that nothing uses, and change no body. So each accessor that the module uses stays a function, with the body that this file gives it.
 
-The compile takes the setting `simd` of `.toolchain/config/variables.toml`, which is `-msimd128`, and then the `flags` of the module.
-So `-mno-simd128`, as the setting or in the `flags` of one module, turns SIMD off.
-The merge and the optimizer take `--enable-simd` in `features`, so binaryen keeps the SIMD instructions that the compile made.
+The check at load needs that body: `docs/intern/wasm_scan_check.c.md`.
+Before the merge, `.toolchain/tools/wasm_guard.py` checks the imports of the compiled module: `.toolchain/docs/wasm_guard.py.md`.
+The steps are the kind `wasm_module` of the preset `wasm_module` of mc23t, in `.toolchain/config/wasm_kinds.toml`: `.toolchain/docs/presets.md`, *wasm_module*.
+
+The compile takes the variable `wasm_simd`, which is `-msimd128`, and then the `flags` of the module.
+So `-mno-simd128` in the `flags` of one module turns SIMD off.
+The merge and the optimizer take `--enable-simd` in `wasm_features`, so binaryen keeps the SIMD instructions that the compile made.

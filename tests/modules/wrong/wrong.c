@@ -17,6 +17,7 @@ void wrong_do_nothing(void)
 BRIDGE_EXPORT(act) int act(void)
 {
     IN_SYSTEM();
+    BRIDGE_LOG(BRIDGE_LOG_INFO, "act went on", 0, 0);
     return (0);
 }
 
