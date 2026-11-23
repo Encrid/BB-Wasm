@@ -8,6 +8,9 @@
 
     #include "host.h"
 
+constexpr int64_t TEST_DEADLINE = 60'000 * HOST_MS;
+constexpr int64_t TEST_SPIN_DEADLINE = 200 * HOST_MS;
+
 void test_print(void *ud, const bridge_record_t *r);
 
 void test_state_small(bridge_artifact_t *a, char *identity, const char *name);
@@ -128,6 +131,8 @@ void test_load_short(host_t *h);
 void test_load_hex(host_t *h);
 void test_load_chain(host_t *h);
 void test_time_after_a_late_deadline(host_t *h);
+void test_load_spinning(host_t *h);
+void test_set_and_spin(host_t *h);
 void test_run_named(host_t *h);
 void test_create_no_sink(host_t *h);
 void test_stop(host_t *h);
@@ -232,6 +237,7 @@ void test_refuse_essential(host_t *h);
 void test_edit_backend(host_t *h);
 void test_level(host_t *h);
 void test_set_and_load(host_t *h);
+void test_set_and_load_timed(host_t *h, int64_t init_timeout);
 void test_limit_elements(host_t *h);
 void test_load_lent(host_t *h);
 void test_shut_after_fuel(host_t *h);
